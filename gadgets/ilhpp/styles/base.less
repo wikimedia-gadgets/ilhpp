@@ -1,0 +1,39 @@
+.mw-dark(@rules) {
+
+  // Automatic dark mode
+  @media screen and (prefers-color-scheme: dark) {
+    html.skin-theme-clientpref-os & {
+      @rules();
+    }
+  }
+
+  // Forced dark mode
+  html.skin-theme-clientpref-night & {
+    @rules();
+  }
+}
+
+:root {
+  --ilhpp-link-green: #007a5e;
+  --ilhpp-link-existing: #1976D2;
+  --ilhpp-link-existing--hover: #2196F3;
+  --ilhpp-link-existing--active: #0D47A1;
+  --ilhpp-link-existing--visited: #AB47BC;
+}
+
+.mw-dark({
+  --ilhpp-link-green: #009b78;
+  --ilhpp-link-existing: #1E88E5;
+  --ilhpp-link-existing--hover: #2196F3;
+  --ilhpp-link-existing--active: #42A5F5;
+  --ilhpp-link-existing--visited: #BA68C8;
+});
+
+@font-size-small: 0.875em;
+@font-size-medium: 1em;
+
+@popup-pointer-width: 8px;
+@popup-pointer-short-side-length: 20px;
+@popup-line-height: 20px;
+@popup-margin-base: 16px;
+@popup-margin-thin: 8px;

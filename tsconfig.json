@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "rootDir": ".",
+    "outDir": "dist",
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+  },
+  "include": [
+    "gadgets/*/src/**/*.ts",
+    "gadgets/*/src/**/*.d.ts",
+    "gadgets/*/src/**/*.tsx",
+    "gadgets/*/*.config.js",
+    "eslint.config.js"
+  ]
+}

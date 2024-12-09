@@ -1,0 +1,19 @@
+{
+  "name": "ilhpp",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "less": "^4.2.0",
+    "rollup-plugin-mediawiki-gadget": "^1.2.1",
+    "vite": "^5.4.9"
+  },
+  "dependencies": {
+    "hanassist": "^4.2.4",
+    "jquery": "^3.7.1"
+  }
+}

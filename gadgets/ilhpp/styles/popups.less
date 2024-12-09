@@ -1,0 +1,191 @@
+@import (reference) './base.less';
+
+@keyframes ilhpp-popup-desktop-top-in {
+  0% {
+    opacity: 0;
+    transform: translate(0, -20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+
+@keyframes ilhpp-popup-desktop-top-out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, -20px);
+  }
+}
+
+@keyframes ilhpp-popup-desktop-bottom-in {
+  0% {
+    opacity: 0;
+    transform: translate(0, 20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes ilhpp-popup-desktop-bottom-out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 20px);
+  }
+}
+
+/* .pointer(@pos) {
+  & when (@pos ='top') {
+    bottom: -@pointer-border-width * 2;
+  }
+
+  & when (@pos ='bottom') {
+    top: -@pointer-border-width * 2;
+  }
+
+  & when (@pos ='left') {
+    right: @pointer-short-side-length - @pointer-border-width;
+  }
+
+  & when (@pos ='right') {
+    left: @pointer-short-side-length - @pointer-border-width;
+  }
+} */
+
+.ilhpp-popup-desktop {
+  position: absolute;
+  z-index: 110;
+
+  box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--background-color-neutral, #eaecf0);
+  background: var(--background-color-base, #fff);
+  border-radius: 2px;
+  font-size: 14px;
+
+  line-height: @popup-line-height;
+  width: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: absolute;
+    border: @popup-pointer-width solid transparent;
+    width: 0;
+    height: 0;
+  }
+
+  &--top {
+    animation: ilhpp-popup-desktop-top-in 0.2s ease forwards;
+
+    &.ilhpp-popup-desktop--out {
+      animation: ilhpp-popup-desktop-top-out 0.2s ease forwards !important;
+    }
+
+    &::before {
+      border-top: @popup-pointer-width solid var(--background-color-interactive, #eaecf0);
+      bottom: -@popup-pointer-width * 2;
+    }
+  }
+
+  &--bottom {
+    animation: ilhpp-popup-desktop-bottom-in 0.2s ease forwards;
+
+    &.ilhpp-popup-desktop--out {
+      animation: ilhpp-popup-desktop-bottom-out 0.2s ease forwards !important;
+    }
+
+    &::before {
+      border-bottom: @popup-pointer-width solid var(--background-color-base, #fff);
+      top: -@popup-pointer-width * 2;
+    }
+  }
+
+  &--left {
+    &::before {
+      right: @popup-pointer-short-side-length - @popup-pointer-width;
+    }
+  }
+
+  &--right {
+    &::before {
+      left: @popup-pointer-short-side-length - @popup-pointer-width;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+
+    &::before {
+      display: inline-block;
+      content: '';
+      width: 18px;
+      height: 18px;
+      margin-left: -2px; // Align icon real boundary with text
+      margin-right: 4px;
+      background: url(../assets/article_ltr.svg) no-repeat center / contain;
+    }
+
+    font-size: 1.125em;
+    font-weight: bold;
+    margin: @popup-margin-base @popup-margin-base 0;
+  }
+
+  &__subheader {
+    font-size: @font-size-small;
+    color: var(--color-subtle, #54595d);
+    margin: 0 @popup-margin-base;
+  }
+
+  &__extract {
+    position: relative;
+    display: block;
+    color: inherit;
+    margin: @popup-margin-thin @popup-margin-base 0;
+    max-height: @popup-line-height * 7; // Show a fixed number of lines
+    overflow: hidden;
+
+    &:hover,
+    &:active {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    &__more {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      font-size: @font-size-small;
+      width: 40%;
+      text-align: right;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
+    }
+  }
+
+  &__cta {
+    background-color: var(--background-color-neutral, #eaecf0);
+    padding: @popup-margin-thin @popup-margin-base;
+    //padding-top: 4px;
+    margin-top: @popup-margin-thin;
+    font-size: @font-size-small;
+    line-height: @popup-line-height * unit(@font-size-small);
+  }
+}
+
+.ilhpp-popup-mobile {}

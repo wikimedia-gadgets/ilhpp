@@ -1,0 +1,22 @@
+{
+  "name": "ilhpp-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "pnpm -r run build",
+    "lint": "eslint . && tsc --noEmit ."
+  },
+  "author": "diskdance",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/jquery": "^3.5.32",
+    "@types/node": "^22.7.6",
+    "eslint": "^9.15.0",
+    "types-mediawiki": "^1.8.1",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.16.0"
+  }
+}

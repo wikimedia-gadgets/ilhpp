@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>ilhpp Dev Server</title>
+  <script
+    type="module"
+    src="src/start.ts"
+  ></script>
+</head>
+
+<body class="dummy">
+  <div id="app">
+    <h2>"Chinese Wikipedia"</h2>
+
+    <div>Press Space for debugger</div>
+
+    <div id="control">
+      <button id="load">Load</button>
+
+
+      <select id="color">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="os">OS</option>
+      </select>
+
+      <select id="lang">
+        <optgroup label="wgUserLanguage">
+          <option>zh</option>
+          <option>zh-hans</option>
+          <option>zh-hant</option>
+          <option>zh-cn</option>
+          <option>zh-tw</option>
+          <option>zh-hk</option>
+          <option>zh-mo</option>
+          <option>zh-sg</option>
+          <option>zh-my</option>
+        </optgroup>
+      </select>
+
+      <select id="variant">
+        <optgroup label="wgUserVariant">
+          <option>zh</option>
+          <option>zh-hans</option>
+          <option>zh-hant</option>
+          <option>zh-cn</option>
+          <option>zh-tw</option>
+          <option>zh-hk</option>
+          <option>zh-mo</option>
+          <option>zh-sg</option>
+          <option>zh-my</option>
+        </optgroup>
+      </select>
+      <span
+        id="options"
+        style="display: none"
+      ><select id="link-mode"></select>
+        <select id="popup-mode"></select>
+        <select id="orig-link-color"></select>
+        <input
+          type="checkbox"
+          id="highlight-existing"
+        >
+        <label for="highlight-existing">Highlight existing</label>
+        </spa>
+    </div>
+
+    <!-- Emulate MW content root (passed to wikipage.content hook) -->
+    <div id="mw-content-text">
+      #mw-content-text
+      <div id="draggable">
+        <div id="draggable-header">Drag me</div>
+        <div id="draggable-content">
+          <span
+            class="ilh-all"
+            data-orig-title="地球"
+            data-lang-code="en"
+            data-lang-name="英语"
+            data-foreign-title="Earth"
+          ><span class="ilh-page"><a
+                href="/w/index.php?title=地球&amp;action=edit&amp;redlink=1"
+                class="new"
+                title="地球（页面不存在）"
+              >地球</a></span><span class="noprint ilh-comment">（<span class="ilh-lang">英语</span><span
+                class="ilh-colon"
+              >：</span><span class="ilh-link"><a
+                  href="https://en.wikipedia.org/wiki/Earth"
+                  class="extiw"
+                  title="en:Earth"
+                ><span
+                    lang="en"
+                    dir="auto"
+                  >Earth</span></a></span>）</span></span>
+
+          <br>
+
+          <span
+            class="ilh-all ilh-blue"
+            data-orig-title="水"
+            data-lang-code="en"
+            data-lang-name="英语"
+            data-foreign-title="Water"
+          ><span class="ilh-page"><a
+                href="/wiki/%E6%B0%B4"
+                title="水"
+              >水</a></span></span>
+
+          <br>
+
+          <span
+            class="ilh-all"
+            data-orig-title="地球"
+            data-lang-code="en"
+            data-lang-name="英语"
+            data-foreign-title="Earth"
+          ><span class="ilh-page"><a
+                href="/w/index.php?title=地球&amp;action=edit&amp;redlink=1"
+                class="new"
+                title="地球（页面不存在）"
+              >地球</a></span><span class="noprint ilh-comment">（<span class="ilh-lang">英语</span><span
+                class="ilh-colon"
+              >：</span><span class="ilh-link"><a
+                  href="https://en.wikipedia.org/wiki/Earth"
+                  class="extiw"
+                  title="en:Earth"
+                ><span
+                    lang="en"
+                    dir="auto"
+                  >Earth</span></a></span>）</span></span>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>
