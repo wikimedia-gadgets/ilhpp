@@ -75,6 +75,7 @@
   background: var(--background-color-base, #fff);
   border-radius: 2px;
   font-size: 14px;
+  hyphens: auto;
 
   line-height: @popup-line-height;
   width: 300px;
@@ -82,6 +83,7 @@
   display: flex;
   flex-direction: column;
 
+  // The "pointer"
   &::before {
     content: '';
     position: absolute;
@@ -130,16 +132,18 @@
 
   &__header {
     display: flex;
-    align-items: center;
+    overflow: hidden;
 
     &::before {
+      flex: 0 0 auto;
       display: inline-block;
       content: '';
       width: 18px;
       height: 18px;
       margin-left: -2px; // Align icon real boundary with text
       margin-right: 4px;
-      background: url(../assets/article_ltr.svg) no-repeat center / contain;
+      mask: url(../assets/article_ltr.svg) no-repeat center / contain;
+      background-color: var(--color-base, #202122);
     }
 
     font-size: 1.125em;
@@ -150,10 +154,13 @@
   &__subheader {
     font-size: @font-size-small;
     color: var(--color-subtle, #54595d);
-    margin: 0 @popup-margin-base;
+    margin: 0;
+    margin-left: @popup-margin-base + 18px - 2px + 4px;
+    // margin-left: @popup-margin-base;
   }
 
-  &__extract {
+  // Increase selector specificity
+  & &__extract {
     position: relative;
     display: block;
     color: inherit;
@@ -162,9 +169,14 @@
     overflow: hidden;
 
     &:hover,
-    &:active {
+    &:active,
+    &:focus {
       text-decoration: none;
       color: inherit;
+    }
+
+    p {
+      margin: 0;
     }
 
     &__more {
@@ -179,13 +191,51 @@
   }
 
   &__cta {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
     background-color: var(--background-color-neutral, #eaecf0);
-    padding: @popup-margin-thin @popup-margin-base;
+    padding: @popup-margin-thin @popup-margin-base ;
     //padding-top: 4px;
     margin-top: @popup-margin-thin;
     font-size: @font-size-small;
     line-height: @popup-line-height * unit(@font-size-small);
+
+    &::before {
+      flex: 0 0 auto;
+      display: inline-block;
+      content: '';
+      width: 18px;
+      height: 18px;
+      margin-left: -2px; // Align icon real boundary with text
+      margin-right: 4px;
+      mask: url(../assets/add_article.svg) no-repeat center / contain;
+      background-color: var(--color-base, #202122);
+    }
+
+
+    // TODO: unfinished
+    &__settings {
+      border: 0;
+      height: 24px;
+      width: 24px;
+      // margin-left: 4px;
+      margin-right: -6px;
+      border-radius: 2px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        mask: url(../assets/settings.svg) no-repeat center / contain;
+        background-color: var(--color-base, #202122);
+      }
+    }
   }
 }
-
-.ilhpp-popup-mobile {}

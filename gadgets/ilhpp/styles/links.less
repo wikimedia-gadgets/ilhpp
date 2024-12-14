@@ -29,27 +29,16 @@
 
     &-foreign {
       .ilh-all:not(.ilh-blue) {
-        .ilh-page {
+
+        .ilh-page,
+        .ilh-comment>:not(.ilh-link) {
           display: none;
-        }
-
-        // A *very dirty* hack to display .ilh-link only
-        // visibility is used to turn other nodes off in accessibility tree
-        .ilh-comment {
-          visibility: collapse;
-          display: inline-flex;
-          text-indent: -9999px;
-
-          .ilh-link {
-            visibility: visible;
-            text-indent: 0;
-          }
         }
 
         // Override noprint to make it appear on printings
         @media print {
           .noprint {
-            display: inline-flex;
+            display: unset;
           }
         }
       }
@@ -61,18 +50,18 @@
           display: none;
         }
 
-        // Save hack as above
         // FIXME: This has accessibility issues
         .ilh-comment {
-          visibility: collapse;
           display: inline-flex;
           flex-direction: row-reverse;
           align-items: baseline;
-          text-indent: -9999px;
+
+          .ilh-paren,
+          .ilh-colon {
+            display: none;
+          }
 
           .ilh-lang {
-            visibility: visible;
-            text-indent: 0;
             font-size: 0.8em;
             color: var(--color-subtle, #54595d);
             font-weight: bold;
@@ -85,11 +74,6 @@
             &::after {
               content: "）";
             }
-          }
-
-          .ilh-link {
-            visibility: visible;
-            text-indent: 0;
           }
         }
 

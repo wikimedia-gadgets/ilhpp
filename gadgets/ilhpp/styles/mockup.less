@@ -40,7 +40,7 @@
   --color-content-removed: #8b0000;
   --filter-invert-icon: 0;
   --filter-invert-primary-button-icon: 1;
-  --box-shadow-color-base: #000;
+  --box-shadow-color-base: var(--color-base);
   --box-shadow-color-progressive--active: #233566;
   --box-shadow-color-progressive--focus: #36c;
   --box-shadow-color-progressive-selected: #36c;
@@ -170,7 +170,7 @@
   --box-shadow-color-base: #fff;
   --box-shadow-color-progressive--focus: #6485d1;
   --box-shadow-color-destructive--focus: #6485d1;
-  --box-shadow-color-inverted: #000;
+  --box-shadow-color-inverted: var(--color-base);
   --background-color-base: #101418;
   --background-color-neutral: #27292d;
   --background-color-neutral-subtle: #202122;
@@ -210,6 +210,16 @@
   --border-color-content-removed: #987027
 });
 
+body {
+  background-color: var(--background-color-neutral-subtle, #f8f9fa);
+  color: var(--color-base, #202122)
+}
+
+html,
+body {
+  font-family: sans-serif;
+}
+
 *,
 *::before,
 *::after {
@@ -231,6 +241,38 @@
 
 #draggable-content {
   margin: 6px;
+}
+
+a:where(:not([role='button'])) {
+  color: var(--color-progressive, #36c);
+  border-radius: 2px;
+  text-decoration: none
+}
+
+a:where(:not([role='button'])):visited {
+  color: var(--color-visited, #6a60b0)
+}
+
+a:where(:not([role='button'])):visited:hover {
+  color: var(--color-visited--hover, #534fa3)
+}
+
+a:where(:not([role='button'])):visited:active {
+  color: var(--color-visited--active, #353262)
+}
+
+a:where(:not([role='button'])):hover {
+  color: var(--color-progressive--hover, #3056a9);
+  text-decoration: underline
+}
+
+a:where(:not([role='button'])):active {
+  color: var(--color-progressive--active, #233566);
+  text-decoration: underline
+}
+
+a:where(:not([role='button'])):focus-visible {
+  outline: solid 2px var(--outline-color-progressive--focus, #36c)
 }
 
 a:where(.new:not([role='button'])) {
@@ -264,14 +306,14 @@ a:where(.new:not([role='button'])):focus {
 }
 
 #mw-content-text {
-  border: 1px dashed #000;
+  border: 1px dashed var(--color-base);
   height: 200vh;
   width: 200vw;
 }
 
 #draggable {
   position: absolute;
-  border: 1px solid #000;
+  border: 1px solid var(--color-base);
   min-width: 10em;
   line-height: 1.5;
 }

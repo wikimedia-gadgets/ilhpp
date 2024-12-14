@@ -1,6 +1,21 @@
+import { API_USER_AGENT } from './consts';
 
-async function getPagePreview(lang: string, title: string): Promise<PagePreview> {
-  const resp = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${title.replace(/ /g, '_')}`);
+const hostRest = location.hostname.endsWith('wmflabs.org') ? '.wikipedia.wmflabs.org' : '.wikipedia.org';
+
+async function getPagePreview(
+  lang: string, title: string, signal?: AbortSignal,
+): Promise<PagePreview> {
+  const resp = await fetch(
+    `https://${lang}${hostRest}/api/rest_v1/page/summary/${title.replace(/ /g, '_')}`,
+    {
+      signal,
+      // FIXME: Need workaround, adding this causes CORS preflight requests
+      /* headers: {
+        'Api-User-Agent': API_USER_AGENT,
+      }, */
+    },
+  );
+
   if (resp.status === 404) {
     throw new Error('Page not found');
   }
@@ -10,7 +25,7 @@ async function getPagePreview(lang: string, title: string): Promise<PagePreview>
 
   const respJson = (await resp.json()) as SummaryApiResponse;
 
-  // `description` may contain HTML tags, so strip them
+  // `displaytitle` may contain HTML tags, so strip them
   const temp = document.createElement('div');
   temp.innerHTML = respJson.displaytitle;
   const displayTitle = temp.textContent ?? ''; // `innerText` is slow
