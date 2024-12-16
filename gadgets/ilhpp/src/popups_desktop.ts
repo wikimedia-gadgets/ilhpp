@@ -15,22 +15,38 @@ interface Layout {
   isBottom: boolean,
 }
 
-interface BuildParam {
+/* interface BuildParam {
   origTitle: string,
   langCode: string,
   langName: string,
   foreignTitle: string,
   foreignHref: string,
   anchor: HTMLAnchorElement,
-  anchorTooltip: string,
+  oldTooltip: string,
   cursorPageX: number,
   preview: PagePreview | null,
-}
+} */
+
+/* enum PopupState {
+  Initializing,
+  Initialized,
+  Attaching,
+  Attached,
+  Detaching,
+  Detached,
+} */
 
 interface Popup {
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
   oldTooltip: string,
+  origTitle: string,
+  langCode: string,
+  langName: string,
+  foreignTitle: string,
+  foreignHref: string,
+  cursorPageX: number,
+  preview: Promise<PagePreview> | null,
 }
 
 /**
@@ -88,33 +104,33 @@ function getLayout(layoutParam: LayoutParam): Layout {
   return { pageX: resultX, pageY: resultY, isRight, isBottom };
 }
 
-function buildPopup(buildParam: BuildParam): Popup {
-  const root = document.createElement('div');
+function buildPopup(popup: Popup) {
+  const root = popup.elem;
   root.className = ROOT_CLASS_DESKTOP;
 
   const header = document.createElement('div');
   header.className = `${ROOT_CLASS_DESKTOP}__header`;
-  header.lang = buildParam.langCode;
+  header.lang = popup.langCode;
   header.dir = 'auto';
   // FIXME: Decide if this is the right choice
-  header.innerText = buildParam.preview?.title ?? buildParam.foreignTitle;
+  header.innerText = popup.preview?.title ?? popup.foreignTitle;
 
   const subheader = document.createElement('div');
   subheader.className = `${ROOT_CLASS_DESKTOP}__subheader`;
   subheader.dir = 'auto';
-  subheader.innerText = mw.msg('ilhpp-from', buildParam.langName);
+  subheader.innerText = mw.msg('ilhpp-from', popup.langName);
 
   const extract = document.createElement('a');
-  extract.href = buildParam.foreignHref;
-  extract.lang = buildParam.langCode;
-  extract.className = `${ROOT_CLASS_DESKTOP}__extract`;
+  extract.href = popup.foreignHref;
+  extract.lang = popup.langCode;
+  extract.className = `${ROOT_CLASS_DESKTOP}__extract ${ROOT_CLASS_DESKTOP}__extract--fixed ${ROOT_CLASS_DESKTOP}__extract--loading`;
   extract.dir = 'auto';
   // FIXME: Display something else than aborted
-  extract.innerHTML = buildParam.preview?.mainHtml ?? 'Aborted'; // Trust gateway's result is safely escaped
+  extract.innerHTML = 'Loading'; // Trust gateway's result is safely escaped
 
   const more = document.createElement('a');
-  more.href = buildParam.foreignHref;
-  more.className = `${extract.className}__more`;
+  more.href = popup.foreignHref;
+  more.className = `${ROOT_CLASS_DESKTOP}__extract__more`;
   more.innerText = mw.msg('ilhpp-more');
   extract.appendChild(more);
 
@@ -122,7 +138,7 @@ function buildPopup(buildParam: BuildParam): Popup {
   cta.className = `${ROOT_CLASS_DESKTOP}__cta`;
 
   const ctaInner = document.createElement('div');
-  ctaInner.innerHTML = mw.message('ilhpp-cta', buildParam.origTitle).parse(); // Safely escaped
+  ctaInner.innerHTML = mw.message('ilhpp-cta', popup.origTitle).parse(); // Safely escaped
 
   const settingsButton = document.createElement('button');
   settingsButton.className = `${cta.className}__settings`;
@@ -135,8 +151,8 @@ function buildPopup(buildParam: BuildParam): Popup {
   const rect = getRealRect(root);
   const layout = getLayout({
     popupRect: rect,
-    anchorRect: buildParam.anchor.getBoundingClientRect(),
-    cursorPageX: buildParam.cursorPageX,
+    anchorRect: popup.anchor.getBoundingClientRect(),
+    cursorPageX: popup.cursorPageX,
   });
   root.style.top = `${layout.pageY}px`;
   root.style.left = `${layout.pageX}px`;
@@ -144,20 +160,23 @@ function buildPopup(buildParam: BuildParam): Popup {
   root.classList.add(`${ROOT_CLASS_DESKTOP}--${layout.isBottom ? 'bottom' : 'top'}`);
   root.classList.add(`${ROOT_CLASS_DESKTOP}--${layout.isRight ? 'right' : 'left'}`);
 
-  const result: Popup = {
-    elem: root,
-    anchor: buildParam.anchor,
-    oldTooltip: buildParam.anchorTooltip,
-  };
+  void popup.preview?.then(
+    (preview) => {
+      extract.innerHTML = preview.mainHtml;
+      extract.append(more);
+      extract.classList.remove(`${ROOT_CLASS_DESKTOP}__extract--loading`);
+      if (document.body.contains(popup.elem)) {
 
-  return result;
+      } else {
+        extract.classList.remove(`${ROOT_CLASS_DESKTOP}__extract--fixed`);
+      }
+    }, () => {
+      // TODO: implementation
+    },
+  );
 }
 
-async function attachPopup(
-  anchor: HTMLAnchorElement,
-  cursorPageX: number,
-  signal?: AbortSignal,
-): Promise<Popup | null> {
+function createPopup(anchor: HTMLAnchorElement, cursorPageX: number): Popup | null {
   const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
   if (!dataElement) {
     return null;
@@ -178,40 +197,44 @@ async function attachPopup(
     return null;
   }
 
-  const anchorTooltip = anchor.title;
+  const oldTooltip = anchor.title;
   anchor.title = ''; // Clear tooltip to prevent "double popups"
 
-  let preview = null;
+  /* let preview = null;
   try {
     preview = await getPagePreview(langCode, foreignTitle, signal);
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       // TODO: determine what to do
     }
-  }
+  } */
 
-  const popup = buildPopup({
+  return {
+    elem: document.createElement('div'),
+    anchor,
+    oldTooltip,
     origTitle,
     langCode,
     langName,
     foreignHref,
     foreignTitle,
-    anchor,
-    anchorTooltip,
     cursorPageX,
-    preview,
-  });
-
-  document.body.appendChild(popup.elem);
-
-  return popup;
+    preview: null,
+  };
 }
 
-async function detachPopup(popup: Popup, signal?: AbortSignal) {
+function attachPopup(popup: Popup) {
+  popup.preview = getPagePreview(popup.langCode, popup.foreignTitle);
+
+  buildPopup(popup);
+  document.body.appendChild(popup.elem);
+}
+
+async function detachPopup(popup: Popup) {
   popup.elem.classList.add(`${ROOT_CLASS_DESKTOP}--out`);
-  await wait(DETACH_ANIMATION_MS, signal);
+  await wait(DETACH_ANIMATION_MS);
   popup.elem.remove();
   popup.anchor.title = popup.oldTooltip;
 }
 
-export { attachPopup, detachPopup, Popup };
+export { createPopup, attachPopup, detachPopup, Popup };

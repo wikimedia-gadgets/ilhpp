@@ -90,6 +90,7 @@
     border: @popup-pointer-width solid transparent;
     width: 0;
     height: 0;
+    pointer-events: none;
   }
 
   &--top {
@@ -167,6 +168,21 @@
     margin: @popup-margin-thin @popup-margin-base 0;
     max-height: @popup-line-height * 7; // Show a fixed number of lines
     overflow: hidden;
+
+    &--fixed {
+      height: @popup-line-height * 7; // Show a fixed number of lines
+    }
+
+    &--loading {
+      background: linear-gradient(to right,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5) 50%,
+          rgba(255, 255, 255, 0) 80%),
+        lightgray;
+      background-repeat: repeat-y;
+      background-size: 200px 50px;
+      background-position: 0 0;
+    }
 
     &:hover,
     &:active,

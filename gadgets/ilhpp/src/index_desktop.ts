@@ -1,158 +1,141 @@
-import { attachPopup, detachPopup, Popup } from './popups_desktop';
+import { attachPopup, createPopup, detachPopup, Popup } from './popups_desktop';
 import { PopupMode, Preferences } from './prefs';
-import { debounce } from './utils';
-import { TOGGLE_DELAY_MS } from './consts';
+import { Mutex, queueTask, wait } from './utils';
+import { ATTACH_DELAY_MS, DATA_ELEM_SELECTOR, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE_LENGTH_PX } from './consts';
 
+let activeAnchor: HTMLAnchorElement | null;
 let activePopup: Popup | null;
-let isAttaching = false; // Prevent overlapping execution
+const mutex = new Mutex();
+let attachmentAC = new AbortController();
+let detachmentAC = new AbortController();
 
-async function detachActivePopup() {
-  if (activePopup) {
+async function attachActivePopup(cursorPageX: number) {
+  const release = await mutex.acquire();
+  try {
+    if (activePopup) {
+      if (!activeAnchor || activePopup.anchor === activeAnchor) {
+        // `activeAnchor` is null: invalid state, should be detached first, do nothing
+        // or `activeAnchor` has popup on, also a no-op
+        return;
+      } else {
+        await detachActivePopupImmediately();
+      }
+    }
+
+    if (!activeAnchor) {
+      return;
+    }
+
+    activePopup = createPopup(activeAnchor, cursorPageX);
+    if (!activePopup) {
+      return;
+    }
+    await wait(ATTACH_DELAY_MS, attachmentAC.signal);
+    attachPopup(activePopup);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      // Attachment process cancelled, revert process
+      await detachActivePopupImmediately();
+    }
+
+  } finally {
+    release();
+  }
+}
+
+function cancelAttachment() {
+  attachmentAC.abort();
+  attachmentAC = new AbortController();
+}
+
+async function detachActivePopupImmediately() {
+  if (activePopup && activePopup.anchor !== activeAnchor) {
     const currentActivePopup = activePopup;
     activePopup = null;
-    // console.log('detach preview' + Date.now());
     await detachPopup(currentActivePopup);
   }
 }
 
-const toggleActivePopup = debounce(
-  async (
-    params: { show: false } | { show: true, anchor: HTMLAnchorElement, cursorPageX: number },
-  ) => {
-    if (params.show) {
-      if (activePopup) {
-        if (activePopup.anchor === params.anchor) {
-          // Popup on the <a> has been active. Do nothing
-          return;
-        } else {
-          await detachActivePopup();
-        }
-      }
-
-      if (!isAttaching) {
-        isAttaching = true;
-        const popup = await attachPopup(params.anchor, params.cursorPageX);
-        isAttaching = false;
-        if (popup) {
-          activePopup = popup;
-        }
-      }
-    } else {
-      await detachActivePopup();
+async function detachActivePopup() {
+  const release = await mutex.acquire();
+  try {
+    if (activePopup && activePopup.anchor !== activeAnchor) {
+      await wait(DETACH_DELAY_MS, detachmentAC.signal);
+      await detachActivePopupImmediately();
     }
-  },
-  TOGGLE_DELAY_MS,
-);
+  } catch {
+    // No-op
+  } finally {
+    release();
+  }
+}
+
+function cancelDetachment() {
+  detachmentAC.abort();
+  detachmentAC = new AbortController();
+}
 
 function run(prefs: Preferences) {
-  document.body.addEventListener('click', (ev) => {
-    if (
-      prefs.popup === PopupMode.OnClick &&
-      ev.target instanceof HTMLElement
-    ) {
-      // Click an <a>, show popup
-      // Must not be in the popup itself
-      if (!activePopup || activePopup && !activePopup.elem.contains(ev.target)) {
-        const anchor = ev.target.closest('a');
-        if (anchor) {
-          // Prevent navigation before the <a>'s popup is shown
-          if (!activePopup || activePopup && activePopup.anchor !== anchor) {
-            ev.preventDefault();
-          }
-          void toggleActivePopup({
-            show: true,
-            anchor,
-            cursorPageX: ev.pageX,
-          });
-        } else {
-          // Click something out of popup, dismiss popup
-          if (activePopup) {
-            // Prevent interaction before closing popup
-            ev.preventDefault();
-          }
-          void toggleActivePopup({ show: false });
-        }
-      }
-    }
-  });
-
   document.body.addEventListener('mouseover', (ev) => {
-    if (
-      prefs.popup === PopupMode.OnHover
-      && ev.target instanceof HTMLElement
-    ) {
-      // NOTE: the order below is important to not cause bugs!
+    if (prefs.popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+      activeAnchor = ev.target.closest(GREEN_ANCHOR_SELECTOR);
 
-      // Hover out of popup and <a>, dismiss popup
-      if (
-        ev.relatedTarget instanceof HTMLElement
-        && activePopup
-        && (
-          activePopup.elem.contains(ev.relatedTarget)
-          || activePopup.anchor.contains(ev.relatedTarget)
-        )
-        && !activePopup.elem.contains(ev.target)
-        && !activePopup.anchor.contains(ev.target)
-      ) {
-
-        void toggleActivePopup({ show: false });
-      }
-
-      // Hover onto an <a>, show popup
-      // Must not be in the popup itself
-      if (!activePopup || activePopup && !activePopup.elem.contains(ev.target)) {
-        const anchor = ev.target.closest('a');
-        if (anchor) {
-          void toggleActivePopup({
-            show: true,
-            anchor,
-            cursorPageX: ev.pageX,
-          });
-        }
-      }
-
-      // When moving from outside onto the popup
-      // Trigger a fake "show" command to abort the dismissal process
-      // This will be a no-op by settings the anchor to active popup's <a>
-      if (
-        ev.relatedTarget instanceof HTMLElement
-        && activePopup
-        && activePopup.elem.contains(ev.target)
-        && !activePopup.elem.contains(ev.relatedTarget)
-      ) {
-        void toggleActivePopup({
-          show: true,
-          anchor: activePopup.anchor,
-          cursorPageX: ev.pageX,
-        });
+      if (activeAnchor) {
+        // Moving on an <a>
+        cancelDetachment();
+        void attachActivePopup(ev.pageX);
+      } else if (!activeAnchor && activePopup && !activePopup.elem.contains(ev.target)) {
+        // Moving out of <a> and popup
+        cancelAttachment();
+        void detachActivePopup();
+      } else {
+        // Moving out of <a> but to popup; or
+        // Moving out of <a> and no popup
+        cancelDetachment();
       }
     }
   });
 
+  document.body.addEventListener(
+    'click',
+    (ev) => {
+      if (prefs.popup === PopupMode.OnClick && ev.target instanceof HTMLElement) {
+        const oldAnchor = activeAnchor;
+        activeAnchor = ev.target.closest(GREEN_ANCHOR_SELECTOR);
+
+        if (activeAnchor) {
+          if (!activePopup || oldAnchor !== activeAnchor) {
+            // No popup for active <a>, should prevent navigation
+            ev.stopImmediatePropagation();
+            ev.preventDefault();
+          }
+          cancelDetachment();
+          void attachActivePopup(ev.pageX);
+        } else if (!activePopup?.elem.contains(ev.target)) {
+          // Clicked something else outside of popup and <a>
+          if (activePopup) {
+            ev.stopImmediatePropagation();
+            ev.preventDefault();
+          }
+          cancelAttachment();
+          void detachActivePopup();
+        }
+      }
+    },
+    true, // Add at capture phase to "mock an overlay"
+  );
 
   document.body.addEventListener('focusin', (ev) => {
-    if (ev.target instanceof HTMLElement) {
-      // Moving to <a> outside of popup, show popup
-      // <a> must not be in the popup itself
-      if (!activePopup || activePopup && !activePopup.elem.contains(ev.target)) {
-        const anchor = ev.target.closest('a');
-        if (anchor) {
-          void toggleActivePopup({
-            show: true,
-            anchor,
-            cursorPageX: anchor.getBoundingClientRect().left, // Assume align with <a> vertically
-          });
-        }
-      }
+    // Only handle this in hover mode, otherwise it causes conflicts
+    if (prefs.popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+      activeAnchor = ev.target.closest(GREEN_ANCHOR_SELECTOR);
 
-      // Focus moving out of the popup, dismiss popup
-      if (
-        ev.relatedTarget instanceof HTMLElement
-        && activePopup
-        && activePopup.elem.contains(ev.relatedTarget)
-        && !activePopup.elem.contains(ev.target)
-      ) {
-        void toggleActivePopup({ show: false });
+      if (activeAnchor) {
+        cancelDetachment();
+        // Assume align with <a> vertically
+        void attachActivePopup(
+          activeAnchor.getBoundingClientRect().left + PTR_SHORT_SIDE_LENGTH_PX,
+        );
       }
     }
   });

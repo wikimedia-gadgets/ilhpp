@@ -68,6 +68,7 @@ export default tsEslint.config(
         'error',
         { fixToUnknown: true, ignoreRestArgs: true },
       ],
+      'no-console': ['warn'],
     },
   },
 );
