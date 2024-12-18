@@ -89,7 +89,8 @@ function buildPopup(popup: Popup) {
   const root = popup.elem;
   root.className = `${ROOT_CLASS_DESKTOP} ${ROOT_CLASS_DESKTOP}--foreign-${getDirection(popup.langCode)} ${ROOT_CLASS_DESKTOP}--loading`;
 
-  const header = document.createElement('div');
+  const header = document.createElement('a');
+  header.href = popup.foreignHref;
   header.className = `${ROOT_CLASS_DESKTOP}__header`;
   header.lang = popup.langCode;
   header.dir = 'auto';
@@ -180,8 +181,8 @@ function buildPopup(popup: Popup) {
         root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
         extract.removeAttribute('lang'); // This is Chinese now
 
-        extract.innerText = mw.msg('ilhpp-failure');
-        more.innerText = mw.msg('ilhpp-failure-more');
+        extract.innerText = mw.msg('ilhpp-error');
+        more.innerText = mw.msg('ilhpp-error-more');
       }
     },
   );
