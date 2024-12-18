@@ -9,6 +9,9 @@ async function getPagePreview(
     `https://${lang}${hostRest}/api/rest_v1/page/summary/${title.replace(/ /g, '_')}`,
     {
       signal,
+      // Design decision: we want to minimize loading time as much as possible as it introduces
+      // visual glitches, so uses cache if present regardless of its freshness
+      cache: 'force-cache',
       // FIXME: Need workaround, adding this causes CORS preflight requests
       /* headers: {
         'Api-User-Agent': API_USER_AGENT,

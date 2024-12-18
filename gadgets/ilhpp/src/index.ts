@@ -13,7 +13,7 @@ import runMobile from './index_mobile';
 
 // Initialize
 const prefs = getPreferences();
-mw.messages.set(batchConv(msg));
+mw.messages.set(batchConv(msg, mw.config.get('wgUserVariant')!));
 
 if (isMobileDevice()) {
   runMobile(prefs);

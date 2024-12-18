@@ -1,6 +1,7 @@
-import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, PREFETCH_MAX_WAIT } from './consts';
+import { Resolver } from 'dns';
+import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, PREFETCH_MAX_WAIT, ILH_LANG_SELECTOR } from './consts';
 import { PagePreview, getPagePreview } from './network';
-import { wait } from './utils';
+import { getDirection, wait } from './utils';
 
 interface LayoutParam {
   cursorPageX: number,
@@ -15,27 +16,6 @@ interface Layout {
   isBottom: boolean,
 }
 
-/* interface BuildParam {
-  origTitle: string,
-  langCode: string,
-  langName: string,
-  foreignTitle: string,
-  foreignHref: string,
-  anchor: HTMLAnchorElement,
-  oldTooltip: string,
-  cursorPageX: number,
-  preview: PagePreview | null,
-} */
-
-/* enum PopupState {
-  Initializing,
-  Initialized,
-  Attaching,
-  Attached,
-  Detaching,
-  Detached,
-} */
-
 interface Popup {
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
@@ -46,7 +26,8 @@ interface Popup {
   foreignTitle: string,
   foreignHref: string,
   cursorPageX: number,
-  preview: Promise<PagePreview> | null,
+  abortController: AbortController,
+  preview?: Promise<PagePreview>,
 }
 
 /**
@@ -79,8 +60,8 @@ function getRealRect(elem: HTMLElement): DOMRect {
 function getLayout(layoutParam: LayoutParam): Layout {
   const pageScrollOffsetX = window.scrollX;
   const pageScrollOffsetY = window.scrollY;
-  const pageWidth = document.documentElement.clientWidth;
-  const pageHeight = document.documentElement.clientHeight;
+  const viewpointWidth = document.documentElement.clientWidth;
+  const viewpointHeight = document.documentElement.clientHeight;
 
   const width = layoutParam.popupRect.width;
   const height = layoutParam.popupRect.height;
@@ -89,55 +70,57 @@ function getLayout(layoutParam: LayoutParam): Layout {
   const anchorPageBottom = layoutParam.anchorRect.bottom + pageScrollOffsetY;
 
   // X: Right if cursor at left half, left if at right half
-  const isRight = layoutParam.cursorPageX < pageScrollOffsetX + pageWidth / 2;
-  const resultX = isRight
+  const isRight = layoutParam.cursorPageX < pageScrollOffsetX + viewpointWidth / 2;
+  const pageX = isRight
     ? layoutParam.cursorPageX - PTR_SHORT_SIDE_LENGTH_PX
     : layoutParam.cursorPageX - width + PTR_SHORT_SIDE_LENGTH_PX;
 
   // Y: Bottom if anchor at top half, top if at bottom half
   // This should always align with the current line, so use the anchor's coordinate
-  const isBottom = anchorPageTop < pageScrollOffsetY + pageHeight / 2;
-  const resultY = isBottom
+  const isBottom = anchorPageTop < pageScrollOffsetY + viewpointHeight / 2;
+  const pageY = isBottom
     ? anchorPageBottom + PTR_WIDTH_PX
     : anchorPageTop - height - PTR_WIDTH_PX;
 
-  return { pageX: resultX, pageY: resultY, isRight, isBottom };
+  return { pageX, pageY, isRight, isBottom };
 }
 
 function buildPopup(popup: Popup) {
   const root = popup.elem;
-  root.className = ROOT_CLASS_DESKTOP;
+  root.className = `${ROOT_CLASS_DESKTOP} ${ROOT_CLASS_DESKTOP}--foreign-${getDirection(popup.langCode)} ${ROOT_CLASS_DESKTOP}--loading`;
 
   const header = document.createElement('div');
   header.className = `${ROOT_CLASS_DESKTOP}__header`;
   header.lang = popup.langCode;
   header.dir = 'auto';
-  // FIXME: Decide if this is the right choice
-  header.innerText = popup.preview?.title ?? popup.foreignTitle;
+  header.innerText = popup.foreignTitle;
 
   const subheader = document.createElement('div');
   subheader.className = `${ROOT_CLASS_DESKTOP}__subheader`;
   subheader.dir = 'auto';
   subheader.innerText = mw.msg('ilhpp-from', popup.langName);
 
+  const main = document.createElement('div');
+  main.className = `${ROOT_CLASS_DESKTOP}__main ${ROOT_CLASS_DESKTOP}__main--loading`;
+
   const extract = document.createElement('a');
   extract.href = popup.foreignHref;
   extract.lang = popup.langCode;
-  extract.className = `${ROOT_CLASS_DESKTOP}__extract ${ROOT_CLASS_DESKTOP}__extract--fixed ${ROOT_CLASS_DESKTOP}__extract--loading`;
+  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract`;
   extract.dir = 'auto';
-  // FIXME: Display something else than aborted
-  extract.innerHTML = 'Loading'; // Trust gateway's result is safely escaped
 
   const more = document.createElement('a');
   more.href = popup.foreignHref;
-  more.className = `${ROOT_CLASS_DESKTOP}__extract__more`;
+  more.className = `${ROOT_CLASS_DESKTOP}__main__more`;
   more.innerText = mw.msg('ilhpp-more');
-  extract.appendChild(more);
+
+  main.append(extract, more);
 
   const cta = document.createElement('div');
   cta.className = `${ROOT_CLASS_DESKTOP}__cta`;
 
   const ctaInner = document.createElement('div');
+  ctaInner.className = `${ROOT_CLASS_DESKTOP}__cta__inner`;
   ctaInner.innerHTML = mw.message('ilhpp-cta', popup.origTitle).parse(); // Safely escaped
 
   const settingsButton = document.createElement('button');
@@ -145,8 +128,7 @@ function buildPopup(popup: Popup) {
   settingsButton.ariaLabel = settingsButton.title = mw.msg('ilhpp-settings');
 
   cta.append(ctaInner, settingsButton);
-
-  root.append(header, subheader, extract, cta);
+  root.append(header, subheader, main, cta);
 
   const rect = getRealRect(root);
   const layout = getLayout({
@@ -160,18 +142,47 @@ function buildPopup(popup: Popup) {
   root.classList.add(`${ROOT_CLASS_DESKTOP}--${layout.isBottom ? 'bottom' : 'top'}`);
   root.classList.add(`${ROOT_CLASS_DESKTOP}--${layout.isRight ? 'right' : 'left'}`);
 
+  if (!layout.isBottom) {
+    // Need to change `top` accordingly when size is changed
+
+    // ResizeObserver is not available in Safari < 13.1
+    // FIXME: Migrate to that after we raise browser target
+    const observer = new MutationObserver(() => {
+      // Guaranteed to have only one entry
+      const newTop = layout.pageY + rect.height - root.clientHeight;
+      root.style.top = `${newTop}px`;
+
+    });
+    observer.observe(popup.elem, { subtree: true, childList: true });
+  }
+
   void popup.preview?.then(
     (preview) => {
-      extract.innerHTML = preview.mainHtml;
-      extract.append(more);
-      extract.classList.remove(`${ROOT_CLASS_DESKTOP}__extract--loading`);
-      if (document.body.contains(popup.elem)) {
+      root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
+      header.innerText = preview.title;
 
+      if (preview.isDisambiguation) {
+        root.classList.add(`${ROOT_CLASS_DESKTOP}--disam`);
+        extract.removeAttribute('lang'); // This is Chinese now
+
+        extract.innerText = mw.msg('ilhpp-disam');
+        more.innerText = mw.msg('ilhpp-disam-more');
       } else {
-        extract.classList.remove(`${ROOT_CLASS_DESKTOP}__extract--fixed`);
+        root.classList.add(`${ROOT_CLASS_DESKTOP}--standard`);
+
+        extract.innerHTML = preview.mainHtml; // Trust gateway's result as safely escaped
       }
-    }, () => {
-      // TODO: implementation
+    },
+    (err) => {
+      // Exclude AbortError to prevent glitches
+      if ((err as Error)?.name !== 'AbortError') {
+        root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
+        root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
+        extract.removeAttribute('lang'); // This is Chinese now
+
+        extract.innerText = mw.msg('ilhpp-failure');
+        more.innerText = mw.msg('ilhpp-failure-more');
+      }
     },
   );
 }
@@ -190,7 +201,8 @@ function createPopup(anchor: HTMLAnchorElement, cursorPageX: number): Popup | nu
 
   const origTitle = dataElement.dataset.origTitle;
   const langCode = dataElement.dataset.langCode;
-  const langName = dataElement.dataset.langName;
+  // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
+  const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
   const foreignTitle = dataElement.dataset.foreignTitle;
 
   if (!origTitle || !langCode || !langName || !foreignTitle) {
@@ -199,15 +211,6 @@ function createPopup(anchor: HTMLAnchorElement, cursorPageX: number): Popup | nu
 
   const oldTooltip = anchor.title;
   anchor.title = ''; // Clear tooltip to prevent "double popups"
-
-  /* let preview = null;
-  try {
-    preview = await getPagePreview(langCode, foreignTitle, signal);
-  } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      // TODO: determine what to do
-    }
-  } */
 
   return {
     elem: document.createElement('div'),
@@ -219,20 +222,24 @@ function createPopup(anchor: HTMLAnchorElement, cursorPageX: number): Popup | nu
     foreignHref,
     foreignTitle,
     cursorPageX,
-    preview: null,
+    abortController: new AbortController(),
+    preview: undefined,
   };
 }
 
 function attachPopup(popup: Popup) {
-  popup.preview = getPagePreview(popup.langCode, popup.foreignTitle);
+  popup.preview = getPagePreview(popup.langCode, popup.foreignTitle, popup.abortController.signal);
 
   buildPopup(popup);
   document.body.appendChild(popup.elem);
 }
 
 async function detachPopup(popup: Popup) {
+  popup.abortController.abort();
   popup.elem.classList.add(`${ROOT_CLASS_DESKTOP}--out`);
+
   await wait(DETACH_ANIMATION_MS);
+
   popup.elem.remove();
   popup.anchor.title = popup.oldTooltip;
 }

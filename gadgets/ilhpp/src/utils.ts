@@ -1,3 +1,6 @@
+import { RTL_LANGS } from './consts';
+import { Dir } from './network';
+
 function isMobileDevice(): boolean {
   // Browser support:
   // Chromium on some Android device (e.g. Samsung) has "(hover: hover)" set
@@ -61,6 +64,21 @@ function queueTask(func: (...args: any[]) => unknown) {
   }
 }
 
+/**
+ * Get text direction of a language code.
+ * @param langCode
+ * @returns
+ */
+function getDirection(langCode: string): Dir {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (Intl.Locale.prototype.getTextInfo || Intl.Locale.prototype.textInfo) {
+    const locale = new Intl.Locale(langCode);
+    return (locale.getTextInfo() ?? locale.textInfo).direction as Dir;
+  }
+
+  return RTL_LANGS.includes(langCode.split('-')[0].toLowerCase()) ? 'rtl' : 'ltr';
+}
+
 class Mutex {
   private lock: Promise<void> = Promise.resolve();
 
@@ -75,4 +93,4 @@ class Mutex {
   }
 }
 
-export { isMobileDevice, wait, debounce, throttle, queueTask, Mutex };
+export { isMobileDevice, wait, debounce, throttle, queueTask, getDirection, Mutex };

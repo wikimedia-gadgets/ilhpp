@@ -49,23 +49,19 @@
   }
 }
 
-/* .pointer(@pos) {
-  & when (@pos ='top') {
-    bottom: -@pointer-border-width * 2;
+@keyframes skeleton-breath {
+  0% {
+    opacity: 1;
   }
 
-  & when (@pos ='bottom') {
-    top: -@pointer-border-width * 2;
+  50% {
+    opacity: 0.8;
   }
 
-  & when (@pos ='left') {
-    right: @pointer-short-side-length - @pointer-border-width;
+  100% {
+    opacity: 1;
   }
-
-  & when (@pos ='right') {
-    left: @pointer-short-side-length - @pointer-border-width;
-  }
-} */
+}
 
 .ilhpp-popup-desktop {
   position: absolute;
@@ -73,12 +69,13 @@
 
   box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--background-color-neutral, #eaecf0);
   background: var(--background-color-base, #fff);
-  border-radius: 2px;
-  font-size: 14px;
+  border-radius: @border-radius-base;
   hyphens: auto;
 
+  // These are hardcoded to prevent unexpected glitches
   line-height: @popup-line-height;
   width: 300px;
+  font-size: 14px;
 
   display: flex;
   flex-direction: column;
@@ -87,10 +84,130 @@
   &::before {
     content: '';
     position: absolute;
-    border: @popup-pointer-width solid transparent;
+    border-left: @popup-pointer-width solid transparent;
+    border-right: @popup-pointer-width solid transparent;
     width: 0;
     height: 0;
-    pointer-events: none;
+  }
+
+
+  &__header {
+    display: flex;
+    overflow: hidden;
+
+    &::before {
+      flex: 0 0 auto;
+      display: inline-block;
+      content: '';
+      width: @icon-width;
+      height: @icon-height;
+      background-color: var(--color-base, #202122);
+    }
+
+    font-size: @font-size-large;
+    font-weight: bold;
+    margin: @popup-margin-base @popup-margin-base 0;
+  }
+
+  &__subheader {
+    font-size: @font-size-small;
+    color: var(--color-subtle, #54595d);
+    margin: 0;
+    // Align with heading after icon
+    margin-left: @popup-margin-base + @icon-width + @margin-icon-align + @margin-icon-text;
+  }
+
+  // Increase selector specificity
+  &__main {
+    position: relative;
+    display: block;
+    margin: @popup-margin-thin @popup-margin-base 0;
+    overflow: hidden;
+
+    &__extract {
+      // HACK: Uses the de-facto standard -webkit-line-clamp to show a fixed number of lines
+      // FIXME: Fix this once becoming a real standard
+      display: -webkit-box;
+      -webkit-line-clamp: @lines-shown;
+      -webkit-box-orient: vertical;
+
+      color: inherit !important;
+
+      &:hover,
+      &:active,
+      &:focus {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
+
+      // Endpoint's results are usually wrapped in <p>
+      p {
+        margin: 0;
+      }
+
+      // Prevent these 2 from expanding actual line height, causing misalignment with the "more" text
+      sub,
+      sup {
+        line-height: 0;
+      }
+    }
+
+
+    &__more {
+      font-size: @font-size-small;
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    background-color: var(--background-color-neutral, #eaecf0);
+    padding: @popup-margin-thin @popup-margin-base;
+    margin-top: @popup-margin-thin;
+    font-size: @font-size-small;
+    line-height: @popup-line-height * unit(@font-size-small);
+
+    &::before {
+      flex: 0 0 auto;
+      display: inline-block;
+      content: '';
+      width: @icon-width;
+      height: @icon-height;
+      margin-left: @margin-icon-align;
+      margin-right: @margin-icon-text;
+      mask: url(../assets/article_add.svg) no-repeat center / contain;
+      background-color: var(--color-base, #202122);
+    }
+
+    &__inner {
+      word-break: break-all;
+    }
+
+
+    // TODO: unfinished
+    &__settings {
+      flex: 0 0 auto;
+      border: 0;
+      padding: 4px;
+      margin-right: -4px;
+      border-radius: 2px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &::before {
+        flex: 0 0 auto;
+        content: '';
+        display: inline-block;
+        width: @icon-width;
+        height: @icon-height;
+        mask: url(../assets/settings.svg) no-repeat center / contain;
+        background-color: var(--color-base, #202122);
+      }
+    }
   }
 
   &--top {
@@ -102,7 +219,7 @@
 
     &::before {
       border-top: @popup-pointer-width solid var(--background-color-interactive, #eaecf0);
-      bottom: -@popup-pointer-width * 2;
+      bottom: -@popup-pointer-width;
     }
   }
 
@@ -115,7 +232,7 @@
 
     &::before {
       border-bottom: @popup-pointer-width solid var(--background-color-base, #fff);
-      top: -@popup-pointer-width * 2;
+      top: -@popup-pointer-width ;
     }
   }
 
@@ -131,126 +248,131 @@
     }
   }
 
-  &__header {
-    display: flex;
-    overflow: hidden;
-
-    &::before {
-      flex: 0 0 auto;
-      display: inline-block;
-      content: '';
-      width: 18px;
-      height: 18px;
-      margin-left: -2px; // Align icon real boundary with text
-      margin-right: 4px;
-      mask: url(../assets/article_ltr.svg) no-repeat center / contain;
-      background-color: var(--color-base, #202122);
+  &--foreign-ltr {
+    .ilhpp-popup-desktop {
+      &__header::before {
+        margin-left: @margin-icon-align; // Align icon real boundary with text
+        margin-right: @margin-icon-text;
+        mask: url(../assets/article.svg) no-repeat center / contain;
+      }
     }
-
-    font-size: 1.125em;
-    font-weight: bold;
-    margin: @popup-margin-base @popup-margin-base 0;
   }
 
-  &__subheader {
-    font-size: @font-size-small;
-    color: var(--color-subtle, #54595d);
-    margin: 0;
-    margin-left: @popup-margin-base + 18px - 2px + 4px;
-    // margin-left: @popup-margin-base;
+
+  &--foreign-rtl {
+    .ilhpp-popup-desktop {
+      &__header::before {
+        margin-right: @margin-icon-align;
+        margin-left: @margin-icon-text;
+        mask: url(../assets/article.svg) no-repeat center / contain;
+        transform: scaleX(-1);
+      }
+    }
   }
 
-  // Increase selector specificity
-  & &__extract {
-    position: relative;
-    display: block;
-    color: inherit;
-    margin: @popup-margin-thin @popup-margin-base 0;
-    max-height: @popup-line-height * 7; // Show a fixed number of lines
-    overflow: hidden;
-
-    &--fixed {
-      height: @popup-line-height * 7; // Show a fixed number of lines
-    }
-
-    &--loading {
-      background: linear-gradient(to right,
-          rgba(255, 255, 255, 0),
-          rgba(255, 255, 255, 0.5) 50%,
-          rgba(255, 255, 255, 0) 80%),
-        lightgray;
-      background-repeat: repeat-y;
-      background-size: 200px 50px;
-      background-position: 0 0;
-    }
-
-    &:hover,
-    &:active,
-    &:focus {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    &__more {
+  &--standard {
+    .ilhpp-popup-desktop__main__more {
       position: absolute;
       bottom: 0;
-      right: 0;
-      font-size: @font-size-small;
       width: 40%;
+    }
+
+    &.ilhpp-popup-desktop--foreign-ltr .ilhpp-popup-desktop__main__more {
+      right: 0;
       text-align: right;
       background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
     }
+
+    &.ilhpp-popup-desktop--foreign-rtl .ilhpp-popup-desktop__main__more {
+      left: 0;
+      text-align: left;
+      background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
+    }
   }
 
-  &__cta {
-    display: flex;
-    align-items: center;
-    overflow: hidden;
+  &--disam {
+    .ilhpp-popup-desktop {
+      &__header::before {
+        mask-image: url(../assets/disam.svg);
+      }
 
-    background-color: var(--background-color-neutral, #eaecf0);
-    padding: @popup-margin-thin @popup-margin-base ;
-    //padding-top: 4px;
-    margin-top: @popup-margin-thin;
-    font-size: @font-size-small;
-    line-height: @popup-line-height * unit(@font-size-small);
+      &__main__extract {
+        display: flex;
 
-    &::before {
-      flex: 0 0 auto;
-      display: inline-block;
-      content: '';
-      width: 18px;
-      height: 18px;
-      margin-left: -2px; // Align icon real boundary with text
-      margin-right: 4px;
-      mask: url(../assets/add_article.svg) no-repeat center / contain;
-      background-color: var(--color-base, #202122);
+        &::before {
+          flex: 0 0 auto;
+          display: inline-block;
+          content: '';
+          width: @icon-width;
+          height: @icon-height;
+          margin-left: @margin-icon-align;
+          margin-right: @margin-icon-text;
+          mask: url(../assets/article_multi.svg) no-repeat center / contain;
+          background-color: var(--color-base, #202122);
+        }
+      }
+
+      &__main__more {
+        display: block;
+        margin-top: @popup-margin-thin;
+        margin-left: @icon-width + @margin-icon-align + @margin-icon-text;
+      }
     }
+  }
 
+  &--error {
+    .ilhpp-popup-desktop {
+      &__main {
+        // Prevent icon clipped
+        overflow: visible;
 
-    // TODO: unfinished
-    &__settings {
-      border: 0;
-      height: 24px;
-      width: 24px;
-      // margin-left: 4px;
-      margin-right: -6px;
-      border-radius: 2px;
+        &__extract {
+          display: flex;
 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+          &::before {
+            flex: 0 0 auto;
+            display: inline-block;
+            content: '';
+            width: @icon-width;
+            height: @icon-height;
+            margin-left: @margin-icon-align;
+            margin-right: @margin-icon-text;
+            mask: url(../assets/network_off.svg) no-repeat center / contain;
+            background-color: var(--color-base, #202122);
+          }
+        }
 
-      &::before {
-        content: '';
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        mask: url(../assets/settings.svg) no-repeat center / contain;
-        background-color: var(--color-base, #202122);
+        &__more {
+          display: block;
+          margin-top: @popup-margin-thin;
+          margin-left: @icon-width + @margin-icon-align + @margin-icon-text;
+        }
+      }
+    }
+  }
+
+  &--loading {
+    .ilhpp-popup-desktop {
+      &__main {
+        // Hardcode the height to 7lh
+        height: @popup-line-height * @lines-shown;
+
+        &__extract {
+          height: 100%;
+
+          background: var(--background-color-neutral, #eaecf0);
+          animation: skeleton-breath 1s ease-in-out infinite;
+          mask: url(../assets/skeleton.svg) no-repeat center / contain;
+
+          // Flip skeleton in RTL context
+          .ilhpp-popup-desktop--foreign-rtl& {
+            transform: scaleX(-1);
+          }
+        }
+
+        &__more {
+          display: none;
+        }
       }
     }
   }

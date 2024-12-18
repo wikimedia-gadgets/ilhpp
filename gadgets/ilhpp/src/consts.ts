@@ -2,6 +2,7 @@ import { version } from '../package.json';
 
 export const DATA_ELEM_SELECTOR = '.ilh-all:not(.ilh-blue)';
 export const GREEN_ANCHOR_SELECTOR = '.ilh-all:not(.ilh-blue) a';
+export const ILH_LANG_SELECTOR = '.ilh-lang';
 export const INTERWIKI_A_SELECTOR = `.ilh-link > a`;
 export const ROOT_CLASS_DESKTOP = 'ilhpp-popup-desktop';
 export const ROOT_CLASS_MOBILE = 'ilhpp-popup-mobile';
@@ -16,4 +17,8 @@ export const DETACH_DELAY_MS = 300;
 export const DETACH_ANIMATION_MS = 200; // Must sync with LESS out animation time!
 
 export const PREFETCH_MAX_WAIT = 500;
+
+export const RTL_LANGS = [
+  'ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ug', 'dv', 'syr',
+];
 

@@ -1,7 +1,7 @@
 import { attachPopup, createPopup, detachPopup, Popup } from './popups_desktop';
 import { PopupMode, Preferences } from './prefs';
-import { Mutex, queueTask, wait } from './utils';
-import { ATTACH_DELAY_MS, DATA_ELEM_SELECTOR, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE_LENGTH_PX } from './consts';
+import { Mutex, wait } from './utils';
+import { ATTACH_DELAY_MS, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE_LENGTH_PX } from './consts';
 
 let activeAnchor: HTMLAnchorElement | null;
 let activePopup: Popup | null;
