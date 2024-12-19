@@ -4,8 +4,10 @@ import { getDirection, wait } from './utils';
 
 interface LayoutParam {
   cursorPageX: number,
+  cursorPageY: number,
   popupRect: DOMRect,
-  anchorRect: DOMRect,
+  anchorBoundingRect: DOMRect,
+  anchorRects: DOMRectList,
 }
 
 interface Layout {
@@ -25,6 +27,7 @@ interface Popup {
   foreignTitle: string,
   foreignHref: string,
   cursorPageX: number,
+  cursorPageY: number
   abortController: AbortController,
   preview?: Promise<PagePreview>,
 }
@@ -65,8 +68,17 @@ function getLayout(layoutParam: LayoutParam): Layout {
   const width = layoutParam.popupRect.width;
   const height = layoutParam.popupRect.height;
 
-  const anchorPageTop = layoutParam.anchorRect.top + pageScrollOffsetY;
-  const anchorPageBottom = layoutParam.anchorRect.bottom + pageScrollOffsetY;
+  // Get the rect of the correct line the cursor is right in
+  // This will happen if the <a> is line wrapped
+  const currentAnchorLineRect = [...layoutParam.anchorRects].find(
+    (rect) =>
+      // Round to integer to prevent pixel rounding problems
+      Math.floor(pageScrollOffsetY + rect.top) <= layoutParam.cursorPageY
+      && layoutParam.cursorPageY <= Math.ceil(pageScrollOffsetY + rect.bottom),
+  ) ?? layoutParam.anchorBoundingRect;
+
+  const anchorPageTop = currentAnchorLineRect.top + pageScrollOffsetY;
+  const anchorPageBottom = currentAnchorLineRect.bottom + pageScrollOffsetY;
 
   // X: Right if cursor at left half, left if at right half
   const isRight = layoutParam.cursorPageX < pageScrollOffsetX + viewpointWidth / 2;
@@ -137,8 +149,10 @@ function buildPopup(popup: Popup) {
   const rect = getRealRect(root);
   const layout = getLayout({
     popupRect: rect,
-    anchorRect: popup.anchor.getBoundingClientRect(),
+    anchorBoundingRect: popup.anchor.getBoundingClientRect(),
+    anchorRects: popup.anchor.getClientRects(),
     cursorPageX: popup.cursorPageX,
+    cursorPageY: popup.cursorPageY,
   });
   root.style.top = `${layout.pageY}px`;
   root.style.left = `${layout.pageX}px`;
@@ -191,7 +205,9 @@ function buildPopup(popup: Popup) {
   );
 }
 
-function createPopup(anchor: HTMLAnchorElement, cursorPageX: number): Popup | null {
+function createPopup(
+  anchor: HTMLAnchorElement, cursorPageX: number, cursorPageY: number,
+): Popup | null {
   const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
   if (!dataElement) {
     return null;
@@ -226,6 +242,7 @@ function createPopup(anchor: HTMLAnchorElement, cursorPageX: number): Popup | nu
     foreignHref,
     foreignTitle,
     cursorPageX,
+    cursorPageY,
     abortController: new AbortController(),
     preview: undefined,
   };

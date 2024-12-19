@@ -6,6 +6,7 @@ import { ATTACH_DELAY_MS, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE
 let activeAnchor: HTMLAnchorElement | null;
 let activePopup: Popup | null;
 let cursorPageX: number | null;
+let cursorPageY: number | null;
 const mutex = new Mutex();
 let attachmentAC = new AbortController();
 let detachmentAC = new AbortController();
@@ -23,11 +24,11 @@ async function attachActivePopup() {
       }
     }
 
-    if (!activeAnchor || !cursorPageX) {
+    if (!activeAnchor || !cursorPageX || !cursorPageY) {
       return;
     }
 
-    activePopup = createPopup(activeAnchor, cursorPageX);
+    activePopup = createPopup(activeAnchor, cursorPageX, cursorPageY);
     if (!activePopup) {
       return;
     }
@@ -84,6 +85,7 @@ function run(prefs: Preferences) {
       if (activeAnchor) {
         // Moving on an <a>
         cursorPageX = ev.pageX;
+        cursorPageY = ev.pageY;
         cancelDetachment();
         void attachActivePopup();
       } else if (!activeAnchor && activePopup && !activePopup.elem.contains(ev.target)) {
@@ -107,6 +109,7 @@ function run(prefs: Preferences) {
 
         if (activeAnchor) {
           cursorPageX = ev.pageX;
+          cursorPageY = ev.pageY;
           if (!activePopup || oldAnchor !== activeAnchor) {
             // No popup for active <a>, should prevent navigation
             ev.stopImmediatePropagation();
@@ -135,9 +138,14 @@ function run(prefs: Preferences) {
 
       if (activeAnchor) {
         // Assume align with <a> vertically
-        cursorPageX = activeAnchor.getBoundingClientRect().left + PTR_SHORT_SIDE_LENGTH_PX;
+        const rect = activeAnchor.getBoundingClientRect();
+        cursorPageX = rect.left + PTR_SHORT_SIDE_LENGTH_PX;
+        cursorPageY = rect.top;
         cancelDetachment();
         void attachActivePopup();
+      } else {
+        cancelAttachment();
+        void detachActivePopup();
       }
     }
   });
