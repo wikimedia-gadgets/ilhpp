@@ -1,5 +1,4 @@
-// Used in local storage and MediaWiki user options
-const PREF_KEY = 'ilhpp-prefs';
+import { PREF_KEY_LS, PREF_KEY_MW } from './consts';
 
 enum LinkMode {
   Orig = 'ORIG',
@@ -63,33 +62,60 @@ function getPreferences(): Preferences {
   let result = JSON.parse(JSON.stringify(DEFAULT_PREFS)) as Preferences;
 
   try {
-    const mwOptionSerialized = mw.user.options.get(PREF_KEY) as string | null;
-    const localStorageSerialized = localStorage.getItem(PREF_KEY);
+    const mwOptionSerialized = mw.user.options.get(PREF_KEY_MW) as string | null;
+    const localStorageSerialized = localStorage.getItem(PREF_KEY_LS);
 
-    // If the user is logged in and its account option is not set, set it
-    // will not wait for its completion
-    if (mw.user.isNamed() && mwOptionSerialized === null) {
-      void new mw.Api().saveOption(
-        PREF_KEY,
-        localStorageSerialized ?? JSON.stringify(DEFAULT_PREFS),
-      );
-    }
+    let mwOptionPrefs: Preferences | null = null;
+    let localStoragePrefs: Preferences | null = null;
 
-    if (localStorageSerialized) {
-      const maybePrefs: unknown = JSON.parse(localStorageSerialized);
+    if (mwOptionSerialized) {
+      const maybePrefs: unknown = JSON.parse(mwOptionSerialized);
 
       // Only accept valid object structure
-      // overwrite to default prefs otherwise
       if (
         Object.values(LinkMode).includes((maybePrefs as Preferences).link)
         && Object.values(PopupMode).includes((maybePrefs as Preferences).popup)
         && typeof (maybePrefs as Preferences).highlightExisting === 'boolean'
         && Object.values(OrigLinkColor).includes((maybePrefs as Preferences).origLinkColor)
       ) {
-        result = maybePrefs as Preferences;
-      } else {
-        localStorage.setItem(PREF_KEY, JSON.stringify(DEFAULT_PREFS));
+        mwOptionPrefs = maybePrefs as Preferences;
       }
+    }
+
+    if (localStorageSerialized) {
+      const maybePrefs: unknown = JSON.parse(localStorageSerialized);
+
+      if (
+        Object.values(LinkMode).includes((maybePrefs as Preferences).link)
+        && Object.values(PopupMode).includes((maybePrefs as Preferences).popup)
+        && typeof (maybePrefs as Preferences).highlightExisting === 'boolean'
+        && Object.values(OrigLinkColor).includes((maybePrefs as Preferences).origLinkColor)
+      ) {
+        localStoragePrefs = maybePrefs as Preferences;
+      }
+    }
+
+    // Precedence: MW options > local storage > default
+    result = mwOptionPrefs ?? localStoragePrefs ?? DEFAULT_PREFS;
+
+    // Sync between these
+    if (!mwOptionPrefs) {
+      if (mw.user.isNamed()) {
+        // Sync MW options prefs with local storage prefs (only logged in)
+        // will not wait for its completion
+        void new mw.Api().saveOption(
+          PREF_KEY_MW,
+          // Only set good shaped local storage prefs
+          JSON.stringify(localStoragePrefs ?? DEFAULT_PREFS),
+        );
+      }
+
+      if (!localStoragePrefs) {
+        localStorage.setItem(PREF_KEY_LS, JSON.stringify(DEFAULT_PREFS));
+      }
+    }
+    else {
+      localStorage.setItem(PREF_KEY_LS, JSON.stringify(mwOptionPrefs));
     }
   }
   catch { }
@@ -110,12 +136,12 @@ async function setPreferences(prefs: Preferences) {
   // Save to both local storage and MediaWiki user options
   // so that when user logged out, it is not lost
   try {
-    localStorage.setItem(PREF_KEY, serialized);
+    localStorage.setItem(PREF_KEY_LS, serialized);
   }
   catch { }
 
   if (mw.user.isNamed()) {
-    const response = await new mw.Api().saveOption(PREF_KEY, serialized);
+    const response = await new mw.Api().saveOption(PREF_KEY_MW, serialized);
     if (response.options !== 'success') {
       throw new Error('Failed to save options!');
     }

@@ -1,5 +1,4 @@
-import { Resolver } from 'dns';
-import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, PREFETCH_MAX_WAIT, ILH_LANG_SELECTOR } from './consts';
+import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR } from './consts';
 import { PagePreview, getPagePreview } from './network';
 import { getDirection, wait } from './utils';
 
