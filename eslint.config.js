@@ -2,6 +2,7 @@
 
 import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
+import globals from 'globals';
 
 export default tsEslint.config(
   eslint.configs.recommended,
@@ -23,6 +24,14 @@ export default tsEslint.config(
   {
     files: ['**/*.js'],
     ...tsEslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['scripts/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.nodeBuiltin,
+      },
+    },
   },
   {
     rules: {

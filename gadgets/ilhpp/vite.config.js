@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import mwGadget from 'rollup-plugin-mediawiki-gadget';
 import { defineConfig } from 'vite';
 import { name as packageName } from './package.json';
+import browserslistToEsbuild from '../../scripts/browserslist_to_esbuild';
+import autoprefixer from 'autoprefixer';
 
 export default defineConfig(({ command }) => {
   return {
@@ -18,6 +20,14 @@ export default defineConfig(({ command }) => {
       },
     } : undefined,
 
+    css: {
+      postcss: {
+        plugins: [
+          autoprefixer(),
+        ],
+      },
+    },
+
     build: {
       outDir: '../../dist',
       emptyOutDir: false,
@@ -27,7 +37,7 @@ export default defineConfig(({ command }) => {
       },
       minify: false, // Let MediaWiki do its job
       target: ['es2016'], // MediaWiki >= 1.42.0-wmf.13 supports up to ES2016
-      // cssTarget: browserslistToEsbuild(), // Tell esbuild not to use too modern CSS features
+      cssTarget: browserslistToEsbuild(), // Tell esbuild not to use too modern CSS features
       rollupOptions: {
         output: {
           entryFileNames: `Gadget-${packageName}.js`,

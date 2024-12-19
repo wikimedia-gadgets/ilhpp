@@ -20,6 +20,7 @@
     "gadgets/*/src/**/*.d.ts",
     "gadgets/*/src/**/*.tsx",
     "gadgets/*/*.config.js",
+    "scripts/*.js",
     "eslint.config.js"
   ]
 }

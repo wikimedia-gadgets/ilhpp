@@ -143,7 +143,7 @@ function run(prefs: Preferences) {
         cursorPageY = rect.top;
         cancelDetachment();
         void attachActivePopup();
-      } else {
+      } else if (!activePopup?.elem.contains(ev.target)) {
         cancelAttachment();
         void detachActivePopup();
       }

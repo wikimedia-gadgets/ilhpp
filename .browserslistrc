@@ -1,0 +1,5 @@
+defaults
+last 3 years
+safari >= 11.1
+ios >= 11.3
+android >= 5

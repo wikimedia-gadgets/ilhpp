@@ -8,6 +8,7 @@
     "build": "vite build"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "less": "^4.2.0",
     "rollup-plugin-mediawiki-gadget": "^1.2.1",
     "vite": "^5.4.9"
