@@ -12,7 +12,7 @@ export const API_USER_AGENT = `Gadget-ilhpp/${version}`;
 export const PAGE_POPUP_PADDING_PX = 10;
 export const PTR_SHORT_SIDE_LENGTH_PX = 20; // Must sync with LESS @pointer-short-side-length!
 export const PTR_WIDTH_PX = 8; // Must sync with LESS @pointer-width!
-export const ATTACH_DELAY_MS = 150;
+export const ATTACH_DELAY_MS = 300;
 export const DETACH_DELAY_MS = 300;
 export const DETACH_ANIMATION_MS = 200; // Must sync with LESS out animation time!
 

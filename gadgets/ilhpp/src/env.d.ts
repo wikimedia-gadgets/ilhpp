@@ -5,6 +5,19 @@ module 'ext.gadget.HanAssist' {
   export * from 'hanassist';
 }
 
+// VisualEditor interface
+interface Window {
+  ve?: {
+    init?: {
+      target?: {
+        active: boolean;
+      },
+    },
+  }
+};
+
+const ve = window.ve;
+
 // Not present in TS right now: https://github.com/microsoft/TypeScript/pull/60656
 // FIXME: Remove in the future
 declare namespace Intl {

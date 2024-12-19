@@ -49,7 +49,7 @@
   }
 }
 
-@keyframes skeleton-breath {
+@keyframes ilhpp-skeleton-breath {
   0% {
     opacity: 1;
   }
@@ -64,6 +64,16 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes ilhpp-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -191,18 +201,39 @@
       word-break: break-all;
     }
 
-
     // TODO: unfinished
     &__settings {
       flex: 0 0 auto;
-      border: 0;
-      padding: 4px;
-      margin-right: -4px;
-      border-radius: 2px;
 
+      appearance: none;
+      background-color: var(--background-color-transparent, transparent);
+      border-color: var(--border-color-transparent, transparent);
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 2px;
+      transition-property: background-color, color, border-color, box-shadow;
+      transition-duration: .1s;
+
+      padding: 5px;
+      margin-left: @margin-icon-text - ($padding + $border-width);
+      margin-right: -($padding + $border-width + 2px); // Add 2px to make it visually align with RTL heading icon
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &:hover:not(:disabled) {
+        background-color: var(--background-color-interactive-subtle--hover, #eaecf0);
+        mix-blend-mode: var(--ilhpp-btn-mode-blend, multiply);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--background-color-interactive-subtle--active, #dadde3);
+      }
+
+      &:focus:not(:active):not(:disabled) {
+        border-color: var(--border-color-progressive--focus, #36c);
+        box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus, #36c);
+      }
 
       &::before {
         flex: 0 0 auto;
@@ -212,6 +243,10 @@
         height: @icon-height;
         mask: url(../assets/settings.svg) no-repeat center / contain;
         background-color: var(--color-base, #202122);
+      }
+
+      &:disabled::before {
+        animation: ilhpp-rotate 3s linear infinite;
       }
     }
   }
@@ -238,7 +273,7 @@
 
     &::before {
       border-bottom: @popup-pointer-width solid var(--background-color-base, #fff);
-      top: -@popup-pointer-width ;
+      top: -@popup-pointer-width;
     }
   }
 
@@ -330,7 +365,7 @@
           height: 100%;
 
           background: var(--background-color-neutral, #eaecf0);
-          animation: skeleton-breath 1.5s ease-in-out infinite;
+          animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
           mask: url(../assets/skeleton.svg) no-repeat center / contain;
 
           // Flip skeleton in RTL context

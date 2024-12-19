@@ -127,6 +127,10 @@ function buildPopup(popup: Popup) {
   const settingsButton = document.createElement('button');
   settingsButton.className = `${cta.className}__settings`;
   settingsButton.ariaLabel = settingsButton.title = mw.msg('ilhpp-settings');
+  settingsButton.addEventListener('click', () => {
+    settingsButton.disabled = true;
+    // TODO: Load ilhpp-settings
+  });
 
   cta.append(ctaInner, settingsButton);
   root.append(header, subheader, main, cta);

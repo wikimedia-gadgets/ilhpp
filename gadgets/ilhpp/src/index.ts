@@ -15,9 +15,13 @@ import runMobile from './index_mobile';
 const prefs = getPreferences();
 mw.messages.set(batchConv(msg, mw.config.get('wgUserVariant')!));
 
-if (isMobileDevice()) {
-  runMobile(prefs);
-} else {
-  runDesktop(prefs);
+const isVeInactive = window.ve?.init?.target?.active !== true;
+
+if (isVeInactive) {
+  if (isMobileDevice()) {
+    runMobile(prefs);
+  } else {
+    runDesktop(prefs);
+  }
 }
 
