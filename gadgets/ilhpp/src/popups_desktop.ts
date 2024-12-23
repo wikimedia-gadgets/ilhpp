@@ -1,6 +1,6 @@
 import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR } from './consts';
 import { PagePreview, getPagePreview } from './network';
-import { getDirection, wait } from './utils';
+import { getDirection, normalizeTitle, wait } from './utils';
 
 interface LayoutParam {
   cursorPageX: number,
@@ -102,7 +102,7 @@ function buildPopup(popup: Popup) {
 
   const header = document.createElement('a');
   header.href = popup.foreignHref;
-  header.className = `${ROOT_CLASS_DESKTOP}__header`;
+  header.className = `${ROOT_CLASS_DESKTOP}__header ilhpp-text-like`;
   header.lang = popup.langCode;
   header.dir = 'auto';
   header.innerText = popup.foreignTitle;
@@ -118,7 +118,7 @@ function buildPopup(popup: Popup) {
   const extract = document.createElement('a');
   extract.href = popup.foreignHref;
   extract.lang = popup.langCode;
-  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract`;
+  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract ilhpp-text-like`;
   extract.dir = 'auto';
 
   const more = document.createElement('a');
@@ -199,7 +199,7 @@ function buildPopup(popup: Popup) {
         extract.removeAttribute('lang'); // This is Chinese now
 
         extract.innerText = mw.msg('ilhpp-error');
-        more.innerText = mw.msg('ilhpp-error-more');
+        more.innerText = mw.msg('ilhpp-goto');
       }
     },
   );
@@ -223,11 +223,13 @@ function createPopup(
   const langCode = dataElement.dataset.langCode;
   // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
   const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
-  const foreignTitle = dataElement.dataset.foreignTitle;
+  let foreignTitle = dataElement.dataset.foreignTitle;
 
   if (!origTitle || !langCode || !langName || !foreignTitle) {
     return null;
   }
+
+  foreignTitle = normalizeTitle(foreignTitle);
 
   const oldTooltip = anchor.title;
   anchor.title = ''; // Clear tooltip to prevent "double popups"

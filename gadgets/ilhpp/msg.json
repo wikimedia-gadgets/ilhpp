@@ -27,8 +27,12 @@
     "hans": "显示此预览时出现问题。",
     "hant": "顯示此頁面預覽時出現問題。"
   },
-  "ilhpp-error-more": {
+  "ilhpp-goto": {
     "hans": "前往该条目",
     "hant": "前往該條目"
+  },
+  "ilhpp-close": {
+    "hans": "关闭",
+    "hant": "關閉"
   }
 }

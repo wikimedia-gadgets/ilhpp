@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1"
   />
   <title>ilhpp Dev Server</title>
   <script
@@ -22,7 +22,6 @@
 
     <div id="control">
       <button id="load">Load</button>
-
 
       <select id="color">
         <option value="light">Light</option>
@@ -57,10 +56,18 @@
           <option>zh-my</option>
         </optgroup>
       </select>
+
+      <input
+        type="checkbox"
+        id="mock-mf"
+      >
+      <label for="mock-mf">Mock MF</label>
+
       <span
         id="options"
-        style="display: none"
-      ><select id="link-mode"></select>
+        style="visibility: hidden"
+      >
+        <select id="link-mode"></select>
         <select id="popup-mode"></select>
         <select id="orig-link-color"></select>
         <input
@@ -68,7 +75,7 @@
           id="highlight-existing"
         >
         <label for="highlight-existing">Highlight existing</label>
-        </spa>
+      </span>
     </div>
 
     <!-- Emulate MW content root (passed to wikipage.content hook) -->
@@ -148,9 +155,9 @@
                 href="/w/index.php?title=Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft&amp;action=edit&amp;redlink=1"
                 class="new"
                 title="Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft（页面不存在）"
-              >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我不仅长，<br>还换行！</a></span><span
-              class="noprint ilh-comment"
-            ><span class="ilh-paren">（</span><span class="ilh-lang">德语</span><span
+                style="margin-left: 10ch;"
+              >我不仅长，<br>还换行！</a></span><span class="noprint ilh-comment"><span
+                class="ilh-paren">（</span><span class="ilh-lang">德语</span><span
                 class="ilh-colon">：</span><span class="ilh-link"><a
                   href="https://de.wikipedia.org/wiki/Donaudampfschiffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft"
                   class="extiw"

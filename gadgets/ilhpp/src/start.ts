@@ -78,7 +78,7 @@ loadButton?.addEventListener('click', () => {
 
     const options = document.getElementById('options');
     if (options) {
-      options.style.removeProperty('display');
+      options.style.removeProperty('visibility');
       const prefs = getPreferences();
 
       // Build dropdowns
@@ -114,11 +114,11 @@ loadButton?.addEventListener('click', () => {
         });
       }
 
-      // Disable lang & variant switch
-      ['lang', 'variant'].forEach((id) => {
-        const select = document.getElementById(id);
-        if (select && select instanceof HTMLSelectElement) {
-          select.disabled = true;
+      // Disable lang & variant & mf switch
+      ['lang', 'variant', 'mock-mf'].forEach((id) => {
+        const elem = document.getElementById(id);
+        if (elem instanceof HTMLSelectElement || elem instanceof HTMLInputElement) {
+          elem.disabled = true;
         }
       });
     }
@@ -189,4 +189,15 @@ document.addEventListener('keydown', (ev) => {
     });
   }
 });
+
+// MF mock functionality
+const mockMf = document.getElementById('mock-mf') as HTMLInputElement | null;
+if (mockMf) {
+  mw.config.set('wgMFMode', mockMf.checked ? 'active' : undefined);
+  // @ts-expect-error Only `matches` is used in the code
+  window.matchMedia = () => ({ matches: mockMf.checked });
+  mockMf.addEventListener('change', () => {
+    mw.config.set('wgMFMode', mockMf.checked ? 'active' : undefined);
+  });
+}
 

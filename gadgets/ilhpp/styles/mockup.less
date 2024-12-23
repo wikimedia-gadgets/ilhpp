@@ -40,20 +40,24 @@
   --color-content-removed: #8b0000;
   --filter-invert-icon: 0;
   --filter-invert-primary-button-icon: 1;
-  --box-shadow-color-base: var(--color-base);
+  --box-shadow-color-base: #000;
   --box-shadow-color-progressive--active: #233566;
   --box-shadow-color-progressive--focus: #36c;
   --box-shadow-color-progressive-selected: #36c;
-  --box-shadow-color-progressive-selected--hover: #4b77d6;
+  --box-shadow-color-progressive-selected--hover: #3056a9;
   --box-shadow-color-progressive-selected--active: #233566;
   --box-shadow-color-destructive--focus: #36c;
   --box-shadow-color-inverted: #fff;
   --box-shadow-color-transparent: transparent;
+  --mix-blend-mode-base: normal;
+  --mix-blend-mode-blend: multiply;
   --background-color-base: #fff;
   --background-color-base-fixed: #fff;
   --background-color-neutral: #eaecf0;
   --background-color-neutral-subtle: #f8f9fa;
   --background-color-interactive: #eaecf0;
+  --background-color-interactive--hover: #dadde3;
+  --background-color-interactive--active: #c8ccd1;
   --background-color-interactive-subtle: #f8f9fa;
   --background-color-interactive-subtle--hover: #eaecf0;
   --background-color-interactive-subtle--active: #dadde3;
@@ -65,11 +69,15 @@
   --background-color-progressive--active: #233566;
   --background-color-progressive--focus: #36c;
   --background-color-progressive-subtle: #f1f4fd;
+  --background-color-progressive-subtle--hover: #dce3f9;
+  --background-color-progressive-subtle--active: #cbd6f6;
   --background-color-destructive: #bf3c2c;
   --background-color-destructive--hover: #9f3526;
   --background-color-destructive--active: #612419;
   --background-color-destructive--focus: #36c;
   --background-color-destructive-subtle: #ffe9e5;
+  --background-color-destructive-subtle--hover: #ffdad3;
+  --background-color-destructive-subtle--active: #ffc8bd;
   --background-color-error: #f54739;
   --background-color-error--hover: #d74032;
   --background-color-error--active: #bf3c2c;
@@ -103,11 +111,11 @@
   --border-color-interactive--active: #202122;
   --border-color-disabled: #c8ccd1;
   --border-color-inverted: #fff;
-  --border-color-progressive: #36c;
+  --border-color-progressive: #6485d1;
   --border-color-progressive--hover: #3056a9;
   --border-color-progressive--active: #233566;
   --border-color-progressive--focus: #36c;
-  --border-color-destructive: #bf3c2c;
+  --border-color-destructive: #f54739;
   --border-color-destructive--hover: #9f3526;
   --border-color-destructive--active: #612419;
   --border-color-destructive--focus: #36c;
@@ -135,7 +143,7 @@
   --border-color-input-binary--active: var(--border-color-progressive--active);
   --border-color-input-binary--focus: var(--border-color-progressive--focus);
   --border-color-input-binary--checked: var(--border-color-progressive);
-  --color-base--subtle: #54595d
+  --color-base--subtle: #54595d;
 }
 
 .mw-dark({
@@ -169,12 +177,18 @@
   --color-base--subtle: #a2a9b1;
   --box-shadow-color-base: #fff;
   --box-shadow-color-progressive--focus: #6485d1;
+  --box-shadow-color-progressive-selected: #88a3e8;
+  --box-shadow-color-progressive-selected--hover: #b0c1f0;
+  --box-shadow-color-progressive-selected--active: #cbd6f6;
   --box-shadow-color-destructive--focus: #6485d1;
-  --box-shadow-color-inverted: var(--color-base);
+  --box-shadow-color-inverted: #000;
+  --mix-blend-mode-blend: screen;
   --background-color-base: #101418;
   --background-color-neutral: #27292d;
   --background-color-neutral-subtle: #202122;
   --background-color-interactive: #27292d;
+  --background-color-interactive--hover: #404244;
+  --background-color-interactive--active: #54595d;
   --background-color-interactive-subtle: #202122;
   --background-color-interactive-subtle--hover: #27292d;
   --background-color-interactive-subtle--active: #404244;
@@ -182,14 +196,18 @@
   --background-color-disabled-subtle: #27292d;
   --background-color-inverted: #f8f9fa;
   --background-color-progressive--focus: #6485d1;
-  --background-color-progressive-subtle: #233566;
+  --background-color-progressive-subtle: #1b223d;
+  --background-color-progressive-subtle--hover: #233566;
+  --background-color-progressive-subtle--active: #3056a9;
   --background-color-destructive--focus: #6485d1;
-  --background-color-destructive-subtle: #612419;
-  --background-color-error-subtle: #612419;
-  --background-color-error-subtle--hover: #9f3526;
-  --background-color-error-subtle--active: #bf3c2c;
-  --background-color-warning-subtle: #453217;
-  --background-color-success-subtle: #153d31;
+  --background-color-destructive-subtle: #3c1a13;
+  --background-color-destructive-subtle--hover: #612419;
+  --background-color-destructive-subtle--active: #9f3526;
+  --background-color-error-subtle: #3c1a13;
+  --background-color-error-subtle--hover: #612419;
+  --background-color-error-subtle--active: #9f3526;
+  --background-color-warning-subtle: #2d2212;
+  --background-color-success-subtle: #132821;
   --background-color-notice-subtle: #27292d;
   --background-color-content-added: #233566;
   --background-color-content-removed: #453217;
@@ -198,16 +216,20 @@
   --border-color-base: #72777d;
   --border-color-subtle: #54595d;
   --border-color-muted: #404244;
-  --border-color-interactive--hover: #c8ccd1;
-  --border-color-interactive--active: #dadde3;
+  --border-color-interactive--hover: #a2a9b1;
+  --border-color-interactive--active: #c8ccd1;
   --border-color-disabled: #54595d;
   --border-color-inverted: #101418;
+  --border-color-progressive--hover: #88a3e8;
+  --border-color-progressive--active: #b0c1f0;
   --border-color-progressive--focus: #6485d1;
+  --border-color-destructive--hover: #fd7865;
+  --border-color-destructive--active: #fea898;
   --border-color-destructive--focus: #6485d1;
-  --border-color-error--hover: #fea898;
-  --border-color-error--active: #ffc8bd;
+  --border-color-error--hover: #fd7865;
+  --border-color-error--active: #fea898;
   --border-color-content-added: #233566;
-  --border-color-content-removed: #987027
+  --border-color-content-removed: #987027;
 });
 
 body {
@@ -228,8 +250,13 @@ body {
 
 #control {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 14px;
   gap: 4px;
+}
+
+#options {
+  flex-basis: 100%;
 }
 
 #draggable-header {

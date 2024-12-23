@@ -2,10 +2,12 @@ import { RTL_LANGS } from './consts';
 import { Dir } from './network';
 
 function isMobileDevice(): boolean {
+  // Design decision: never be mobile on desktop sites
   // Browser support:
   // Chromium on some Android device (e.g. Samsung) has "(hover: hover)" set
   // So check pointer together
-  return matchMedia('(hover: none), (pointer: coarse)').matches;
+  return !!(mw.config.get('wgMFMode') as string)
+    && matchMedia('(hover: none), (pointer: coarse)').matches;
 }
 
 function newAbortError(): Error {
@@ -79,6 +81,15 @@ function getDirection(langCode: string): Dir {
   return RTL_LANGS.includes(langCode.split('-')[0].toLowerCase()) ? 'rtl' : 'ltr';
 }
 
+/**
+ * Normalize title to displaying format.
+ * @param title
+ * @returns
+ */
+function normalizeTitle(title: string): string {
+  return title.replace(/_/g, ' ');
+}
+
 class Mutex {
   private lock: Promise<void> = Promise.resolve();
 
@@ -93,4 +104,4 @@ class Mutex {
   }
 }
 
-export { isMobileDevice, wait, debounce, throttle, queueTask, getDirection, Mutex };
+export { isMobileDevice, wait, debounce, throttle, queueTask, getDirection, normalizeTitle, Mutex };

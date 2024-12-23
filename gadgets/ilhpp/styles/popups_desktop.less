@@ -49,37 +49,9 @@
   }
 }
 
-@keyframes ilhpp-skeleton-breath {
-  0% {
-    opacity: 1;
-  }
-
-  60% {
-    opacity: 1;
-  }
-
-  80% {
-    opacity: 0.75;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes ilhpp-rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .ilhpp-popup-desktop {
   position: absolute;
-  z-index: 110;
+  z-index: 800;
 
   box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--background-color-neutral, #eaecf0);
   background: var(--background-color-base, #fff);
@@ -87,7 +59,7 @@
   hyphens: auto;
 
   // These are hardcoded to prevent unexpected glitches
-  line-height: @popup-line-height;
+  line-height: @popup-desktop-line-height;
   width: 300px;
   font-size: 14px;
 
@@ -98,12 +70,11 @@
   &::before {
     content: '';
     position: absolute;
-    border-left: @popup-pointer-width solid transparent;
-    border-right: @popup-pointer-width solid transparent;
+    border-left: @popup-desktop-pointer-width solid transparent;
+    border-right: @popup-desktop-pointer-width solid transparent;
     width: 0;
     height: 0;
   }
-
 
   &__header {
     display: flex;
@@ -113,8 +84,8 @@
       flex: 0 0 auto;
       display: inline-block;
       content: '';
-      width: @icon-width;
-      height: @icon-height;
+      width: @desktop-icon-width;
+      height: @desktop-icon-height;
       background-color: var(--color-base, #202122);
     }
 
@@ -162,18 +133,6 @@
     }
   }
 
-  &__header,
-  &__main__extract {
-    color: inherit !important;
-
-    &:hover,
-    &:active,
-    &:focus {
-      text-decoration: none !important;
-      color: inherit !important;
-    }
-  }
-
   &__cta {
     display: flex;
     align-items: center;
@@ -183,16 +142,16 @@
     padding: @popup-margin-thin @popup-margin-base;
     margin-top: @popup-margin-thin;
     font-size: @font-size-small;
-    line-height: @popup-line-height * unit(@font-size-small);
+    line-height: @popup-desktop-line-height * unit(@font-size-small);
 
     &::before {
       flex: 0 0 auto;
       display: inline-block;
       content: '';
-      width: @icon-width;
-      height: @icon-height;
-      margin-left: @margin-icon-align;
-      margin-right: @margin-icon-text;
+      width: @desktop-icon-width;
+      height: @desktop-icon-height;
+      margin-left: @desktop-margin-article-like-icon-align;
+      margin-right: @margin-desktop-icon-text;
       mask: url(../assets/article_add.svg) no-repeat center / contain;
       background-color: var(--color-base, #202122);
     }
@@ -201,7 +160,6 @@
       word-break: break-all;
     }
 
-    // TODO: unfinished
     &__settings {
       flex: 0 0 auto;
 
@@ -215,7 +173,7 @@
       transition-duration: .1s;
 
       padding: 5px;
-      margin-left: @margin-icon-text - ($padding + $border-width);
+      margin-left: @margin-desktop-icon-text - ($padding + $border-width);
       margin-right: -($padding + $border-width + 2px); // Add 2px to make it visually align with RTL heading icon
       display: flex;
       justify-content: center;
@@ -223,7 +181,7 @@
 
       &:hover:not(:disabled) {
         background-color: var(--background-color-interactive-subtle--hover, #eaecf0);
-        mix-blend-mode: var(--ilhpp-btn-mode-blend, multiply);
+        mix-blend-mode: var(--mix-blend-mode-blend, multiply);
       }
 
       &:active:not(:disabled) {
@@ -239,8 +197,8 @@
         flex: 0 0 auto;
         content: '';
         display: inline-block;
-        width: @icon-width;
-        height: @icon-height;
+        width: @desktop-icon-width;
+        height: @desktop-icon-height;
         mask: url(../assets/settings.svg) no-repeat center / contain;
         background-color: var(--color-base, #202122);
       }
@@ -260,8 +218,8 @@
     }
 
     &::before {
-      border-top: @popup-pointer-width solid var(--background-color-interactive, #eaecf0);
-      bottom: -@popup-pointer-width;
+      border-top: @popup-desktop-pointer-width solid var(--background-color-interactive, #eaecf0);
+      bottom: -@popup-desktop-pointer-width;
     }
   }
 
@@ -273,34 +231,34 @@
     }
 
     &::before {
-      border-bottom: @popup-pointer-width solid var(--background-color-base, #fff);
-      top: -@popup-pointer-width;
+      border-bottom: @popup-desktop-pointer-width solid var(--background-color-base, #fff);
+      top: -@popup-desktop-pointer-width;
     }
   }
 
   &--left {
     &::before {
-      right: @popup-pointer-short-side-length - @popup-pointer-width;
+      right: @popup-desktop-pointer-short-side-length - @popup-desktop-pointer-width;
     }
   }
 
   &--right {
     &::before {
-      left: @popup-pointer-short-side-length - @popup-pointer-width;
+      left: @popup-desktop-pointer-short-side-length - @popup-desktop-pointer-width;
     }
   }
 
   &--foreign-ltr {
     .ilhpp-popup-desktop {
       &__header::before {
-        margin-left: @margin-icon-align; // Align icon real boundary with text
-        margin-right: @margin-icon-text;
+        margin-left: @desktop-margin-article-like-icon-align; // Align icon real boundary with text
+        margin-right: @margin-desktop-icon-text;
         mask: url(../assets/article.svg) no-repeat center / contain;
       }
 
       &__subheader {
         // Align with heading after icon
-        margin-left: @popup-margin-base + @icon-width + @margin-icon-align + @margin-icon-text;
+        margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @margin-desktop-icon-text;
       }
     }
   }
@@ -309,8 +267,8 @@
   &--foreign-rtl {
     .ilhpp-popup-desktop {
       &__header::before {
-        margin-right: @margin-icon-align;
-        margin-left: @margin-icon-text;
+        margin-right: @desktop-margin-article-like-icon-align;
+        margin-left: @margin-desktop-icon-text;
         mask: url(../assets/article.svg) no-repeat center / contain;
         transform: scaleX(-1);
       }
@@ -346,7 +304,7 @@
 
     &.ilhpp-popup-desktop--foreign-ltr .ilhpp-popup-desktop__main {
       // Align with heading after icon
-      margin-left: @popup-margin-base + @icon-width + @margin-icon-align + @margin-icon-text;
+      margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @margin-desktop-icon-text;
     }
   }
 
@@ -360,7 +318,7 @@
     .ilhpp-popup-desktop {
       &__main {
         // Hardcode the height to 7lh
-        height: @popup-line-height * @lines-shown;
+        height: @popup-desktop-line-height * @lines-shown;
 
         &__extract {
           height: 100%;

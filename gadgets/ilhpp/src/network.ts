@@ -8,7 +8,7 @@ async function getPagePreview(
   lang: string, title: string, signal?: AbortSignal,
 ): Promise<PagePreview> {
   const resp = await fetch(
-    `https://${lang}${hostRest}/api/rest_v1/page/summary/${title.replace(/ /g, '_')}`,
+    `https://${lang}${hostRest}/api/rest_v1/page/summary/${title}`,
     {
       signal,
       // Design decision: we want to minimize loading time as much as possible as it introduces
