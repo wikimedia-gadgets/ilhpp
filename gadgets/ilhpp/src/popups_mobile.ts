@@ -164,6 +164,7 @@ function createAndAttachPopup(anchor: HTMLAnchorElement): Popup | null {
 
   buildPopup(result);
 
+  document.body.classList.add('ilhpp-scroll-locked');
   document.body.appendChild(overlay);
 
   return result;
@@ -177,6 +178,7 @@ async function detachPopup(popup: Popup) {
 
   await wait(DETACH_ANIMATION_MS);
 
+  document.body.classList.remove('ilhpp-scroll-locked');
   popup.elem.remove();
   popup.overlay.remove();
 }
