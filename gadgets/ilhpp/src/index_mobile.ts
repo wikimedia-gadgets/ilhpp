@@ -2,29 +2,19 @@ import { GREEN_ANCHOR_SELECTOR } from './consts';
 import { createAndAttachPopup, detachPopup, Popup } from './popups_mobile';
 import { PopupMode, Preferences } from './prefs';
 
-/* let activePopup: Popup | null;
-
-async function detachActivePopup() {
-  if (activePopup) {
-    const currentActivePopup = activePopup;
-    activePopup = null;
-    await detachPopup(currentActivePopup);
-  }
-} */
-
 function run(prefs: Preferences) {
-  document.body.addEventListener('click', (ev) => {
-    if (prefs.popup !== PopupMode.Disabled && ev.target instanceof HTMLElement) {
-      const anchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+  document.querySelectorAll(GREEN_ANCHOR_SELECTOR).forEach((anchor) => {
+    // Nuke MobileFrontend's event listeners
+    const replacementAnchor = anchor.cloneNode(true) as HTMLAnchorElement;
+    anchor.replaceWith(replacementAnchor);
 
-      if (anchor) {
+    replacementAnchor.addEventListener('click', (ev) => {
+      if (prefs.popup !== PopupMode.Disabled) {
         ev.preventDefault();
         ev.stopPropagation();
-        createAndAttachPopup(anchor);
-      } /* else {
-        void detachActivePopup();
-      } */
-    }
+        createAndAttachPopup(replacementAnchor);
+      }
+    });
   });
 }
 
