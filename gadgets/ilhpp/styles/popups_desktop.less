@@ -59,7 +59,7 @@
   hyphens: auto;
 
   // These are hardcoded to prevent unexpected glitches
-  line-height: @popup-desktop-line-height;
+  line-height: @desktop-popup-line-height;
   width: 300px;
   font-size: 14px;
 
@@ -70,8 +70,8 @@
   &::before {
     content: '';
     position: absolute;
-    border-left: @popup-desktop-pointer-width solid transparent;
-    border-right: @popup-desktop-pointer-width solid transparent;
+    border-left: @desktop-popup-pointer-with solid transparent;
+    border-right: @desktop-popup-pointer-with solid transparent;
     width: 0;
     height: 0;
   }
@@ -142,7 +142,7 @@
     padding: @popup-margin-thin @popup-margin-base;
     margin-top: @popup-margin-thin;
     font-size: @font-size-small;
-    line-height: @popup-desktop-line-height * unit(@font-size-small);
+    line-height: @desktop-popup-line-height * unit(@font-size-small);
 
     &::before {
       flex: 0 0 auto;
@@ -151,7 +151,7 @@
       width: @desktop-icon-width;
       height: @desktop-icon-height;
       margin-left: @desktop-margin-article-like-icon-align;
-      margin-right: @margin-desktop-icon-text;
+      margin-right: @desktop-margin-icon-text;
       mask: url(../assets/article_add.svg) no-repeat center / contain;
       background-color: var(--color-base, #202122);
     }
@@ -173,7 +173,7 @@
       transition-duration: .1s;
 
       padding: 5px;
-      margin-left: @margin-desktop-icon-text - ($padding + $border-width);
+      margin-left: @desktop-margin-icon-text - ($padding + $border-width);
       margin-right: -($padding + $border-width + 2px); // Add 2px to make it visually align with RTL heading icon
       display: flex;
       justify-content: center;
@@ -218,8 +218,8 @@
     }
 
     &::before {
-      border-top: @popup-desktop-pointer-width solid var(--background-color-interactive, #eaecf0);
-      bottom: -@popup-desktop-pointer-width;
+      border-top: @desktop-popup-pointer-with solid var(--background-color-interactive, #eaecf0);
+      bottom: -@desktop-popup-pointer-with;
     }
   }
 
@@ -231,20 +231,20 @@
     }
 
     &::before {
-      border-bottom: @popup-desktop-pointer-width solid var(--background-color-base, #fff);
-      top: -@popup-desktop-pointer-width;
+      border-bottom: @desktop-popup-pointer-with solid var(--background-color-base, #fff);
+      top: -@desktop-popup-pointer-with;
     }
   }
 
   &--left {
     &::before {
-      right: @popup-desktop-pointer-short-side-length - @popup-desktop-pointer-width;
+      right: @desktop-popup-pointer-short-side-length - @desktop-popup-pointer-with;
     }
   }
 
   &--right {
     &::before {
-      left: @popup-desktop-pointer-short-side-length - @popup-desktop-pointer-width;
+      left: @desktop-popup-pointer-short-side-length - @desktop-popup-pointer-with;
     }
   }
 
@@ -252,13 +252,13 @@
     .ilhpp-popup-desktop {
       &__header::before {
         margin-left: @desktop-margin-article-like-icon-align; // Align icon real boundary with text
-        margin-right: @margin-desktop-icon-text;
+        margin-right: @desktop-margin-icon-text;
         mask: url(../assets/article.svg) no-repeat center / contain;
       }
 
       &__subheader {
         // Align with heading after icon
-        margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @margin-desktop-icon-text;
+        margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
       }
     }
   }
@@ -268,7 +268,7 @@
     .ilhpp-popup-desktop {
       &__header::before {
         margin-right: @desktop-margin-article-like-icon-align;
-        margin-left: @margin-desktop-icon-text;
+        margin-left: @desktop-margin-icon-text;
         mask: url(../assets/article.svg) no-repeat center / contain;
         transform: scaleX(-1);
       }
@@ -304,7 +304,7 @@
 
     &.ilhpp-popup-desktop--foreign-ltr .ilhpp-popup-desktop__main {
       // Align with heading after icon
-      margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @margin-desktop-icon-text;
+      margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
     }
   }
 
@@ -318,14 +318,14 @@
     .ilhpp-popup-desktop {
       &__main {
         // Hardcode the height to 7lh
-        height: @popup-desktop-line-height * @lines-shown;
+        height: @desktop-popup-line-height * @lines-shown;
 
         &__extract {
           height: 100%;
 
           background: var(--background-color-neutral, #eaecf0);
           animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
-          mask: url(../assets/skeleton.svg) no-repeat center / contain;
+          mask: url(../assets/skeleton_desktop.svg) no-repeat center / contain;
 
           // Flip skeleton in RTL context
           .ilhpp-popup-desktop--foreign-rtl& {

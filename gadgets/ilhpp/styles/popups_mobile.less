@@ -60,7 +60,7 @@
   text-decoration: none;
   color: @mw-dark-color-inverted-fixed;
 
-  padding: @padding-mobile-button;
+  padding: @mobile-padding-button;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,7 +93,6 @@
   &--primary-progressive {
     background-color: @mw-dark-background-color-progressive;
     border-color: @mw-dark-border-color-transparent;
-    ;
 
     &:hover:not(:disabled) {
       background-color: @mw-dark-background-color-progressive--hover;
@@ -187,7 +186,7 @@
     justify-self: left;
 
     // Visually align, number comes from direct measurement
-    margin-top: calc(@popup-margin-wide - @padding-mobile-button + 4rem / 16);
+    margin-top: calc(@popup-margin-wide - @mobile-padding-button + 4rem / 16);
 
     &::before {
       flex: 0 0 auto;
@@ -227,6 +226,7 @@
     grid-column: span 3;
 
     margin: @popup-margin-base @popup-margin-wide 0;
+    padding: @mobile-padding-button * 1.5;
 
     // A ghost element with the same width, height and margin before the text
     // to make only the text centered, not the sum of text and icon
@@ -234,7 +234,7 @@
       flex: 0 0 auto;
       content: '';
       display: inline-block;
-      margin-right: @margin-mobile-icon-text;
+      margin-right: @mobile-margin-icon-text;
       width: @mobile-icon-width;
       height: @mobile-icon-height;
     }
@@ -243,7 +243,7 @@
       flex: 0 0 auto;
       content: '';
       display: inline-block;
-      margin-left: @margin-mobile-icon-text;
+      margin-left: @mobile-margin-icon-text;
       width: @mobile-icon-width;
       height: @mobile-icon-height;
       mask: url(../assets/external.svg) no-repeat center / contain;
@@ -270,7 +270,7 @@
     align-self: center;
     justify-self: left;
 
-    margin-right: @popup-margin-wide - @border-width-base - @padding-mobile-button;
+    margin-right: @popup-margin-wide - @border-width-base - @mobile-padding-button;
 
     &::before {
       flex: 0 0 auto;
@@ -293,18 +293,18 @@
 
       &::before {
         margin-left: @mobile-margin-article-like-icon-align; // Align icon real boundary with text
-        margin-right: @margin-mobile-icon-text;
+        margin-right: @mobile-margin-icon-text;
       }
     }
 
     &__subheader {
-      margin-left: calc(@popup-margin-wide + @mobile-icon-width + @mobile-margin-article-like-icon-align + @margin-mobile-icon-text);
+      margin-left: calc(@popup-margin-wide + @mobile-icon-width + @mobile-margin-article-like-icon-align + @mobile-margin-icon-text);
     }
 
     &__close {
       grid-row: span 2;
       grid-column: 3;
-      margin-right: @popup-margin-wide - @border-width-base - @padding-mobile-button;
+      margin-right: @popup-margin-wide - @border-width-base - @mobile-padding-button;
     }
   }
 
@@ -315,7 +315,7 @@
       margin-right: @popup-margin-wide;
 
       &::before {
-        margin-left: @margin-mobile-icon-text;
+        margin-left: @mobile-margin-icon-text;
         margin-right: @mobile-margin-article-like-icon-align; // Align icon real boundary with text
         transform: scaleX(-1);
       }
@@ -331,7 +331,7 @@
       grid-row: 1;
       grid-column: 1;
       // Visually align, number comes from direct measurement
-      margin-left: calc(@popup-margin-wide - @border-width-base - @padding-mobile-button - (2rem / 14));
+      margin-left: calc(@popup-margin-wide - @border-width-base - @mobile-padding-button - (2rem / 14));
     }
 
     &__cta {
@@ -342,7 +342,39 @@
   &--loading & {
     &__extract {
       // Hardcode the height to 7lh
-      height: $font-size * $line-height * @lines-shown;
+      @precise-7lh: $font-size * $line-height * @lines-shown;
+      height: @precise-7lh;
+
+      &__inner {
+        height: 100%;
+
+        .ilhpp-mobile-skeleton {
+          height: (@precise-7lh / 6) * 0.7;
+          margin-top: (@precise-7lh / 6) - $height;
+          width: 100%;
+          background: @mw-dark-background-color-neutral;
+          border-radius: 9999px;
+          animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
+
+          &:nth-of-type(2) {
+            width: 80%;
+          }
+
+          &:nth-of-type(4) {
+            width: 70%;
+          }
+
+          &:nth-of-type(6) {
+            width: 90%;
+          }
+        }
+      }
+    }
+  }
+
+  &--loading&--foreign-rtl {
+    .ilhpp-mobile-skeleton {
+      margin-left: auto;
     }
   }
 

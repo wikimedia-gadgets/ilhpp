@@ -61,6 +61,13 @@ function buildPopup(popup: Popup) {
   extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like`;
   extractInner.dir = 'auto';
 
+  // 6 is hardcoded, must keep in sync with styles in popups_mobile.less!
+  Array.from({ length: 6 }).forEach(() => {
+    const skeletonStripe = document.createElement('div');
+    skeletonStripe.className = 'ilhpp-mobile-skeleton';
+    extractInner.appendChild(skeletonStripe);
+  });
+
   extract.appendChild(extractInner);
 
   const cta = document.createElement('div');
