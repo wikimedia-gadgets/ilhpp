@@ -1,6 +1,6 @@
 import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR } from './consts';
 import { PagePreview, getPagePreview } from './network';
-import { getDirection, normalizeTitle, wait } from './utils';
+import { getDirection, normalizeLang, normalizeTitle, wait } from './utils';
 
 interface LayoutParam {
   cursorPageX: number,
@@ -22,6 +22,7 @@ interface Popup {
   anchor: HTMLAnchorElement,
   oldTooltip: string,
   origTitle: string,
+  wikiCode: string,
   langCode: string,
   langName: string,
   foreignTitle: string,
@@ -29,7 +30,6 @@ interface Popup {
   cursorPageX: number,
   cursorPageY: number
   abortController: AbortController,
-  preview?: Promise<PagePreview>,
 }
 
 /**
@@ -174,7 +174,7 @@ function buildPopup(popup: Popup) {
     observer.observe(popup.elem, { subtree: true, childList: true });
   }
 
-  void popup.preview?.then(
+  void getPagePreview(popup.wikiCode, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
       root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
       header.innerText = preview.title;
@@ -192,14 +192,27 @@ function buildPopup(popup: Popup) {
       }
     },
     (err) => {
-      // Exclude AbortError to prevent glitches
-      if ((err as Error)?.name !== 'AbortError') {
-        root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
-        root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
-        extract.removeAttribute('lang'); // This is Chinese now
+      switch ((err as Error)?.name) {
+        case 'AbortError':
+          // Exclude AbortError to prevent glitches
+          break;
+        case 'NotSupportedError':
+          root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
+          root.classList.add(`${ROOT_CLASS_DESKTOP}--wikidata`);
+          extract.removeAttribute('lang'); // This is Chinese now
 
-        extract.innerText = mw.msg('ilhpp-error');
-        more.innerText = mw.msg('ilhpp-goto');
+          extract.innerText = mw.msg('ilhpp-wikidata');
+          more.innerText = mw.msg('ilhpp-goto');
+          break;
+
+        default:
+          root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
+          root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
+          extract.removeAttribute('lang'); // This is Chinese now
+
+          extract.innerText = mw.msg('ilhpp-error');
+          more.innerText = mw.msg('ilhpp-goto');
+          break;
       }
     },
   );
@@ -220,16 +233,18 @@ function createPopup(
   const foreignHref = interwikiAnchor.href;
 
   const origTitle = dataElement.dataset.origTitle;
-  const langCode = dataElement.dataset.langCode;
+  const wikiCode = dataElement.dataset.langCode;
+  let langCode = wikiCode;
   // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
   const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
   let foreignTitle = dataElement.dataset.foreignTitle;
 
-  if (!origTitle || !langCode || !langName || !foreignTitle) {
+  if (!origTitle || !wikiCode || !langCode || !langName || !foreignTitle) {
     return null;
   }
 
   foreignTitle = normalizeTitle(foreignTitle);
+  langCode = normalizeLang(langCode);
 
   const oldTooltip = anchor.title;
   anchor.title = ''; // Clear tooltip to prevent "double popups"
@@ -239,6 +254,7 @@ function createPopup(
     anchor,
     oldTooltip,
     origTitle,
+    wikiCode,
     langCode,
     langName,
     foreignHref,
@@ -246,13 +262,10 @@ function createPopup(
     cursorPageX,
     cursorPageY,
     abortController: new AbortController(),
-    preview: undefined,
   };
 }
 
 function attachPopup(popup: Popup) {
-  popup.preview = getPagePreview(popup.langCode, popup.foreignTitle, popup.abortController.signal);
-
   buildPopup(popup);
   document.body.appendChild(popup.elem);
 }

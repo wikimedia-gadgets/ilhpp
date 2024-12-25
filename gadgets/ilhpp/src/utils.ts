@@ -72,10 +72,14 @@ function queueTask(func: (...args: any[]) => unknown) {
  * @returns
  */
 function getDirection(langCode: string): Dir {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  if (Intl.Locale.prototype.getTextInfo || Intl.Locale.prototype.textInfo) {
-    const locale = new Intl.Locale(langCode);
-    return (locale.getTextInfo() ?? locale.textInfo).direction as Dir;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (Intl.Locale.prototype.getTextInfo || Intl.Locale.prototype.textInfo) {
+      const locale = new Intl.Locale(langCode);
+      return (locale.getTextInfo() ?? locale.textInfo).direction as Dir;
+    }
+  } catch {
+    return 'ltr'; // Default value
   }
 
   return RTL_LANGS.includes(langCode.split('-')[0].toLowerCase()) ? 'rtl' : 'ltr';
@@ -88,6 +92,15 @@ function getDirection(langCode: string): Dir {
  */
 function normalizeTitle(title: string): string {
   return title.replace(/_/g, ' ');
+}
+
+/**
+ * Filter out some invalid lang code provided by HTML, like 'd' which is interwiki code for Wikidata.
+ * @param lang
+ * @returns
+ */
+function normalizeLang(lang: string): string {
+  return lang === 'd' ? 'en' : lang;
 }
 
 class Mutex {
@@ -104,4 +117,8 @@ class Mutex {
   }
 }
 
-export { isMobileDevice, wait, debounce, throttle, queueTask, getDirection, normalizeTitle, Mutex };
+export {
+  isMobileDevice, wait, debounce,
+  throttle, queueTask, getDirection,
+  normalizeTitle, normalizeLang, Mutex,
+};

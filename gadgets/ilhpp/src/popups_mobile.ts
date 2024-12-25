@@ -1,18 +1,18 @@
 import { DATA_ELEM_SELECTOR, DETACH_ANIMATION_MS, ILH_LANG_SELECTOR, INTERWIKI_A_SELECTOR, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
-import { getPagePreview, PagePreview } from './network';
-import { getDirection, normalizeTitle, wait } from './utils';
+import { getPagePreview } from './network';
+import { getDirection, normalizeLang, normalizeTitle, wait } from './utils';
 
 interface Popup {
   overlay: HTMLElement,
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
   origTitle: string,
+  wikiCode: string,
   langCode: string,
   langName: string,
   foreignTitle: string,
   foreignHref: string,
   abortController: AbortController,
-  preview?: Promise<PagePreview>,
 }
 
 function buildPopup(popup: Popup) {
@@ -86,7 +86,7 @@ function buildPopup(popup: Popup) {
 
   popup.overlay.append(root);
 
-  void popup.preview?.then(
+  void getPagePreview(popup.wikiCode, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
       root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
       header.innerText = preview.title;
@@ -104,14 +104,27 @@ function buildPopup(popup: Popup) {
       }
     },
     (err) => {
-      // Exclude AbortError to prevent glitches
-      if ((err as Error)?.name !== 'AbortError') {
-        root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
-        root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
-        extractInner.removeAttribute('lang'); // This is Chinese now
+      switch ((err as Error)?.name) {
+        case 'AbortError':
+          // Exclude AbortError to prevent glitches
+          break;
+        case 'NotSupportedError':
+          root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
+          root.classList.add(`${ROOT_CLASS_MOBILE}--wikidata`);
+          extract.removeAttribute('lang'); // This is Chinese now
 
-        extractInner.innerText = mw.msg('ilhpp-error');
-        moreButton.innerText = mw.msg('ilhpp-goto');
+          extract.innerText = mw.msg('ilhpp-wikidata');
+          moreButton.innerText = mw.msg('ilhpp-goto');
+          break;
+
+        default:
+          root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
+          root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
+          extract.removeAttribute('lang'); // This is Chinese now
+
+          extract.innerText = mw.msg('ilhpp-error');
+          moreButton.innerText = mw.msg('ilhpp-goto');
+          break;
       }
     },
   );
@@ -130,16 +143,18 @@ function createAndAttachPopup(anchor: HTMLAnchorElement): Popup | null {
   const foreignHref = interwikiAnchor.href;
 
   const origTitle = dataElement.dataset.origTitle;
-  const langCode = dataElement.dataset.langCode;
+  const wikiCode = dataElement.dataset.langCode;
+  let langCode = wikiCode;
   // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
   const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
   let foreignTitle = dataElement.dataset.foreignTitle;
 
-  if (!origTitle || !langCode || !langName || !foreignTitle) {
+  if (!origTitle || !wikiCode || !langCode || !langName || !foreignTitle) {
     return null;
   }
 
   foreignTitle = normalizeTitle(foreignTitle);
+  langCode = normalizeLang(langCode);
 
   const overlay = document.createElement('div');
   overlay.className = OVERLAY_CLASS_MOBILE;
@@ -154,12 +169,12 @@ function createAndAttachPopup(anchor: HTMLAnchorElement): Popup | null {
     elem,
     anchor,
     origTitle,
+    wikiCode,
     langCode,
     langName,
     foreignTitle,
     foreignHref,
     abortController,
-    preview: getPagePreview(langCode, foreignTitle, abortController.signal),
   };
 
   buildPopup(result);
