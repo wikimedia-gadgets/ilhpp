@@ -133,7 +133,7 @@ function buildPopup(popup: Popup) {
 
   const ctaInner = document.createElement('div');
   ctaInner.className = `${ROOT_CLASS_DESKTOP}__cta__inner`;
-  ctaInner.innerHTML = mw.message('ilhpp-cta', popup.origTitle).parse(); // Safely escaped
+  ctaInner.innerHTML = mw.msg('ilhpp-cta', popup.origTitle); // Safely escaped
 
   const settingsButton = document.createElement('button');
   settingsButton.className = `${cta.className}__settings`;

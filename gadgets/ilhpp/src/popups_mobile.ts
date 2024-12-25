@@ -72,7 +72,7 @@ function buildPopup(popup: Popup) {
 
   const cta = document.createElement('div');
   cta.className = `${ROOT_CLASS_MOBILE}__cta`;
-  cta.innerHTML = mw.message('ilhpp-cta', popup.origTitle).parse(); // Safely escaped
+  cta.innerHTML = mw.msg('ilhpp-cta', popup.origTitle); // Safely escaped
 
   const settingsButton = document.createElement('button');
   settingsButton.className = `${ROOT_CLASS_MOBILE}__settings ilhpp-mobile-button`;

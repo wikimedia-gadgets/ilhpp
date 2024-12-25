@@ -30,13 +30,15 @@
   }
 
   100% {
-    background-color: rgba(0, 0, 0, 0.4);
+    // Sync with MF drawer
+    background-color: rgba(0, 0, 0, 0.8 * 0.2);
   }
 }
 
 @keyframes ilhpp-fade-out {
   0% {
-    background-color: rgba(0, 0, 0, 0.4);
+    // Sync with MF drawer
+    background-color: rgba(0, 0, 0, 0.8 * 0.2);
   }
 
   100% {
@@ -262,6 +264,18 @@
     margin-right: @popup-margin-thin;
     margin-bottom: @popup-margin-base;
     word-break: break-all;
+
+    a {
+      color: @mw-dark-color-progressive;
+
+      &:hover {
+        color: @mw-dark-color-progressive--hover;
+      }
+
+      &:active {
+        color: @mw-dark-color-progressive--active;
+      }
+    }
   }
 
   &__settings {
