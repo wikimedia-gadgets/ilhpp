@@ -210,10 +210,10 @@
     }
   }
 
-  &--top {
+  &--top& {
     animation: ilhpp-popup-desktop-top-in 0.2s ease forwards;
 
-    &.ilhpp-popup-desktop--out {
+    &--out {
       animation: ilhpp-popup-desktop-top-out 0.2s ease forwards !important;
     }
 
@@ -223,10 +223,10 @@
     }
   }
 
-  &--bottom {
+  &--bottom& {
     animation: ilhpp-popup-desktop-bottom-in 0.2s ease forwards;
 
-    &.ilhpp-popup-desktop--out {
+    &--out {
       animation: ilhpp-popup-desktop-bottom-out 0.2s ease forwards !important;
     }
 
@@ -248,96 +248,97 @@
     }
   }
 
-  &--foreign-ltr {
-    .ilhpp-popup-desktop {
-      &__header::before {
-        margin-left: @desktop-margin-article-like-icon-align; // Align icon real boundary with text
-        margin-right: @desktop-margin-icon-text;
-        mask: url(../assets/article.svg) no-repeat center / contain;
-      }
-
-      &__subheader {
-        // Align with heading after icon
-        margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
-      }
-    }
-  }
-
-
-  &--foreign-rtl {
-    .ilhpp-popup-desktop {
-      &__header::before {
-        margin-right: @desktop-margin-article-like-icon-align;
-        margin-left: @desktop-margin-icon-text;
-        mask: url(../assets/article.svg) no-repeat center / contain;
-        transform: scaleX(-1);
-      }
-    }
-  }
-
-  &--standard {
-    .ilhpp-popup-desktop__main__more {
-      position: absolute;
-      bottom: 0;
-      width: 40%;
+  &--foreign-ltr & {
+    &__header::before {
+      margin-left: @desktop-margin-article-like-icon-align; // Align icon real boundary with text
+      margin-right: @desktop-margin-icon-text;
+      mask: url(../assets/article.svg) no-repeat center / contain;
     }
 
-    &.ilhpp-popup-desktop--foreign-ltr .ilhpp-popup-desktop__main__more {
-      right: 0;
-      text-align: right;
-      background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
-    }
-
-    &.ilhpp-popup-desktop--foreign-rtl .ilhpp-popup-desktop__main__more {
-      left: 0;
-      text-align: left;
-      background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
-    }
-  }
-
-  &--disam,
-  &--wikidata,
-  &--error {
-    .ilhpp-popup-desktop__main__more {
-      display: block;
-      margin-top: @popup-margin-thin;
-    }
-
-    &.ilhpp-popup-desktop--foreign-ltr .ilhpp-popup-desktop__main {
+    &__subheader {
       // Align with heading after icon
       margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
     }
   }
 
-  &--disam {
-    .ilhpp-popup-desktop__header::before {
+
+  &--foreign-rtl & {
+    &__header::before {
+      margin-right: @desktop-margin-article-like-icon-align;
+      margin-left: @desktop-margin-icon-text;
+      mask: url(../assets/article.svg) no-repeat center / contain;
+      transform: scaleX(-1);
+    }
+  }
+
+  &--standard & {
+    &__main__more {
+      position: absolute;
+      bottom: 0;
+      width: 40%;
+    }
+  }
+
+  &--standard&--foreign-ltr &__main__more {
+    right: 0;
+    text-align: right;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
+  }
+
+  &--standard&--foreign-rtl &__main__more {
+    left: 0;
+    text-align: left;
+    background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
+  }
+
+  &--disam &,
+  &--wikidata &,
+  &--error & {
+    &__main__more {
+      display: block;
+      margin-top: @popup-margin-thin;
+    }
+  }
+
+  &--foreign-ltr&--disam &,
+  &--foreign-ltr&--wikidata &,
+  &--foreign-ltr&--error & {
+    &__main {
+      // Align with heading after icon
+      margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
+    }
+  }
+
+  &--disam & {
+    &__header::before {
       mask-image: url(../assets/disam.svg);
     }
   }
 
-  &--loading {
-    .ilhpp-popup-desktop {
-      &__main {
-        // Hardcode the height to 7lh
-        height: @desktop-popup-line-height * @lines-shown;
+  &--loading & {
+    &__main {
+      // Hardcode the height to 7lh
+      height: @desktop-popup-line-height * @lines-shown;
 
-        &__extract {
-          height: 100%;
+      &__extract {
+        height: 100%;
 
-          background: var(--background-color-neutral, #eaecf0);
-          animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
-          mask: url(../assets/skeleton_desktop.svg) no-repeat center / contain;
-
-          // Flip skeleton in RTL context
-          .ilhpp-popup-desktop--foreign-rtl& {
-            transform: scaleX(-1);
-          }
-        }
-
-        &__more {
-          display: none;
-        }
+        background: var(--background-color-neutral, #eaecf0);
+        animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
+        mask: url(../assets/skeleton_desktop.svg) no-repeat center / contain;
       }
+
+      &__more {
+        display: none;
+      }
+    }
+  }
+
+  &--foreign-rtl&--loading & {
+
+    // Flip skeleton in RTL context
+    &__main__extract {
+      transform: scaleX(-1);
     }
   }
 }
