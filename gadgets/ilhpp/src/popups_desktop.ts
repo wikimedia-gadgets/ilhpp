@@ -1,6 +1,6 @@
 import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR } from './consts';
 import { PagePreview, getPagePreview } from './network';
-import { getDirection, normalizeLang, normalizeTitle, wait } from './utils';
+import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
 
 interface LayoutParam {
   cursorPageX: number,
@@ -110,7 +110,11 @@ function buildPopup(popup: Popup) {
   const subheader = document.createElement('div');
   subheader.className = `${ROOT_CLASS_DESKTOP}__subheader`;
   subheader.dir = 'auto';
-  subheader.innerText = mw.msg('ilhpp-from', popup.langName);
+  subheader.innerText = mw.msg(
+    'ilhpp-from',
+    popup.langName,
+    isWikipedia(popup.wikiCode) ? mw.msg('ilhpp-wp') : '',
+  );
 
   const main = document.createElement('div');
   main.className = `${ROOT_CLASS_DESKTOP}__main ${ROOT_CLASS_DESKTOP}__main--loading`;

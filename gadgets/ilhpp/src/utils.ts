@@ -103,6 +103,10 @@ function normalizeLang(lang: string): string {
   return lang === 'd' ? 'en' : lang;
 }
 
+function isWikipedia(wikiId: string): boolean {
+  return wikiId !== 'd';
+}
+
 class Mutex {
   private lock: Promise<void> = Promise.resolve();
 
@@ -120,5 +124,6 @@ class Mutex {
 export {
   isMobileDevice, wait, debounce,
   throttle, queueTask, getDirection,
-  normalizeTitle, normalizeLang, Mutex,
+  normalizeTitle, normalizeLang, isWikipedia,
+  Mutex,
 };

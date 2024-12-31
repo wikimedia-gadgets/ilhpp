@@ -1,6 +1,6 @@
 import { DATA_ELEM_SELECTOR, DETACH_ANIMATION_MS, ILH_LANG_SELECTOR, INTERWIKI_A_SELECTOR, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
-import { getDirection, normalizeLang, normalizeTitle, wait } from './utils';
+import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
 
 interface Popup {
   overlay: HTMLElement,
@@ -37,7 +37,11 @@ function buildPopup(popup: Popup) {
   const subheader = document.createElement('div');
   subheader.className = `${ROOT_CLASS_MOBILE}__subheader`;
   subheader.dir = 'auto';
-  subheader.innerText = mw.msg('ilhpp-from', popup.langName);
+  subheader.innerText = mw.msg(
+    'ilhpp-from',
+    popup.langName,
+    isWikipedia(popup.wikiCode) ? mw.msg('ilhpp-wp') : '',
+  );
 
   const closeButton = document.createElement('button');
   closeButton.className = `${ROOT_CLASS_MOBILE}__close ilhpp-mobile-button`;

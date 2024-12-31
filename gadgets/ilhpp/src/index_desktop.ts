@@ -3,10 +3,13 @@ import { PopupMode, Preferences } from './prefs';
 import { Mutex, wait } from './utils';
 import { ATTACH_DELAY_MS, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE_LENGTH_PX } from './consts';
 
-let activeAnchor: HTMLAnchorElement | null;
 let activePopup: Popup | null;
+
+// Below 3 must be valid at the same time
+let activeAnchor: HTMLAnchorElement | null;
 let cursorPageX: number | null;
 let cursorPageY: number | null;
+
 const mutex = new Mutex();
 let attachmentAC = new AbortController();
 let detachmentAC = new AbortController();

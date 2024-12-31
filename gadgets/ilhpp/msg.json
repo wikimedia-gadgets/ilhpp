@@ -1,7 +1,11 @@
 {
   "ilhpp-from": {
-    "hans": "来自$1维基百科",
-    "hant": "來自$1維基百科"
+    "hans": "来自$1$2",
+    "hant": "來自$1$2"
+  },
+  "ilhpp-wp": {
+    "hans": "维基百科",
+    "hant": "維基百科"
   },
   "ilhpp-more": {
     "hans": "阅读更多",
