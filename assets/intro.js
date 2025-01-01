@@ -9,6 +9,6 @@
  * Built from GitHub repository (https://github.com/diskdance/ilhpp), you should not make
  * changes directly here.
  *
- * See TODO for build instructions.
+ * See https://github.com/diskdance/ilhpp/blob/main/README.MD#%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95 for build instructions.
  */
 // <nowiki>
