@@ -53,27 +53,21 @@
         // FIXME: This has accessibility issues
         .ilh-comment {
           display: inline-flex;
-          flex-direction: row-reverse;
           align-items: baseline;
 
-          .ilh-paren,
-          .ilh-colon {
-            display: none;
+          .ilh-link {
+            order: -1;
           }
 
+          .ilh-paren,
           .ilh-lang {
             font-size: 0.8em;
             color: var(--color-subtle, #54595d);
             font-weight: bold;
-            user-select: none; // Keep consistency with pseudo elements
+          }
 
-            &::before {
-              content: "（";
-            }
-
-            &::after {
-              content: "）";
-            }
+          .ilh-colon {
+            display: none;
           }
         }
 
