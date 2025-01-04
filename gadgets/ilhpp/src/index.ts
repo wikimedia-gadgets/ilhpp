@@ -11,17 +11,22 @@ import { isMobileDevice } from './utils';
 import runDesktop from './index_desktop';
 import runMobile from './index_mobile';
 
+function toggleInactivityClass() {
+  // Deactivate if MF editor is active, activate otherwise
+  document.documentElement.classList.toggle('ilhpp-inactive', location.hash.includes('/editor/'));
+}
+
 // Initialize
 const prefs = getPreferences();
 mw.messages.set(batchConv(msg, mw.config.get('wgUserVariant')!));
 
-const isVeInactive = window.ve?.init?.target?.active !== true;
-
-if (isVeInactive) {
-  if (isMobileDevice()) {
-    runMobile(prefs);
-  } else {
-    runDesktop(prefs);
-  }
+if (mw.config.get('wgMFMode')) {
+  window.addEventListener('hashchange', toggleInactivityClass);
+  toggleInactivityClass();
 }
 
+if (isMobileDevice()) {
+  runMobile(prefs);
+} else {
+  runDesktop(prefs);
+}

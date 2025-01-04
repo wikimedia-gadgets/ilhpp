@@ -121,15 +121,15 @@ function getPreferences(): Preferences {
   catch { }
 
   currentPrefs = result;
-  document.body.classList.add(...toCSSClassNames(result));
+  document.documentElement.classList.add(...toCSSClassNames(result));
   return result;
 }
 
 async function setPreferences(prefs: Preferences) {
   currentPrefs = prefs;
 
-  document.body.className = document.body.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
-  document.body.classList.add(...toCSSClassNames(prefs));
+  document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
+  document.documentElement.classList.add(...toCSSClassNames(prefs));
 
   const serialized = JSON.stringify(prefs);
 
