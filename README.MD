@@ -8,4 +8,4 @@
 小工具的定义位于各自包下的 `.gadgetdefinition` 文件内，先将其添加至 MediaWiki。然后使用 `build` 脚本构建两个包，生成的代码位于根目录的 `dist` 目录内，然后将其复制到 MediaWiki 命名空间下的同名位置（MediaWiki:Gadget-xxx.(css|js)）。
 
 ## 授权协议
-本小工具依照 3 Clause BSD 协议授权。
+本小工具依照 GPLv2 协议授权。
