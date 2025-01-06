@@ -102,7 +102,7 @@ function buildPopup(popup: Popup) {
 
   const header = document.createElement('a');
   header.href = popup.foreignHref;
-  header.className = `${ROOT_CLASS_DESKTOP}__header ilhpp-text-like`;
+  header.className = `${ROOT_CLASS_DESKTOP}__header ilhpp-text-like ilhpp-auto-hyphen`;
   header.lang = popup.langCode;
   header.dir = 'auto';
   header.innerText = popup.foreignTitle;
@@ -122,7 +122,7 @@ function buildPopup(popup: Popup) {
   const extract = document.createElement('a');
   extract.href = popup.foreignHref;
   extract.lang = popup.langCode;
-  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract ilhpp-text-like`;
+  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract ilhpp-text-like ilhpp-auto-hyphen`;
   extract.dir = 'auto';
 
   const more = document.createElement('a');

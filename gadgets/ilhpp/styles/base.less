@@ -72,6 +72,20 @@
   overflow: hidden;
 }
 
+.ilhpp-auto-hyphen {
+
+  &:lang(de),
+  &:lang(fi),
+  &:lang(sv),
+  &:lang(no),
+  &:lang(nl),
+  &:lang(cy),
+  &:lang(is),
+  &:lang(pl) {
+    hyphens: auto;
+  }
+}
+
 @font-size-small: 0.875em;
 @font-size-medium: 1em;
 @font-size-large: 1.125em;

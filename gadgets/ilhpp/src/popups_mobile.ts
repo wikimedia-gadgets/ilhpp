@@ -29,7 +29,7 @@ function buildPopup(popup: Popup) {
 
   const header = document.createElement('a');
   header.href = popup.foreignHref;
-  header.className = `${ROOT_CLASS_MOBILE}__header ilhpp-text-like`;
+  header.className = `${ROOT_CLASS_MOBILE}__header ilhpp-text-like ilhpp-auto-hyphen`;
   header.lang = popup.langCode;
   header.dir = 'auto';
   header.innerText = popup.foreignTitle;
@@ -62,7 +62,7 @@ function buildPopup(popup: Popup) {
   const extractInner = document.createElement('a');
   extractInner.href = popup.foreignHref;
   extractInner.lang = popup.langCode;
-  extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like`;
+  extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen`;
   extractInner.dir = 'auto';
 
   // 6 is hardcoded, must keep in sync with styles in popups_mobile.less!
