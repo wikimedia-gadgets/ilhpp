@@ -4,7 +4,8 @@ import { Dir } from './network';
 function isMobileDevice(): boolean {
   // Design decision: never be mobile on desktop sites
   // Browser support:
-  // Chromium on some Android device (e.g. Samsung) has "(hover: hover)" set
+  // Chromium on Samsung devices has "(hover: hover)" set
+  // (https://www.ctrl.blog/entry/css-media-hover-samsung.html)
   // So check pointer together
   return !!(mw.config.get('wgMFMode') as string)
     && matchMedia('(hover: none), (pointer: coarse)').matches;

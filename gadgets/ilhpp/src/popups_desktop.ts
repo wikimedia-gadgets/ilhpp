@@ -167,7 +167,7 @@ function buildPopup(popup: Popup) {
   if (!layout.isBottom) {
     // Need to change `top` accordingly when size is changed
 
-    // ResizeObserver is not available in Safari < 13.1
+    // Support Safari < 13.1: ResizeObserver is not available
     // FIXME: Migrate to that after we raise browser target
     const observer = new MutationObserver(() => {
       // Guaranteed to have only one entry
