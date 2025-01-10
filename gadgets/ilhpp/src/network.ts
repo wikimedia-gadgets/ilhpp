@@ -9,9 +9,7 @@ async function getPagePreview(
 ): Promise<PagePreview> {
   if (wikiCode === 'd') {
     // No preview
-    const error = new TypeError('No preview for this wiki');
-    error.name = 'NotSupportedError';
-    throw error;
+    throw new DOMException('No preview for this wiki', 'NotSupportedError');
   }
 
   const resp = await fetch(

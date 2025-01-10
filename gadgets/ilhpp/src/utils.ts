@@ -11,12 +11,6 @@ function isMobileDevice(): boolean {
     && matchMedia('(hover: none), (pointer: coarse)').matches;
 }
 
-function newAbortError(): Error {
-  const error = new Error();
-  error.name = 'AbortError';
-  return error;
-}
-
 /**
  * Wait for a certain time before resolving. Reject if aborted.
  * @param ms
@@ -26,14 +20,14 @@ function newAbortError(): Error {
 function wait(ms: number, signal?: AbortSignal) {
   return new Promise<void>((resolve, reject) => {
     if (signal?.aborted) {
-      return reject(newAbortError());
+      return reject(new DOMException('The operation was aborted.', 'AbortError'));
     }
 
     const id = setTimeout(resolve, ms);
 
     signal?.addEventListener('abort', () => {
       clearTimeout(id);
-      return reject(newAbortError());
+      return reject(new DOMException('The operation was aborted.', 'AbortError'));
     });
   });
 }
