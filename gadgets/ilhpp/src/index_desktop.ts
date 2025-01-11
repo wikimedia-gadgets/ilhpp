@@ -15,6 +15,18 @@ let attachmentAC = new AbortController();
 let detachmentAC = new AbortController();
 
 async function attachActivePopup() {
+  // Guard section -- this need to also be executed immediately
+  // So place both in and out of critical part
+  if (activePopup) {
+    if (!activeAnchor || activePopup.anchor === activeAnchor) {
+      // `activeAnchor` is null: invalid state, should be detached first, do nothing
+      // or `activeAnchor` has popup on, also a no-op
+      return;
+    } else {
+      await detachActivePopupImmediately();
+    }
+  }
+
   const release = await mutex.acquire();
   try {
     if (activePopup) {
