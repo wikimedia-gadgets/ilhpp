@@ -1,4 +1,4 @@
-import { DATA_ELEM_SELECTOR, DETACH_ANIMATION_MS, ILH_LANG_SELECTOR, INTERWIKI_A_SELECTOR, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
+import { DATA_ELEM_SELECTOR, DETACH_ANIMATION_MS, ILH_LANG_SELECTOR, INTERWIKI_A_SELECTOR, MOBILE_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
 import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
 
@@ -65,8 +65,7 @@ function buildPopup(popup: Popup) {
   extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen`;
   extractInner.dir = 'auto';
 
-  // 6 is hardcoded, must keep in sync with styles in popups_mobile.less!
-  Array.from({ length: 6 }).forEach(() => {
+  Array.from({ length: MOBILE_SKELETON_STRIPE_COUNT }).forEach(() => {
     const skeletonStripe = document.createElement('div');
     skeletonStripe.className = 'ilhpp-mobile-skeleton';
     extractInner.appendChild(skeletonStripe);
