@@ -1,5 +1,5 @@
 import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR } from './consts';
-import { PagePreview, getPagePreview } from './network';
+import { getPagePreview } from './network';
 import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
 
 interface LayoutParam {
@@ -72,9 +72,9 @@ function getLayout(layoutParam: LayoutParam): Layout {
   // This will happen if the <a> is line wrapped
   const currentAnchorLineRect = [...layoutParam.anchorRects].find(
     (rect) =>
-      // Round to integer to prevent pixel rounding problems
-      Math.floor(pageScrollOffsetY + rect.top) <= layoutParam.cursorPageY
-      && layoutParam.cursorPageY <= Math.ceil(pageScrollOffsetY + rect.bottom),
+      // Round to integer and minus 1 to prevent pixel rounding problems
+      Math.floor(pageScrollOffsetY + rect.top) - 1 <= layoutParam.cursorPageY
+      && layoutParam.cursorPageY < Math.ceil(pageScrollOffsetY + rect.bottom),
   ) ?? layoutParam.anchorBoundingRect;
 
   const anchorPageTop = currentAnchorLineRect.top + pageScrollOffsetY;
