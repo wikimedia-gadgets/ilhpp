@@ -20,7 +20,6 @@ interface Layout {
 interface Popup {
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
-  oldTooltip: string,
   origTitle: string,
   wikiCode: string,
   langCode: string,
@@ -250,13 +249,9 @@ function createPopup(
   foreignTitle = normalizeTitle(foreignTitle);
   langCode = normalizeLang(langCode);
 
-  const oldTooltip = anchor.title;
-  anchor.title = ''; // Clear tooltip to prevent "double popups"
-
   return {
     elem: document.createElement('div'),
     anchor,
-    oldTooltip,
     origTitle,
     wikiCode,
     langCode,
@@ -281,7 +276,6 @@ async function detachPopup(popup: Popup) {
   await wait(DETACH_ANIMATION_MS);
 
   popup.elem.remove();
-  popup.anchor.title = popup.oldTooltip;
 }
 
 export { createPopup, attachPopup, detachPopup, Popup };

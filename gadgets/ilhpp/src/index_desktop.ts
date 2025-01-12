@@ -16,7 +16,7 @@ let detachmentAC = new AbortController();
 
 async function attachActivePopup() {
   // Guard section -- this need to also be executed immediately
-  // So place both in and out of critical part
+  // This section is idempotent, so it's safe to place both in and out of critical part
   if (activePopup) {
     if (!activeAnchor || activePopup.anchor === activeAnchor) {
       // `activeAnchor` is null: invalid state, should be detached first, do nothing
@@ -25,6 +25,11 @@ async function attachActivePopup() {
     } else {
       await detachActivePopupImmediately();
     }
+  }
+  // Defensively move title to data-tooltip to completely get rid of "double popups"
+  if (activeAnchor && activeAnchor.title) {
+    activeAnchor.dataset.tooltip = activeAnchor.title;
+    activeAnchor.title = '';
   }
 
   const release = await mutex.acquire();
