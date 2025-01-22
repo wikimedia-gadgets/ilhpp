@@ -4,9 +4,12 @@ import { Mutex, wait } from './utils';
 import { ATTACH_DELAY_MS, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE_LENGTH_PX } from './consts';
 
 let activePopup: Popup | null;
+// This is passed to `attachActivePopup` using closure instead of params
+// Because this can change after mutex acquisition, it must always have the latest information
+// to prevent attachments on incorrect items
 let mouseArgs: {
   activeAnchor: HTMLAnchorElement, cursorPageX: number, cursorPageY: number,
-} | null = null;
+} | null;
 
 const mutex = new Mutex();
 let attachmentAC = new AbortController();
