@@ -28,13 +28,6 @@ async function attachActivePopup() {
     }
   }
 
-  // We gave up :(
-  // Defensively move title to data-tooltip to completely get rid of "double popups"
-  if (mouseArgs?.activeAnchor && mouseArgs.activeAnchor.title) {
-    mouseArgs.activeAnchor.dataset.tooltip = mouseArgs.activeAnchor.title;
-    mouseArgs.activeAnchor.title = '';
-  }
-
   const release = await mutex.acquire();
   try {
     if (activePopup) {
@@ -126,7 +119,7 @@ function run(prefs: Preferences) {
         cancelDetachment();
       }
     }
-  });
+  }, true);
 
   document.body.addEventListener(
     'click',

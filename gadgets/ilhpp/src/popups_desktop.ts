@@ -20,6 +20,7 @@ interface Layout {
 interface Popup {
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
+  oldTooltip: string,
   origTitle: string,
   wikiCode: string,
   langCode: string,
@@ -68,13 +69,15 @@ function getLayout(layoutParam: LayoutParam): Layout {
   const height = layoutParam.popupRect.height;
 
   // Get the rect of the correct line the cursor is right in
+  // by determining which line's mid point the cursor is closest to
   // This will happen if the <a> is line wrapped
-  const currentAnchorLineRect = [...layoutParam.anchorRects].find(
-    (rect) =>
-      // Round to integer and minus 1 to prevent pixel rounding problems
-      Math.floor(pageScrollOffsetY + rect.top) - 1 <= layoutParam.cursorPageY
-      && layoutParam.cursorPageY < Math.ceil(pageScrollOffsetY + rect.bottom),
-  ) ?? layoutParam.anchorBoundingRect;
+  const currentAnchorLineRect = [...layoutParam.anchorRects]
+    .map((rect) => [
+      rect,
+      Math.abs(pageScrollOffsetY + (rect.top + rect.bottom) / 2 - layoutParam.cursorPageY),
+    ] as const)
+    .reduce((prev, curr) => curr[1] < prev[1] ? curr : prev)[0]
+    ?? layoutParam.anchorBoundingRect;
 
   const anchorPageTop = currentAnchorLineRect.top + pageScrollOffsetY;
   const anchorPageBottom = currentAnchorLineRect.bottom + pageScrollOffsetY;
@@ -249,9 +252,13 @@ function createPopup(
   foreignTitle = normalizeTitle(foreignTitle);
   langCode = normalizeLang(langCode);
 
+  const oldTooltip = anchor.title;
+  anchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+
   return {
     elem: document.createElement('div'),
     anchor,
+    oldTooltip,
     origTitle,
     wikiCode,
     langCode,
@@ -276,6 +283,7 @@ async function detachPopup(popup: Popup) {
   await wait(DETACH_ANIMATION_MS);
 
   popup.elem.remove();
+  popup.anchor.title = popup.oldTooltip;
 }
 
 export { createPopup, attachPopup, detachPopup, Popup };
