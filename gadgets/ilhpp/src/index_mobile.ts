@@ -1,5 +1,5 @@
 import { GREEN_ANCHOR_SELECTOR } from './consts';
-import { createAndAttachPopup } from './popups_mobile';
+import { attachPopup } from './popups_mobile';
 import { PopupMode, Preferences } from './prefs';
 
 function run(prefs: Preferences) {
@@ -14,7 +14,7 @@ function run(prefs: Preferences) {
               ev.preventDefault();
               // Block MobileFrontend's event listeners
               ev.stopImmediatePropagation();
-              createAndAttachPopup(anchor);
+              attachPopup(anchor);
             }
           }
         },

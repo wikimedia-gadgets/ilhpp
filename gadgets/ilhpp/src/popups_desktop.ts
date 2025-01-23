@@ -1,10 +1,15 @@
-import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR } from './consts';
+import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR, DETACH_DELAY_MS } from './consts';
 import { getPagePreview } from './network';
+import { getPreferences, PopupMode } from './prefs';
 import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
 
+interface CursorParam {
+  pageX: number,
+  pageY: number,
+}
+
 interface LayoutParam {
-  cursorPageX: number,
-  cursorPageY: number,
+  cursor?: CursorParam,
   popupRect: DOMRect,
   anchorBoundingRect: DOMRect,
   anchorRects: DOMRectList,
@@ -17,19 +22,30 @@ interface Layout {
   isBottom: boolean,
 }
 
+
+const enum State {
+  Attached,
+  Detached,
+}
+
 interface Popup {
+  state: State,
+
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
-  oldTooltip: string,
+  oldTooltip: string | null,
+
   origTitle: string,
   wikiCode: string,
   langCode: string,
   langName: string,
   foreignTitle: string,
   foreignHref: string,
-  cursorPageX: number,
-  cursorPageY: number
+
+  cursor?: CursorParam,
   abortController: AbortController,
+  detachHandler: () => void,
+  cancelDetachingHandler: () => void,
 }
 
 /**
@@ -68,25 +84,30 @@ function getLayout(layoutParam: LayoutParam): Layout {
   const width = layoutParam.popupRect.width;
   const height = layoutParam.popupRect.height;
 
+  // Falls back to this value to align with left boundary
+  const cursorPageX = layoutParam.cursor?.pageX
+    ?? layoutParam.anchorBoundingRect.left + PTR_SHORT_SIDE_LENGTH_PX;
+
   // Get the rect of the correct line the cursor is right in
   // by determining which line's mid point the cursor is closest to
   // This will happen if the <a> is line wrapped
-  const currentAnchorLineRect = [...layoutParam.anchorRects]
-    .map((rect) => [
-      rect,
-      Math.abs(pageScrollOffsetY + (rect.top + rect.bottom) / 2 - layoutParam.cursorPageY),
-    ] as const)
-    .reduce((prev, curr) => curr[1] < prev[1] ? curr : prev)[0]
-    ?? layoutParam.anchorBoundingRect;
+  const currentAnchorLineRect = layoutParam.cursor
+    ? [...layoutParam.anchorRects]
+      .map((rect) => [
+        rect,
+        Math.abs(pageScrollOffsetY + (rect.top + rect.bottom) / 2 - layoutParam.cursor!.pageY),
+      ] as const)
+      .reduce((prev, curr) => curr[1] < prev[1] ? curr : prev)[0]
+    : layoutParam.anchorBoundingRect; // Falls back to full bounding rect
 
   const anchorPageTop = currentAnchorLineRect.top + pageScrollOffsetY;
   const anchorPageBottom = currentAnchorLineRect.bottom + pageScrollOffsetY;
 
   // X: Right if cursor at left half, left if at right half
-  const isRight = layoutParam.cursorPageX < pageScrollOffsetX + viewpointWidth / 2;
+  const isRight = cursorPageX < pageScrollOffsetX + viewpointWidth / 2;
   const pageX = isRight
-    ? layoutParam.cursorPageX - PTR_SHORT_SIDE_LENGTH_PX
-    : layoutParam.cursorPageX - width + PTR_SHORT_SIDE_LENGTH_PX;
+    ? cursorPageX - PTR_SHORT_SIDE_LENGTH_PX
+    : cursorPageX - width + PTR_SHORT_SIDE_LENGTH_PX;
 
   // Y: Bottom if anchor at top half, top if at bottom half
   // This should always align with the current line, so use the anchor's coordinate
@@ -157,8 +178,7 @@ function buildPopup(popup: Popup) {
     popupRect: rect,
     anchorBoundingRect: popup.anchor.getBoundingClientRect(),
     anchorRects: popup.anchor.getClientRects(),
-    cursorPageX: popup.cursorPageX,
-    cursorPageY: popup.cursorPageY,
+    cursor: popup.cursor,
   });
   root.style.top = `${layout.pageY}px`;
   root.style.left = `${layout.pageX}px`;
@@ -179,6 +199,12 @@ function buildPopup(popup: Popup) {
     });
     observer.observe(popup.elem, { subtree: true, childList: true });
   }
+
+  root.addEventListener('mouseleave', popup.detachHandler);
+  popup.anchor.addEventListener('mouseleave', popup.detachHandler);
+
+  root.addEventListener('mouseenter', popup.cancelDetachingHandler);
+  popup.anchor.addEventListener('mouseenter', popup.cancelDetachingHandler);
 
   void getPagePreview(popup.wikiCode, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
@@ -224,8 +250,14 @@ function buildPopup(popup: Popup) {
   );
 }
 
-function createPopup(
-  anchor: HTMLAnchorElement, cursorPageX: number, cursorPageY: number,
+/**
+ *
+ * @param anchor
+ * @param cursor `undefined` if attaching is not caused by pointing devices (e.g. keyboard focus)
+ * @returns
+ */
+function attachPopup(
+  anchor: HTMLAnchorElement, oldTooltip: string | null, cursor?: CursorParam,
 ): Popup | null {
   const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
   if (!dataElement) {
@@ -252,10 +284,10 @@ function createPopup(
   foreignTitle = normalizeTitle(foreignTitle);
   langCode = normalizeLang(langCode);
 
-  const oldTooltip = anchor.title;
-  anchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+  let timeoutId: ReturnType<typeof setTimeout>;
 
-  return {
+  const popup: Popup = {
+    state: State.Attached,
     elem: document.createElement('div'),
     anchor,
     oldTooltip,
@@ -265,25 +297,48 @@ function createPopup(
     langName,
     foreignHref,
     foreignTitle,
-    cursorPageX,
-    cursorPageY,
+    cursor,
     abortController: new AbortController(),
+    detachHandler() {
+      if (getPreferences().popup === PopupMode.OnHover) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          void detachPopup(popup);
+        }, DETACH_DELAY_MS);
+      }
+    },
+    cancelDetachingHandler() {
+      if (getPreferences().popup === PopupMode.OnHover) {
+        clearTimeout(timeoutId);
+      }
+    },
   };
-}
 
-function attachPopup(popup: Popup) {
   buildPopup(popup);
   document.body.appendChild(popup.elem);
+
+  return popup;
 }
 
 async function detachPopup(popup: Popup) {
+  if (popup.state === State.Detached) {
+    return;
+  }
+
+  popup.state = State.Detached;
   popup.abortController.abort();
   popup.elem.classList.add(`${ROOT_CLASS_DESKTOP}--out`);
 
   await wait(DETACH_ANIMATION_MS);
 
+  if (popup.oldTooltip !== null) {
+    popup.anchor.title = popup.oldTooltip;
+  }
+
+  popup.anchor.removeEventListener('mouseleave', popup.detachHandler);
+  popup.anchor.removeEventListener('mouseenter', popup.cancelDetachingHandler);
+
   popup.elem.remove();
-  popup.anchor.title = popup.oldTooltip;
 }
 
-export { createPopup, attachPopup, detachPopup, Popup };
+export { attachPopup, detachPopup, Popup, CursorParam, State };

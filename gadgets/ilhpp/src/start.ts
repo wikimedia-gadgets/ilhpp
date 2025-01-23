@@ -56,15 +56,16 @@ const colorSelect = document.getElementById('color') as HTMLSelectElement | null
 if (colorSelect) {
   colorSelect.value = 'light';
   colorSelect.addEventListener('change', () => {
+    document.documentElement.className = document.documentElement.className.replace(/skin-theme-clientpref-\w+\b/g, '');
     switch (colorSelect.value) {
       case 'light':
-        document.documentElement.className = 'skin-theme-clientpref-day';
+        document.documentElement.classList.add('skin-theme-clientpref-day');
         break;
       case 'dark':
-        document.documentElement.className = 'skin-theme-clientpref-night';
+        document.documentElement.classList.add('skin-theme-clientpref-night');
         break;
       default: // OS
-        document.documentElement.className = 'skin-theme-clientpref-os';
+        document.documentElement.classList.add('skin-theme-clientpref-os');
         break;
     }
   });
@@ -198,6 +199,15 @@ if (mockMf) {
   window.matchMedia = () => ({ matches: mockMf.checked });
   mockMf.addEventListener('change', () => {
     mw.config.set('wgMFMode', mockMf.checked ? 'active' : undefined);
+  });
+}
+
+// Highlight no title functionality
+const highlightNoTitle = document.getElementById('highlight-no-title') as HTMLInputElement | null;
+if (highlightNoTitle) {
+  document.documentElement.classList.toggle('highlight-no-title', highlightNoTitle.checked);
+  highlightNoTitle.addEventListener('change', () => {
+    document.documentElement.classList.toggle('highlight-no-title', highlightNoTitle.checked);
   });
 }
 

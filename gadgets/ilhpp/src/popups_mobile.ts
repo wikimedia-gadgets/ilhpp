@@ -133,7 +133,7 @@ function buildPopup(popup: Popup) {
   );
 }
 
-function createAndAttachPopup(anchor: HTMLAnchorElement): Popup | null {
+function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
   if (!dataElement) {
     return null;
@@ -201,4 +201,4 @@ async function detachPopup(popup: Popup) {
   popup.overlay.remove();
 }
 
-export { createAndAttachPopup, detachPopup, Popup };
+export { attachPopup, detachPopup, Popup };

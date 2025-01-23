@@ -1,155 +1,88 @@
-import { attachPopup, createPopup, detachPopup, Popup } from './popups_desktop';
+import { attachPopup, detachPopup, Popup, State } from './popups_desktop';
 import { PopupMode, Preferences } from './prefs';
-import { Mutex, wait } from './utils';
-import { ATTACH_DELAY_MS, DETACH_DELAY_MS, GREEN_ANCHOR_SELECTOR, PTR_SHORT_SIDE_LENGTH_PX } from './consts';
+import { ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
 
 let activePopup: Popup | null;
-// This is passed to `attachActivePopup` using closure instead of params
-// Because this can change after mutex acquisition, it must always have the latest information
-// to prevent attachments on incorrect items
-let mouseArgs: {
-  activeAnchor: HTMLAnchorElement, cursorPageX: number, cursorPageY: number,
-} | null;
-
-const mutex = new Mutex();
-let attachmentAC = new AbortController();
-let detachmentAC = new AbortController();
-
-async function attachActivePopup() {
-  // Test reveals edge cases which need to be solved by detaching as soon as user interaction
-  // This section is idempotent, so it's safe to place both in and out of critical part
-  if (activePopup) {
-    if (mouseArgs && (!mouseArgs.activeAnchor || activePopup.anchor === mouseArgs.activeAnchor)) {
-      // `mouseArgs.activeAnchor` is null: invalid state, should be detached first, do nothing
-      // or `mouseArgs.activeAnchor` has popup on, also a no-op
-      return;
-    } else {
-      await detachActivePopupImmediately();
-    }
-  }
-
-  const release = await mutex.acquire();
-  try {
-    if (activePopup) {
-      if (mouseArgs && (!mouseArgs.activeAnchor || activePopup.anchor === mouseArgs.activeAnchor)) {
-        // `mouseArgs.activeAnchor` is null: invalid state, should be detached first, do nothing
-        // or `mouseArgs.activeAnchor` has popup on, also a no-op
-        return;
-      } else {
-        await detachActivePopupImmediately();
-      }
-    }
-
-    if (!mouseArgs) {
-      return;
-    }
-
-    activePopup = createPopup(mouseArgs.activeAnchor, mouseArgs.cursorPageX, mouseArgs.cursorPageY);
-    if (!activePopup) {
-      return;
-    }
-    await wait(ATTACH_DELAY_MS, attachmentAC.signal);
-    attachPopup(activePopup);
-  } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      // Attachment process cancelled, revert process
-      await detachActivePopupImmediately();
-    }
-
-  } finally {
-    release();
-  }
-}
-
-function cancelAttachment() {
-  attachmentAC.abort();
-  attachmentAC = new AbortController();
-}
-
-async function detachActivePopupImmediately() {
-  if (activePopup && activePopup.anchor !== mouseArgs?.activeAnchor) {
-    const currentActivePopup = activePopup;
-    activePopup = null;
-    await detachPopup(currentActivePopup);
-  }
-}
-
-async function detachActivePopup() {
-  const release = await mutex.acquire();
-  try {
-    if (activePopup && activePopup.anchor !== mouseArgs?.activeAnchor) {
-      await wait(DETACH_DELAY_MS, detachmentAC.signal);
-      await detachActivePopupImmediately();
-    }
-  } catch {
-    // No-op
-  } finally {
-    release();
-  }
-}
-
-function cancelDetachment() {
-  detachmentAC.abort();
-  detachmentAC = new AbortController();
-}
+let activeAnchor: HTMLAnchorElement | null;
+let activeAnchorTooltip: string | null;
+let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
 
 function run(prefs: Preferences) {
   document.body.addEventListener('mouseover', (ev) => {
     if (prefs.popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
-      const activeAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+      const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
-      if (activeAnchor) {
-        // Moving on an <a>
-        mouseArgs = {
-          activeAnchor,
-          cursorPageX: ev.pageX,
-          cursorPageY: ev.pageY,
-        };
-        cancelDetachment();
-        void attachActivePopup();
-      } else if (!activeAnchor && activePopup && !activePopup.elem.contains(ev.target)) {
-        // Moving out of <a> and popup
-        mouseArgs = null;
-        cancelAttachment();
-        void detachActivePopup();
-      } else {
-        // Moving out of <a> but to popup; or
-        // Moving out of <a> and no popup
-        mouseArgs = null;
-        cancelDetachment();
+      clearTimeout(mouseOverTimeoutId);
+      // Restore tooltips cleared by previous calls
+      if (activeAnchor && activeAnchorTooltip) {
+        activeAnchor.title = activeAnchorTooltip;
+        activeAnchor = null;
+        activeAnchorTooltip = null;
+      }
+      // Do not reattach when hovering on the same <a> with a popup
+      if (
+        currentAnchor
+        && (
+          activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor
+          || activePopup?.state !== State.Attached
+        )
+      ) {
+        if (activePopup) {
+          void detachPopup(activePopup);
+        }
+        activeAnchorTooltip = currentAnchor.getAttribute('title');
+        currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+        activeAnchor = currentAnchor;
+
+        mouseOverTimeoutId = setTimeout(() => {
+          activePopup = attachPopup(
+            currentAnchor,
+            activeAnchorTooltip,
+            { pageX: ev.pageX, pageY: ev.pageY },
+          );
+        }, ATTACH_DELAY_MS);
       }
     }
-  }, true);
+  });
 
   document.body.addEventListener(
     'click',
     (ev) => {
       if (prefs.popup === PopupMode.OnClick && ev.target instanceof HTMLElement) {
-        const oldAnchor = mouseArgs?.activeAnchor;
-        const activeAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+        const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
-        if (activeAnchor) {
-          mouseArgs = {
-            activeAnchor,
-            cursorPageX: ev.pageX,
-            cursorPageY: ev.pageY,
-          };
-          if (!activePopup || oldAnchor !== mouseArgs.activeAnchor) {
-            // No popup for active <a>, should prevent navigation
+        if (currentAnchor) {
+          // Do not prevent navigation when clicking on the same <a> with a popup
+          if (
+            activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor
+            || activePopup?.state !== State.Attached
+          ) {
             ev.stopImmediatePropagation();
             ev.preventDefault();
           }
-          cancelDetachment();
-          void attachActivePopup();
+
+          // Is there an active popup on another <a>?
+          if (
+            activePopup
+            && activePopup.state === State.Attached
+            && activePopup.anchor !== currentAnchor
+          ) {
+            void detachPopup(activePopup);
+          }
+          const oldTooltip = currentAnchor.getAttribute('title');
+          currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+
+          activePopup = attachPopup(currentAnchor, oldTooltip, {
+            pageX: ev.pageX,
+            pageY: ev.pageY,
+          });
         } else if (!activePopup?.elem.contains(ev.target)) {
           // Clicked something else outside of popup and <a>
-          if (activePopup) {
+          if (activePopup && activePopup.state === State.Attached) {
             ev.stopImmediatePropagation();
             ev.preventDefault();
+            void detachPopup(activePopup);
           }
-          mouseArgs = null;
-          cancelAttachment();
-          void detachActivePopup();
         }
       }
     },
@@ -159,22 +92,35 @@ function run(prefs: Preferences) {
   document.body.addEventListener('focusin', (ev) => {
     // Only handle this in hover mode, otherwise it causes conflicts
     if (prefs.popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
-      const activeAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+      const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
-      if (activeAnchor) {
-        // Assume align with <a> vertically
-        const rect = activeAnchor.getBoundingClientRect();
-        mouseArgs = {
-          activeAnchor,
-          cursorPageX: rect.left + PTR_SHORT_SIDE_LENGTH_PX,
-          cursorPageY: rect.top,
-        };
-        cancelDetachment();
-        void attachActivePopup();
+      // Do not reattach when hovering on the same <a> with a popup
+      if (currentAnchor) {
+        if (
+          activePopup
+          && (
+            activePopup.state === State.Attached && activePopup.anchor !== currentAnchor
+            || activePopup.state !== State.Attached
+          )
+        ) {
+          // Is there an active popup on another <a>?
+          if (
+            activePopup
+            && activePopup.state === State.Attached
+            && activePopup.anchor !== currentAnchor
+          ) {
+            void detachPopup(activePopup);
+          }
+          const oldTooltip = currentAnchor.getAttribute('title');
+          currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+
+          activePopup = attachPopup(currentAnchor, oldTooltip);
+        }
       } else if (!activePopup?.elem.contains(ev.target)) {
-        mouseArgs = null;
-        cancelAttachment();
-        void detachActivePopup();
+        // Focused something else outside of popup and <a>
+        if (activePopup && activePopup.state === State.Attached) {
+          void detachPopup(activePopup);
+        }
       }
     }
   });
