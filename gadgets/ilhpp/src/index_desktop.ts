@@ -14,7 +14,11 @@ function run(prefs: Preferences) {
 
       clearTimeout(mouseOverTimeoutId);
       // Restore tooltips cleared by previous calls
-      if (activeAnchor && activeAnchorTooltip) {
+      if (
+        activeAnchor
+        && activeAnchorTooltip
+        && activePopup?.state !== State.Attached
+      ) {
         activeAnchor.title = activeAnchorTooltip;
         activeAnchor = null;
         activeAnchorTooltip = null;

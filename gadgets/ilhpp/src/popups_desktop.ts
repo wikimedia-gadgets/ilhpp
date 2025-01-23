@@ -329,11 +329,11 @@ async function detachPopup(popup: Popup) {
   popup.abortController.abort();
   popup.elem.classList.add(`${ROOT_CLASS_DESKTOP}--out`);
 
-  await wait(DETACH_ANIMATION_MS);
-
   if (popup.oldTooltip !== null) {
     popup.anchor.title = popup.oldTooltip;
   }
+
+  await wait(DETACH_ANIMATION_MS);
 
   popup.anchor.removeEventListener('mouseleave', popup.detachHandler);
   popup.anchor.removeEventListener('mouseenter', popup.cancelDetachingHandler);
