@@ -2,10 +2,11 @@ import { attachPopup, detachPopup, Popup, State } from './popups_desktop';
 import { PopupMode, Preferences } from './prefs';
 import { ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
 
-let activePopup: Popup | null;
-let activeAnchor: HTMLAnchorElement | null;
-let activeAnchorTooltip: string | null;
+let activePopup: Popup | null = null;
+let activeAnchor: HTMLAnchorElement | null = null;
+let activeAnchorTooltip: string | null = null;
 let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
+let isTabPressed = false;
 
 function run(prefs: Preferences) {
   document.body.addEventListener('mouseover', (ev) => {
@@ -93,19 +94,28 @@ function run(prefs: Preferences) {
     true, // Add at capture phase to "mock an overlay"
   );
 
+  document.body.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Tab') {
+      isTabPressed = true;
+    }
+  });
+
+  document.body.addEventListener('keyup', (ev) => {
+    if (ev.key === 'Tab') {
+      isTabPressed = false;
+    }
+  });
+
   document.body.addEventListener('focusin', (ev) => {
     // Only handle this in hover mode, otherwise it causes conflicts
-    if (prefs.popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+    if (isTabPressed && prefs.popup !== PopupMode.Disabled && ev.target instanceof HTMLElement) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
       // Do not reattach when hovering on the same <a> with a popup
       if (currentAnchor) {
         if (
-          activePopup
-          && (
-            activePopup.state === State.Attached && activePopup.anchor !== currentAnchor
-            || activePopup.state !== State.Attached
-          )
+          activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor
+          || activePopup?.state !== State.Attached
         ) {
           // Is there an active popup on another <a>?
           if (
