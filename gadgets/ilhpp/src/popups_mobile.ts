@@ -76,8 +76,12 @@ function buildPopup(popup: Popup) {
   settingsButton.className = `${ROOT_CLASS_MOBILE}__settings ilhpp-mobile-button`;
   settingsButton.ariaLabel = settingsButton.title = mw.msg('ilhpp-settings');
   settingsButton.addEventListener('click', () => {
-    settingsButton.disabled = true;
-    // TODO: Load ilhpp-settings
+    void (async () => {
+      settingsButton.disabled = true;
+      const { showSettingsDialog } = await import('ext.gadget.ilhpp-settings');
+      void detachPopup(popup);
+      showSettingsDialog();
+    })();
   });
 
   root.append(header, subheader, closeButton, extract, moreButton, cta, settingsButton);
@@ -171,4 +175,4 @@ async function detachPopup(popup: Popup) {
   popup.overlay.remove();
 }
 
-export { attachPopup, detachPopup, Popup };
+export { type Popup, attachPopup, detachPopup };

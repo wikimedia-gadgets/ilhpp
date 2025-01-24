@@ -210,4 +210,3 @@ if (highlightNoTitle) {
     document.documentElement.classList.toggle('highlight-no-title', highlightNoTitle.checked);
   });
 }
-

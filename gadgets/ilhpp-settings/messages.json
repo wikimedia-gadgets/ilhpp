@@ -1,0 +1,70 @@
+{
+  "ilhpps-title": {
+    "hans": "跨语言链接设置",
+    "hant": "跨語言連結設定"
+  },
+  "ilhpps-link-mode": {
+    "hans": "链接外观",
+    "hant": "連結外觀"
+  },
+  "ilhpps-link-mode-orig": {
+    "hans": "只显示内部链接",
+    "hant": "只顯示內部連結"
+  },
+  "ilhpps-link-mode-orig-n-unlinked-foreign": {
+    "hans": "显示内部链接和不含链接的原文",
+    "hant": "顯示內部連結和不含連結的原文"
+  },
+  "ilhpps-link-mode-foreign": {
+    "hans": "只显示外部链接",
+    "hant": "只顯示外部連結"
+  },
+  "ilhpps-link-mode-foreign-n-lang-code": {
+    "hans": "显示外部链接和语言名后缀",
+    "hant": "顯示外部連結和語言名字尾"
+  },
+  "ilhpps-popup-mode": {
+    "hans": "弹框模式",
+    "hant": "彈框模式"
+  },
+  "ilhpps-popup-mode-disabled": {
+    "hans": "禁用",
+    "hant": "禁用"
+  },
+  "ilhpps-popup-mode-on-hover": {
+    "hans": "光标悬浮时显示",
+    "hant": "游標懸浮時顯示"
+  },
+  "ilhpps-popup-mode-on-click": {
+    "hans": "点击时显示",
+    "hant": "點選時顯示"
+  },
+  "ilhpps-popup-mode-footnote": {
+    "hans": "移动设备上将始终在点击时显示。",
+    "hant": "移動裝置上將始終在點選時顯示。"
+  },
+  "ilhpps-orig-link-color": {
+    "hans": "内部链接颜色",
+    "hant": "內部連結顏色"
+  },
+  "ilhpps-orig-link-color-red": {
+    "hans": "红色",
+    "hant": "紅色"
+  },
+  "ilhpps-orig-link-color-green": {
+    "hans": "绿色",
+    "hant": "綠色"
+  },
+  "ilhpps-highlight-existing": {
+    "hans": "高亮显示本地已存在条目的跨语言链接",
+    "hant": "高亮顯示本地已存在條目的跨語言連結"
+  },
+  "ilhpps-ok": {
+    "hans": "确定",
+    "hant": "確定"
+  },
+  "ilhpps-footnote": {
+    "hans": "如要完全关闭本工具，请登录后在参数设置 → 小工具中关闭。",
+    "hant": "如要完全關閉本工具，請登入後在偏好設定 → 小工具中關閉。"
+  }
+}

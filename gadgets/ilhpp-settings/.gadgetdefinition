@@ -1,1 +1,1 @@
-* ilhpp-settings[ResourceLoader|dependencies=ext.gadget.HanAssist,vue]|ilhpp-settings.js|ilhpp-settings.css
+* ilhpp-settings[ResourceLoader|package|hidden|dependencies=ext.gadget.HanAssist,ext.gadget.ilhpp,vue,@wikimedia/codex]|ilhpp-settings.js|ilhpp-settings.css

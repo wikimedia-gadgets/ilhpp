@@ -40,6 +40,11 @@ function debounce<T extends (...args: any[]) => unknown>(func: T, delay: number)
   } as T;
 }
 
+// FIXME: Currently use the old method as structuredClone is not widely available
+function deepClone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj)) as T;
+}
+
 function throttle<T extends (...args: any[]) => unknown>(func: T, limit: number): T {
   let inThrottle = false;
   return function (this: unknown, ...args: any[]) {
@@ -117,7 +122,7 @@ class Mutex {
 }
 
 export {
-  isMobileDevice, wait, debounce,
+  isMobileDevice, wait, debounce, deepClone,
   throttle, queueTask, getDirection,
   normalizeTitle, normalizeLang, isWikipedia,
   Mutex,

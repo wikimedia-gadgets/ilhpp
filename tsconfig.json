@@ -8,10 +8,19 @@
       "DOM",
       "DOM.Iterable"
     ],
+    "paths": {
+      "ext.gadget.ilhpp": [
+        "./gadgets/ilhpp/src/index"
+      ],
+      "ext.gadget.ilhpp-settings": [
+        "./gadgets/ilhpp-settings/src/index"
+      ],
+    },
     "rootDir": ".",
     "outDir": "dist",
     "strict": true,
     "skipLibCheck": true,
+    "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
   },
@@ -19,6 +28,7 @@
     "gadgets/*/src/**/*.ts",
     "gadgets/*/src/**/*.d.ts",
     "gadgets/*/src/**/*.tsx",
+    "gadgets/*/src/**/*.vue",
     "gadgets/*/*.config.js",
     "scripts/*.js",
     "eslint.config.js"

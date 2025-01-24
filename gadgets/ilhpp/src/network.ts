@@ -67,4 +67,4 @@ interface PagePreview {
   mainHtml: string,
 }
 
-export { Dir, PagePreview, getPagePreview };
+export { type Dir, type PagePreview, getPagePreview };

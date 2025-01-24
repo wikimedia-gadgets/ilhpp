@@ -43,4 +43,4 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
   };
 }
 
-export { PopupBase, createPopupBase };
+export { type PopupBase, createPopupBase };

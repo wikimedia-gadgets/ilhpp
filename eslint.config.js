@@ -2,11 +2,13 @@
 
 import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 
 export default tsEslint.config(
   eslint.configs.recommended,
   ...tsEslint.configs.recommendedTypeChecked,
+  ...pluginVue.configs['flat/recommended'],
   {
     ignores: [
       'dist/',
@@ -16,13 +18,18 @@ export default tsEslint.config(
   {
     languageOptions: {
       parserOptions: {
-        project: true,
+        projectService: true,
+        parser: tsEslint.parser,
         tsconfigRootDir: import.meta.dirname,
+        extraFileExtensions: ['.vue'],
       },
     },
   },
   {
-    files: ['**/*.js'],
+    files: [
+      '**/*.js',
+      'gadgets/ilhpp-settings/**', // Incompatible with Vue
+    ],
     ...tsEslint.configs.disableTypeChecked,
   },
   {

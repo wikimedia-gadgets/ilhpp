@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 import { name as packageName } from './package.json';
 import browserslistToEsbuild from '../../scripts/browserslist_to_esbuild';
 import autoprefixer from 'autoprefixer';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig(({ command }) => {
   return {
@@ -17,6 +18,9 @@ export default defineConfig(({ command }) => {
     resolve: command === 'serve' ? {
       alias: {
         'ext.gadget.HanAssist': 'hanassist',
+        'ext.gadget.ilhpp': `${import.meta.dirname}/src/index`,
+        'ext.gadget.ilhpp-settings': `${import.meta.dirname}/../ilhpp-settings/src/start2`,
+        vue: `${import.meta.dirname}/../ilhpp-settings/node_modules/vue`,
       },
     } : undefined,
 
@@ -48,10 +52,12 @@ export default defineConfig(({ command }) => {
     },
 
     plugins: [
+      vue(),
       {
         enforce: 'pre',
         ...mwGadget({
           gadgetDef: '.gadgetdefinition',
+          softDependencies: ['ext.gadget.ilhpp-settings'],
         }),
       },
     ],

@@ -23,7 +23,6 @@ interface Layout {
   isBottom: boolean,
 }
 
-
 const enum State {
   Attached,
   Detached,
@@ -160,8 +159,12 @@ function buildPopup(popup: Popup) {
   settingsButton.className = `${cta.className}__settings`;
   settingsButton.ariaLabel = settingsButton.title = mw.msg('ilhpp-settings');
   settingsButton.addEventListener('click', () => {
-    settingsButton.disabled = true;
-    // TODO: Load ilhpp-settings
+    void (async () => {
+      settingsButton.disabled = true;
+      const { showSettingsDialog } = await import('ext.gadget.ilhpp-settings');
+      void detachPopup(popup);
+      showSettingsDialog();
+    })();
   });
 
   cta.append(ctaInner, settingsButton);
@@ -310,4 +313,4 @@ async function detachPopup(popup: Popup) {
   popup.elem.remove();
 }
 
-export { attachPopup, detachPopup, Popup, CursorParam, State };
+export { type Popup, type CursorParam, State, attachPopup, detachPopup };

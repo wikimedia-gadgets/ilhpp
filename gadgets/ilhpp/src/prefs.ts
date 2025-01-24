@@ -1,4 +1,5 @@
 import { PREF_KEY_LS, PREF_KEY_MW } from './consts';
+import { deepClone } from './utils';
 
 enum LinkMode {
   Orig = 'ORIG',
@@ -54,12 +55,10 @@ function toCSSClassNames(prefs: Preferences): string[] {
 
 function getPreferences(): Preferences {
   if (currentPrefs) {
-    return currentPrefs;
+    return deepClone(currentPrefs);
   }
 
-  // Deep clone DEFAULT_PREFS
-  // FIXME: Currently use the old method as structuredClone is not widely available
-  let result = JSON.parse(JSON.stringify(DEFAULT_PREFS)) as Preferences;
+  let result = deepClone(DEFAULT_PREFS);
 
   try {
     const mwOptionSerialized = mw.user.options.get(PREF_KEY_MW) as string | null;
@@ -126,7 +125,7 @@ function getPreferences(): Preferences {
 }
 
 async function setPreferences(prefs: Preferences) {
-  currentPrefs = prefs;
+  currentPrefs = deepClone(prefs);
 
   document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
   document.documentElement.classList.add(...toCSSClassNames(prefs));
@@ -149,6 +148,6 @@ async function setPreferences(prefs: Preferences) {
 }
 
 export {
-  LinkMode, OrigLinkColor, PopupMode, Preferences,
+  LinkMode, OrigLinkColor, PopupMode, type Preferences,
   getPreferences, setPreferences,
 };
