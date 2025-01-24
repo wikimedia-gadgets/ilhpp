@@ -1,4 +1,4 @@
-import { DETACH_ANIMATION_MS, MOBILE_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
+import { MB_DETACH_ANIMATION_MS, MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
 import { getDirection, isWikipedia, wait } from './utils';
@@ -60,7 +60,7 @@ function buildPopup(popup: Popup) {
   extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen`;
   extractInner.dir = 'auto';
 
-  Array.from({ length: MOBILE_SKELETON_STRIPE_COUNT }).forEach(() => {
+  Array.from({ length: MB_SKELETON_STRIPE_COUNT }).forEach(() => {
     const skeletonStripe = document.createElement('div');
     skeletonStripe.className = 'ilhpp-mobile-skeleton';
     extractInner.appendChild(skeletonStripe);
@@ -164,7 +164,7 @@ async function detachPopup(popup: Popup) {
   popup.overlay.classList.add(`${OVERLAY_CLASS_MOBILE}--out`);
   popup.elem.classList.add(`${ROOT_CLASS_MOBILE}--out`);
 
-  await wait(DETACH_ANIMATION_MS);
+  await wait(MB_DETACH_ANIMATION_MS);
 
   document.body.classList.remove('ilhpp-scroll-locked');
   popup.elem.remove();

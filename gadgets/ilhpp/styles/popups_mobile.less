@@ -48,8 +48,8 @@
 
 .ilhpp-mobile-button {
   appearance: none;
-  background-color: @mw-dark-background-color-transparent;
-  border-color: @mw-dark-border-color-transparent;
+  background-color: var(--background-color-transparent, transparent);
+  border-color: var(--border-color-transparent, transparent);
   border-style: solid;
   border-width: @border-width-base;
   border-radius: @border-radius-base;
@@ -60,7 +60,7 @@
   font-size: inherit;
   font-weight: 700;
   text-decoration: none;
-  color: @mw-dark-color-inverted-fixed;
+  color: var(--color-base, #202122);
   -webkit-tap-highlight-color: transparent;
 
   padding: @mobile-padding-button;
@@ -69,19 +69,19 @@
   align-items: center;
 
   &:hover:not(:disabled) {
-    background-color: @mw-dark-background-color-interactive-subtle--hover;
-    mix-blend-mode: @mw-dark-mix-blend-mode-blend;
+    background-color: var(--background-color-interactive-subtle--hover, #eaecf0);
+    mix-blend-mode: var(--mix-blend-mode-blend, multiply);
     text-decoration: none;
   }
 
   &:active:not(:disabled) {
-    background-color: @mw-dark-background-color-interactive-subtle--active;
+    background-color: var(--background-color-interactive-subtle--active, #dadde3);
     text-decoration: none;
   }
 
   &:focus:not(:active):not(:disabled) {
-    border-color: @mw-dark-border-color-progressive--focus;
-    box-shadow: inset 0 0 0 1px @mw-dark-box-shadow-color-progressive--focus;
+    border-color: var(--border-color-progressive--focus, #36c);
+    box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus, #36c);
     text-decoration: none;
   }
 
@@ -90,28 +90,29 @@
   }
 
   &:disabled::before {
-    background-color: @mw-dark-color-disabled;
+    background-color: var(--color-disabled, #a2a9b1);
   }
 
   &--primary-progressive {
-    background-color: @mw-dark-background-color-progressive;
-    border-color: @mw-dark-border-color-transparent;
+    color: var(--color-inverted-fixed, #fff);
+    background-color: var(--background-color-progressive, #36c);
+    border-color: var(--border-color-transparent, transparent);
 
     &:hover:not(:disabled) {
-      background-color: @mw-dark-background-color-progressive--hover;
-      border-color: @mw-dark-border-color-transparent;
+      background-color: var(--background-color-progressive--hover, #3056a9);
+      border-color: var(--border-color-transparent, transparent);
       mix-blend-mode: unset;
     }
 
     &:active:not(:disabled) {
-      background-color: @mw-dark-background-color-progressive--active;
-      border-color: @mw-dark-border-color-transparent;
+      background-color: var(--background-color-progressive--active, #233566);
+      border-color: var(--border-color-transparent, transparent);
     }
 
     &:focus:not(:active):not(:disabled) {
-      border-color: @mw-dark-border-color-progressive--focus;
-      box-shadow: inset 0 0 0 1px @mw-dark-box-shadow-color-progressive--focus,
-        inset 0 0 0 2px @mw-dark-box-shadow-color-inverted;
+      border-color: var(--border-color-progressive--focus, #36c);
+      box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus, #36c),
+        inset 0 0 0 2px var(--box-shadow-color-inverted, #fff);
     }
   }
 }
@@ -128,10 +129,10 @@
   flex-direction: column;
   align-items: center;
 
-  animation: ilhpp-fade-in 0.2s ease forwards;
+  animation: ilhpp-fade-in 400ms linear forwards;
 
   &--out {
-    animation: ilhpp-fade-out 0.2s ease forwards !important;
+    animation: ilhpp-fade-out 400ms linear forwards !important;
   }
 }
 
@@ -142,11 +143,11 @@
   max-width: 500px;
   overflow: hidden;
 
-  animation: ilhpp-slide-in-from-bottom 0.2s ease forwards;
-  color: @mw-dark-color-base;
+  animation: ilhpp-slide-in-from-bottom 400ms @mobile-ease-in-out-circle forwards;
+  color: var(--color-base, #202122);
   border-top-left-radius: @border-radius-base;
   border-top-right-radius: @border-radius-base;
-  background-color: @mw-dark-background-color-base; // Fixed dark
+  background-color: var(--background-color-base, #fff);
 
   display: grid;
   grid-template-rows: auto;
@@ -180,7 +181,7 @@
     grid-column: 2;
 
     font-size: @font-size-small;
-    color: @mw-dark-color-subtle;
+    color: var(--color-subtle, #c8ccd1);
     margin-left: @popup-margin-wide;
   }
 
@@ -209,6 +210,10 @@
     margin: @popup-margin-base @popup-margin-wide 0;
     position: relative;
 
+    // Hardcode the min height to 7lh
+    @precise-7lh: $font-size * $line-height * @lines-shown;
+    min-height: @precise-7lh;
+
     &__inner {
       // HACK: Uses the de-facto standard -webkit-line-clamp to show a fixed number of lines
       // FIXME: Fix this once becoming a real standard
@@ -222,11 +227,7 @@
         margin: 0;
       }
 
-      // We are dark, always invert
-      .skin-invert {
-        color-scheme: light;
-        filter: invert(1) hue-rotate(180deg);
-      }
+      // Note: .skin-invert is handled by MW, so there's no worry about black text on dark backgrounds
     }
   }
 
@@ -265,7 +266,7 @@
     grid-column: 2;
 
     font-size: @font-size-small;
-    color: @mw-dark-color-subtle;
+    color: var(--color-subtle, #54595d);
     margin-top: @popup-margin-base;
     margin-left: @popup-margin-wide;
     margin-right: @popup-margin-thin;
@@ -273,14 +274,14 @@
     word-break: break-all;
 
     a {
-      color: @mw-dark-color-progressive;
+      color: var(--color-progressive, #36c);
 
       &:hover {
-        color: @mw-dark-color-progressive--hover;
+        color: var(--color-progressive--hover, #3056a9);
       }
 
       &:active {
-        color: @mw-dark-color-progressive--active;
+        color: var(--color-progressive--active, #233566);
       }
     }
   }
@@ -373,7 +374,7 @@
           height: (@precise-7lh / 6) * 0.7;
           margin-top: (@precise-7lh / 6) - $height;
           width: 100%;
-          background: @mw-dark-background-color-neutral;
+          background: var(--background-color-neutral, #eaecf0);
           border-radius: 9999px;
           animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
 
@@ -396,6 +397,16 @@
   &--loading&--foreign-rtl {
     .ilhpp-mobile-skeleton {
       margin-left: auto;
+    }
+  }
+
+  &--wikidata &,
+  &--disam &,
+  &--error & {
+    &__extract {
+      text-align: center;
+      // Make this at vertically middle point
+      padding-top: $font-size * $line-height * floor((@lines-shown / 2));
     }
   }
 
@@ -431,18 +442,18 @@
   &--standard&--foreign-ltr & {
     &__extract::after {
       right: 0;
-      background-image: linear-gradient(to right, rgba(255, 255, 255, 0), @mw-dark-background-color-base 50%);
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
     }
   }
 
   &--standard&--foreign-rtl & {
     &__extract::after {
       left: 0;
-      background-image: linear-gradient(to left, rgba(255, 255, 255, 0), @mw-dark-background-color-base 50%);
+      background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
     }
   }
 
   &--out {
-    animation: ilhpp-slide-out-to-bottom 0.2s ease forwards !important;
+    animation: ilhpp-slide-out-to-bottom 400ms @mobile-ease-in-out-circle forwards !important;
   }
 }

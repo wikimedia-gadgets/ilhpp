@@ -1,4 +1,4 @@
-import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DETACH_DELAY_MS } from './consts';
+import { DT_PTR_SHORT_SIDE_LENGTH_PX, DT_PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DT_DETACH_ANIMATION_MS, DT_DETACH_DELAY_MS } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
 import { getPreferences, PopupMode } from './prefs';
@@ -80,7 +80,7 @@ function getLayout(layoutParam: LayoutParam): Layout {
 
   // Falls back to this value to align with left boundary
   const cursorPageX = layoutParam.cursor?.pageX
-    ?? layoutParam.anchorBoundingRect.left + PTR_SHORT_SIDE_LENGTH_PX;
+    ?? layoutParam.anchorBoundingRect.left + DT_PTR_SHORT_SIDE_LENGTH_PX;
 
   // Get the rect of the correct line the cursor is right in
   // by determining which line's mid point the cursor is closest to
@@ -100,15 +100,15 @@ function getLayout(layoutParam: LayoutParam): Layout {
   // X: Right if cursor at left half, left if at right half
   const isRight = cursorPageX < pageScrollOffsetX + viewpointWidth / 2;
   const pageX = isRight
-    ? cursorPageX - PTR_SHORT_SIDE_LENGTH_PX
-    : cursorPageX - width + PTR_SHORT_SIDE_LENGTH_PX;
+    ? cursorPageX - DT_PTR_SHORT_SIDE_LENGTH_PX
+    : cursorPageX - width + DT_PTR_SHORT_SIDE_LENGTH_PX;
 
   // Y: Bottom if anchor at top half, top if at bottom half
   // This should always align with the current line, so use the anchor's coordinate
   const isBottom = anchorPageTop < pageScrollOffsetY + viewpointHeight / 2;
   const pageY = isBottom
-    ? anchorPageBottom + PTR_WIDTH_PX
-    : anchorPageTop - height - PTR_WIDTH_PX;
+    ? anchorPageBottom + DT_PTR_WIDTH_PX
+    : anchorPageTop - height - DT_PTR_WIDTH_PX;
 
   return { pageX, pageY, isRight, isBottom };
 }
@@ -273,7 +273,7 @@ function attachPopup(
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
           void detachPopup(popup);
-        }, DETACH_DELAY_MS);
+        }, DT_DETACH_DELAY_MS);
       }
     },
     cancelDetachingHandler() {
@@ -302,7 +302,7 @@ async function detachPopup(popup: Popup) {
     popup.anchor.title = popup.oldTooltip;
   }
 
-  await wait(DETACH_ANIMATION_MS);
+  await wait(DT_DETACH_ANIMATION_MS);
 
   popup.anchor.removeEventListener('mouseleave', popup.detachHandler);
   popup.anchor.removeEventListener('mouseenter', popup.cancelDetachingHandler);

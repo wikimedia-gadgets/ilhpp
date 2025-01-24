@@ -1,6 +1,6 @@
 import { attachPopup, detachPopup, Popup, State } from './popups_desktop';
 import { PopupMode, Preferences } from './prefs';
-import { ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
+import { DT_ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
 
 let activePopup: Popup | null = null;
 let activeAnchor: HTMLAnchorElement | null = null;
@@ -45,7 +45,7 @@ function run(prefs: Preferences) {
             activeAnchorTooltip,
             { pageX: ev.pageX, pageY: ev.pageY },
           );
-        }, ATTACH_DELAY_MS);
+        }, DT_ATTACH_DELAY_MS);
       }
     }
   });
