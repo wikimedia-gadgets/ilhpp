@@ -1,5 +1,5 @@
 import { attachPopup, detachPopup, Popup, State } from './popups_desktop';
-import { PopupMode, Preferences } from './prefs';
+import { getPreferences, PopupMode } from './prefs';
 import { DT_ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
 
 let activePopup: Popup | null = null;
@@ -8,9 +8,9 @@ let activeAnchorTooltip: string | null = null;
 let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
 let isTabPressed = false;
 
-function run(prefs: Preferences) {
+function run() {
   document.body.addEventListener('mouseover', (ev) => {
-    if (prefs.popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+    if (getPreferences().popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
       clearTimeout(mouseOverTimeoutId);
@@ -53,7 +53,7 @@ function run(prefs: Preferences) {
   document.body.addEventListener(
     'click',
     (ev) => {
-      if (prefs.popup === PopupMode.OnClick && ev.target instanceof HTMLElement) {
+      if (getPreferences().popup === PopupMode.OnClick && ev.target instanceof HTMLElement) {
         const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
         if (currentAnchor) {
@@ -108,7 +108,11 @@ function run(prefs: Preferences) {
 
   document.body.addEventListener('focusin', (ev) => {
     // Only handle this in hover mode, otherwise it causes conflicts
-    if (isTabPressed && prefs.popup !== PopupMode.Disabled && ev.target instanceof HTMLElement) {
+    if (
+      isTabPressed
+      && getPreferences().popup !== PopupMode.Disabled
+      && ev.target instanceof HTMLElement
+    ) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
       // Do not reattach when hovering on the same <a> with a popup

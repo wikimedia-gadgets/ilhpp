@@ -1,14 +1,14 @@
 import { GREEN_ANCHOR_SELECTOR } from './consts';
 import { attachPopup } from './popups_mobile';
-import { PopupMode, Preferences } from './prefs';
+import { getPreferences, PopupMode } from './prefs';
 
-function run(prefs: Preferences) {
+function run() {
   mw.hook('wikipage.content').add(($content) => {
     $content.each((_, root) => {
       root.addEventListener(
         'click',
         (ev) => {
-          if (prefs.popup !== PopupMode.Disabled && ev.target instanceof HTMLElement) {
+          if (getPreferences().popup !== PopupMode.Disabled && ev.target instanceof HTMLElement) {
             const anchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
             if (anchor) {
               ev.preventDefault();

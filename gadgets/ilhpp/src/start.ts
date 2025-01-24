@@ -3,6 +3,7 @@
 import '../styles/mockup.less';
 import $ from 'jquery';
 import { getPreferences, LinkMode, OrigLinkColor, PopupMode, setPreferences } from './prefs';
+import { PREF_KEY_LS } from './consts';
 
 // Mockups
 const mwMessageMap = new Map<string, string>();
@@ -88,18 +89,18 @@ loadButton?.addEventListener('click', () => {
         ['popup-mode', PopupMode, 'popup'],
         ['orig-link-color', OrigLinkColor, 'origLinkColor'],
       ] as const).forEach(([id, enumName, prefKey]) => {
-        const linkModeSelect = document.getElementById(id) as HTMLSelectElement | null;
-        if (linkModeSelect) {
+        const select = document.getElementById(id) as HTMLSelectElement | null;
+        if (select) {
           Object.values(enumName).forEach((item: string) => {
             const option = document.createElement('option');
             option.value = item;
             option.innerText = item;
-            linkModeSelect.appendChild(option);
-            linkModeSelect.value = prefs[prefKey];
+            select.appendChild(option);
+            select.value = prefs[prefKey];
           });
 
-          linkModeSelect.addEventListener('change', () => {
-            (prefs[prefKey] as string) = linkModeSelect.value;
+          select.addEventListener('change', () => {
+            (prefs[prefKey] as string) = select.value;
             void setPreferences(prefs);
           });
         }
@@ -210,3 +211,31 @@ if (highlightNoTitle) {
     document.documentElement.classList.toggle('highlight-no-title', highlightNoTitle.checked);
   });
 }
+
+// ilhpp-settings update sync
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const realSetItem = localStorage.setItem;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+Object.getPrototypeOf(localStorage).setItem = function (...args: Parameters<typeof realSetItem>) {
+  realSetItem.apply(this, args);
+
+  setTimeout(() => {
+    const newPrefs = getPreferences();
+
+    ([
+      ['link-mode', newPrefs.link],
+      ['popup-mode', newPrefs.popup],
+      ['orig-link-color', newPrefs.origLinkColor],
+    ] as const).forEach(([id, newValue]) => {
+      const select = document.getElementById(id) as HTMLSelectElement | null;
+      if (select) {
+        select.value = newValue;
+      }
+    });
+
+    const highlightExisting = document.getElementById('highlight-existing') as HTMLInputElement | null;
+    if (highlightExisting) {
+      highlightExisting.checked = newPrefs.highlightExisting;
+    }
+  }, 0);
+};

@@ -17,7 +17,7 @@ function toggleInactivityClass() {
 }
 
 // Initialize
-const prefs = getPreferences();
+getPreferences();
 mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
 
 if (mw.config.get('wgMFMode')) {
@@ -26,9 +26,9 @@ if (mw.config.get('wgMFMode')) {
 }
 
 if (isMobileDevice()) {
-  runMobile(prefs);
+  runMobile();
 } else {
-  runDesktop(prefs);
+  runDesktop();
 }
 
 export {
