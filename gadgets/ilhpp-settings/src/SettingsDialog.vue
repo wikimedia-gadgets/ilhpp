@@ -82,14 +82,13 @@ function onPrimary() {
     </CdxField>
 
     <template #footer-text>
-      <!-- MF is messing around font size, so do it ourselves -->
-      <span class="ilhpps-small">{{ msg('ilhpps-footnote') }}</span>
+      {{ msg('ilhpps-footnote') }}
     </template>
   </CdxDialog>
 </template>
 
 <style lang="less" scoped>
 .ilhpps-small {
-  font-size: .875rem !important;
+  font-size: .875rem;
 }
 </style>
