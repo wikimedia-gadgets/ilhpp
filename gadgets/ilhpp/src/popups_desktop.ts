@@ -1,7 +1,8 @@
-import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DATA_ELEM_SELECTOR, INTERWIKI_A_SELECTOR, ILH_LANG_SELECTOR, DETACH_DELAY_MS } from './consts';
+import { PTR_SHORT_SIDE_LENGTH_PX, PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DETACH_ANIMATION_MS, DETACH_DELAY_MS } from './consts';
 import { getPagePreview } from './network';
+import { createPopupBase, PopupBase } from './popups';
 import { getPreferences, PopupMode } from './prefs';
-import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
+import { getDirection, isWikipedia, wait } from './utils';
 
 interface CursorParam {
   pageX: number,
@@ -28,19 +29,12 @@ const enum State {
   Detached,
 }
 
-interface Popup {
+interface Popup extends PopupBase {
   state: State,
 
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
   oldTooltip: string | null,
-
-  origTitle: string,
-  wikiCode: string,
-  langCode: string,
-  langName: string,
-  foreignTitle: string,
-  foreignHref: string,
 
   cursor?: CursorParam,
   abortController: AbortController,
@@ -259,44 +253,19 @@ function buildPopup(popup: Popup) {
 function attachPopup(
   anchor: HTMLAnchorElement, oldTooltip: string | null, cursor?: CursorParam,
 ): Popup | null {
-  const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
-  if (!dataElement) {
+  const popupBase = createPopupBase(anchor);
+  if (!popupBase) {
     return null;
   }
-
-  const interwikiAnchor = dataElement.querySelector<HTMLAnchorElement>(INTERWIKI_A_SELECTOR);
-  if (!interwikiAnchor) {
-    return null;
-  }
-  const foreignHref = interwikiAnchor.href;
-
-  const origTitle = dataElement.dataset.origTitle;
-  const wikiCode = dataElement.dataset.langCode;
-  let langCode = wikiCode;
-  // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
-  const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
-  let foreignTitle = dataElement.dataset.foreignTitle;
-
-  if (!origTitle || !wikiCode || !langCode || !langName || !foreignTitle) {
-    return null;
-  }
-
-  foreignTitle = normalizeTitle(foreignTitle);
-  langCode = normalizeLang(langCode);
 
   let timeoutId: ReturnType<typeof setTimeout>;
 
   const popup: Popup = {
+    ...popupBase,
     state: State.Attached,
     elem: document.createElement('div'),
     anchor,
     oldTooltip,
-    origTitle,
-    wikiCode,
-    langCode,
-    langName,
-    foreignHref,
-    foreignTitle,
     cursor,
     abortController: new AbortController(),
     detachHandler() {

@@ -1,17 +1,12 @@
-import { DATA_ELEM_SELECTOR, DETACH_ANIMATION_MS, ILH_LANG_SELECTOR, INTERWIKI_A_SELECTOR, MOBILE_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
+import { DETACH_ANIMATION_MS, MOBILE_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
-import { getDirection, isWikipedia, normalizeLang, normalizeTitle, wait } from './utils';
+import { createPopupBase, PopupBase } from './popups';
+import { getDirection, isWikipedia, wait } from './utils';
 
-interface Popup {
+interface Popup extends PopupBase {
   overlay: HTMLElement,
   elem: HTMLElement,
   anchor: HTMLAnchorElement,
-  origTitle: string,
-  wikiCode: string,
-  langCode: string,
-  langName: string,
-  foreignTitle: string,
-  foreignHref: string,
   abortController: AbortController,
 }
 
@@ -134,30 +129,10 @@ function buildPopup(popup: Popup) {
 }
 
 function attachPopup(anchor: HTMLAnchorElement): Popup | null {
-  const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
-  if (!dataElement) {
+  const popupBase = createPopupBase(anchor);
+  if (!popupBase) {
     return null;
   }
-
-  const interwikiAnchor = dataElement.querySelector<HTMLAnchorElement>(INTERWIKI_A_SELECTOR);
-  if (!interwikiAnchor) {
-    return null;
-  }
-  const foreignHref = interwikiAnchor.href;
-
-  const origTitle = dataElement.dataset.origTitle;
-  const wikiCode = dataElement.dataset.langCode;
-  let langCode = wikiCode;
-  // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
-  const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
-  let foreignTitle = dataElement.dataset.foreignTitle;
-
-  if (!origTitle || !wikiCode || !langCode || !langName || !foreignTitle) {
-    return null;
-  }
-
-  foreignTitle = normalizeTitle(foreignTitle);
-  langCode = normalizeLang(langCode);
 
   const overlay = document.createElement('div');
   overlay.className = OVERLAY_CLASS_MOBILE;
@@ -168,15 +143,10 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   const abortController = new AbortController();
 
   const result: Popup = {
+    ...popupBase,
     overlay,
     elem,
     anchor,
-    origTitle,
-    wikiCode,
-    langCode,
-    langName,
-    foreignTitle,
-    foreignHref,
     abortController,
   };
 
