@@ -162,7 +162,7 @@ function buildPopup(popup: Popup) {
     void (async () => {
       settingsButton.disabled = true;
       const { showSettingsDialog } = await import('ext.gadget.ilhpp-settings');
-      void detachPopup(popup);
+      await detachPopup(popup);
       showSettingsDialog();
     })();
   });
