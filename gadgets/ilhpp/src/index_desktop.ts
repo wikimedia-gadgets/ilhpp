@@ -9,8 +9,13 @@ let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
 let isTabPressed = false;
 
 function run() {
+  const hoverMediaList = matchMedia('(hover: hover)');
+
   document.body.addEventListener('mouseover', (ev) => {
-    if (getPreferences().popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+    if (
+      getPreferences().popup === PopupMode.OnHover && hoverMediaList.matches
+      && ev.target instanceof HTMLElement
+    ) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
       clearTimeout(mouseOverTimeoutId);
@@ -53,7 +58,10 @@ function run() {
   document.body.addEventListener(
     'click',
     (ev) => {
-      if (getPreferences().popup === PopupMode.OnClick && ev.target instanceof HTMLElement) {
+      if (
+        (getPreferences().popup === PopupMode.OnClick || !hoverMediaList.matches)
+        && ev.target instanceof HTMLElement
+      ) {
         const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
 
         if (currentAnchor) {
