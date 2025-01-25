@@ -66,13 +66,14 @@ function run() {
             ev.preventDefault();
           }
 
-          // Is there an active popup on another <a>?
-          if (
-            activePopup
-            && activePopup.state === State.Attached
-            && activePopup.anchor !== currentAnchor
-          ) {
-            void detachPopup(activePopup);
+          if (activePopup && activePopup.state === State.Attached) {
+            // Is there an active popup on another <a>?
+            if (activePopup.anchor !== currentAnchor) {
+              void detachPopup(activePopup);
+            } else {
+              // No-op
+              return;
+            }
           }
           const oldTooltip = currentAnchor.getAttribute('title');
           currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
