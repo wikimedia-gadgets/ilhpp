@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { CdxDialog, CdxField, CdxRadio, CdxCheckbox } from '@wikimedia/codex';
 import { msg } from './utils';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { LinkMode, OrigLinkColor, PopupMode, Preferences } from 'ext.gadget.ilhpp';
 
 const isOpen = defineModel<boolean>('open', { default: true });
 const prefs = defineModel<Preferences>('prefs', { required: true });
 const emit = defineEmits<{
-  save: []
+  save: [],
 }>();
-
 const isFallbackTipsShowing = ref(false);
+const arePrefsChanged = ref(false);
+watch(
+  prefs,
+  () => {
+    arePrefsChanged.value = true;
+  },
+  { once: true, deep: true },
+);
 
 function onPrimary() {
   if (prefs.value.popup === PopupMode.Disabled && !isFallbackTipsShowing.value) {
@@ -27,7 +34,9 @@ function onPrimary() {
   <CdxDialog
     v-model:open="isOpen"
     :title="msg('ilhpps-title')"
-    :primary-action="{ label: msg('ilhpps-ok'), actionType: 'progressive' }"
+    :primary-action="{
+      label: msg('ilhpps-ok'), actionType: 'progressive', disabled: !arePrefsChanged,
+    }"
     :use-close-button="true"
     @primary="onPrimary"
   >
