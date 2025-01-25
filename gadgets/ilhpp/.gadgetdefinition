@@ -1,1 +1,1 @@
-* ilhpp[ResourceLoader|package|dependencies=ext.gadget.HanAssist,mediawiki.user,user.options]|ilhpp.js|ilhpp.css
+* ilhpp[ResourceLoader|package|default|dependencies=ext.gadget.HanAssist,mediawiki.user,user.options]|ilhpp.js|ilhpp.css
