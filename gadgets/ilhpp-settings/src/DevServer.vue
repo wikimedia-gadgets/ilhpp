@@ -1,10 +1,10 @@
 <!-- Vite dev server. This script is never run in the browser! -->
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref } from 'vue';
 import SettingsDialog from './SettingsDialog.vue';
 import { CdxButton } from '@wikimedia/codex';
-import { getPreferences, Preferences } from 'ext.gadget.ilhpp';
+import { getPreferences } from 'ext.gadget.ilhpp';
 
 let isSettingsDialogOpen = ref(false);
 let prefs = reactive(getPreferences());

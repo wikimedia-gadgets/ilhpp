@@ -1,4 +1,4 @@
-import { PREF_KEY_LS, PREF_KEY_MW } from './consts';
+import { FOOTER_ANCHOR_ID, PREF_KEY_LS, PREF_KEY_MW } from './consts';
 import { deepClone } from './utils';
 
 enum LinkMode {
@@ -126,24 +126,39 @@ function getPreferences(): Preferences {
 
 async function setPreferences(prefs: Preferences) {
   currentPrefs = deepClone(prefs);
-
-  document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
-  document.documentElement.classList.add(...toCSSClassNames(prefs));
-
   const serialized = JSON.stringify(prefs);
 
   // Save to both local storage and MediaWiki user options
   // so that when user logged out, it is not lost
-  try {
-    localStorage.setItem(PREF_KEY_LS, serialized);
-  }
-  catch { }
-
   if (mw.user.isNamed()) {
     const response = await new mw.Api().saveOption(PREF_KEY_MW, serialized);
     if (response.options !== 'success') {
       throw new Error('Failed to save options!');
     }
+  }
+
+  localStorage.setItem(PREF_KEY_LS, serialized);
+
+  document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
+  document.documentElement.classList.add(...toCSSClassNames(prefs));
+
+  document.getElementById(FOOTER_ANCHOR_ID)?.remove();
+  if (prefs.popup === PopupMode.Disabled) {
+    const li = document.createElement('li');
+    li.id = FOOTER_ANCHOR_ID;
+    const settingsAnchor = document.createElement('a');
+    settingsAnchor.href = '#';
+    settingsAnchor.innerText = mw.msg('ilhpp-settings-footer');
+    settingsAnchor.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      void (async () => {
+        const { showSettingsDialog } = await import('ext.gadget.ilhpp-settings');
+        showSettingsDialog();
+      })();
+    });
+
+    li.appendChild(settingsAnchor);
+    document.getElementById('footer-places')?.appendChild(li);
   }
 }
 

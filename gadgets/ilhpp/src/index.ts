@@ -11,14 +11,14 @@ import { isMobileDevice } from './utils';
 import runDesktop from './index_desktop';
 import runMobile from './index_mobile';
 
+// Initialize
+const prefs = getPreferences();
+mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
+
 function toggleInactivityClass() {
   // Deactivate if MF editor is active, activate otherwise
   document.documentElement.classList.toggle('ilhpp-inactive', location.hash.includes('/editor/'));
 }
-
-// Initialize
-getPreferences();
-mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
 
 if (mw.config.get('wgMFMode')) {
   window.addEventListener('hashchange', toggleInactivityClass);
