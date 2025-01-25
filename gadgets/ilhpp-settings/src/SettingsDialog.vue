@@ -90,6 +90,6 @@ function onPrimary() {
 
 <style lang="less" scoped>
 .ilhpps-small {
-  font-size: .875rem !important;
+  font-size: .875rem;
 }
 </style>
