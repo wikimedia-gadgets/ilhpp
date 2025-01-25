@@ -53,6 +53,30 @@ function toCSSClassNames(prefs: Preferences): string[] {
   return result;
 }
 
+function reflectChanges(prefs: Preferences) {
+  document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
+  document.documentElement.classList.add(...toCSSClassNames(prefs));
+
+  document.getElementById(FOOTER_ANCHOR_ID)?.remove();
+  if (prefs.popup === PopupMode.Disabled) {
+    const li = document.createElement('li');
+    li.id = FOOTER_ANCHOR_ID;
+    const settingsAnchor = document.createElement('a');
+    settingsAnchor.href = '#';
+    settingsAnchor.innerText = mw.msg('ilhpp-settings-footer');
+    settingsAnchor.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      void (async () => {
+        const { showSettingsDialog } = await import('ext.gadget.ilhpp-settings');
+        showSettingsDialog();
+      })();
+    });
+
+    li.appendChild(settingsAnchor);
+    document.getElementById('footer-places')?.appendChild(li);
+  }
+}
+
 function getPreferences(): Preferences {
   if (currentPrefs) {
     return deepClone(currentPrefs);
@@ -95,7 +119,7 @@ function getPreferences(): Preferences {
     }
 
     // Precedence: MW options > local storage > default
-    result = mwOptionPrefs ?? localStoragePrefs ?? DEFAULT_PREFS;
+    result = mwOptionPrefs ?? localStoragePrefs ?? result;
 
     // Sync between these
     if (!mwOptionPrefs) {
@@ -120,7 +144,7 @@ function getPreferences(): Preferences {
   catch { }
 
   currentPrefs = result;
-  document.documentElement.classList.add(...toCSSClassNames(result));
+  reflectChanges(result);
   return result;
 }
 
@@ -138,28 +162,7 @@ async function setPreferences(prefs: Preferences) {
   }
 
   localStorage.setItem(PREF_KEY_LS, serialized);
-
-  document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
-  document.documentElement.classList.add(...toCSSClassNames(prefs));
-
-  document.getElementById(FOOTER_ANCHOR_ID)?.remove();
-  if (prefs.popup === PopupMode.Disabled) {
-    const li = document.createElement('li');
-    li.id = FOOTER_ANCHOR_ID;
-    const settingsAnchor = document.createElement('a');
-    settingsAnchor.href = '#';
-    settingsAnchor.innerText = mw.msg('ilhpp-settings-footer');
-    settingsAnchor.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      void (async () => {
-        const { showSettingsDialog } = await import('ext.gadget.ilhpp-settings');
-        showSettingsDialog();
-      })();
-    });
-
-    li.appendChild(settingsAnchor);
-    document.getElementById('footer-places')?.appendChild(li);
-  }
+  reflectChanges(prefs);
 }
 
 export {

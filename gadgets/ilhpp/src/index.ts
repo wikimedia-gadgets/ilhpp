@@ -12,8 +12,8 @@ import runDesktop from './index_desktop';
 import runMobile from './index_mobile';
 
 // Initialize
-const prefs = getPreferences();
 mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
+const _ = getPreferences();
 
 function toggleInactivityClass() {
   // Deactivate if MF editor is active, activate otherwise

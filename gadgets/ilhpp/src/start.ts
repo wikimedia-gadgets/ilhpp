@@ -21,6 +21,11 @@ Object.defineProperties(window, {
         isNamed() {
           return false; // Mock up an anonymous user
         },
+        options: {
+          get() {
+            return null;
+          },
+        },
       },
       config: new Map([
         ['wgUserLanguage', 'zh-cn'],
