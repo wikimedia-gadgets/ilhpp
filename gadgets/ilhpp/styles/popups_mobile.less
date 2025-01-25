@@ -213,7 +213,6 @@
     // Hardcode the min height to 7lh
     @precise-7lh: $font-size * $line-height * @lines-shown;
     min-height: @precise-7lh;
-    box-sizing: border-box;
 
     &__inner {
       // HACK: Uses the de-facto standard -webkit-line-clamp to show a fixed number of lines
@@ -406,8 +405,9 @@
   &--error & {
     &__extract {
       text-align: center;
-      // Make this at vertically middle point
-      padding-top: $font-size * $line-height * floor((@lines-shown / 2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
