@@ -1,6 +1,6 @@
+// Mockups. This is not included in the build!
 import $ from 'jquery';
 
-// Mockups. This is not included in the build!
 const mwMessageMap = new Map<string, string>();
 Object.defineProperties(window, {
   mw: {

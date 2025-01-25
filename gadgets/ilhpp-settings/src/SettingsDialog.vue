@@ -5,6 +5,7 @@ import { ref, watch } from 'vue';
 import { LinkMode, OrigLinkColor, PopupMode, Preferences } from 'ext.gadget.ilhpp';
 
 const isOpen = defineModel<boolean>('open', { default: true });
+const isDisabled = defineModel<boolean>('disabled', { default: false });
 const prefs = defineModel<Preferences>('prefs', { required: true });
 const emit = defineEmits<{
   save: [],
@@ -18,13 +19,19 @@ watch(
   },
   { once: true, deep: true },
 );
+watch(isOpen, (newValue) => {
+  if (newValue) {
+    // Reset to initial state
+    isFallbackTipsShowing.value = false;
+    isDisabled.value = false;
+  }
+});
 
 function onPrimary() {
   if (prefs.value.popup === PopupMode.Disabled && !isFallbackTipsShowing.value) {
     isFallbackTipsShowing.value = true;
   } else {
-    isFallbackTipsShowing.value = false;
-    isOpen.value = false;
+    // Note the dialog is not closed. Let client code handle it.
     emit('save');
   }
 }
@@ -35,13 +42,18 @@ function onPrimary() {
     v-model:open="isOpen"
     :title="msg('ilhpps-title')"
     :primary-action="{
-      label: msg('ilhpps-ok'), actionType: 'progressive', disabled: !arePrefsChanged,
+      label: msg('ilhpps-ok'),
+      actionType: 'progressive',
+      disabled: isDisabled || !arePrefsChanged,
     }"
     :use-close-button="true"
     @primary="onPrimary"
   >
     <div v-if="!isFallbackTipsShowing">
-      <CdxField :is-fieldset="true">
+      <CdxField
+        :is-fieldset="true"
+        :disabled="isDisabled"
+      >
         <template #label>
           {{ msg('ilhpps-link-mode') }}
         </template>
@@ -56,7 +68,10 @@ function onPrimary() {
         </CdxRadio>
       </CdxField>
 
-      <CdxField :is-fieldset="true">
+      <CdxField
+        :is-fieldset="true"
+        :disabled="isDisabled"
+      >
         <template #label>
           {{ msg('ilhpps-popup-mode') }}
         </template>
@@ -77,7 +92,10 @@ function onPrimary() {
         </CdxRadio>
       </CdxField>
 
-      <CdxField :is-fieldset="true">
+      <CdxField
+        :is-fieldset="true"
+        :disabled="isDisabled"
+      >
         <template #label>
           {{ msg('ilhpps-orig-link-color') }}
         </template>
@@ -92,7 +110,10 @@ function onPrimary() {
         </CdxRadio>
       </CdxField>
 
-      <CdxField :is-fieldset="true">
+      <CdxField
+        :is-fieldset="true"
+        :disabled="isDisabled"
+      >
         <CdxCheckbox v-model="prefs.highlightExisting">
           {{ msg('ilhpps-highlight-existing') }}
         </CdxCheckbox>
@@ -140,7 +161,7 @@ function onPrimary() {
       background-image: url(../assets/footer-link-ltr-dark.svg);
     });
   }
-
+  
   &__text {
     margin-left: 8px;
     margin-top: calc(@height - 1.2em * 2);

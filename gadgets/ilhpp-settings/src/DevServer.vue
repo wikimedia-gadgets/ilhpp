@@ -7,10 +7,15 @@ import { CdxButton } from '@wikimedia/codex';
 import { getPreferences } from 'ext.gadget.ilhpp';
 
 let isSettingsDialogOpen = ref(false);
+let isSettingsDialogDisabled = ref(false);
 let prefs = reactive(getPreferences());
 
-function onSave() {
-  alert(`Save ${JSON.stringify(prefs)}!`);
+function onSaving() {
+  isSettingsDialogDisabled.value = true;
+  setTimeout(() => {
+    alert(`Save ${JSON.stringify(prefs)} success!`);
+    isSettingsDialogOpen.value = false;
+  }, 3000);
 }
 </script>
 
@@ -21,18 +26,23 @@ function onSave() {
     Toggle settings dialog
   </CdxButton>
 
-
+  <p>Dialog will close after 3s to mock up saving</p>
   <p>Prefs: {{ prefs }}</p>
 
   <SettingsDialog
     v-model:open="isSettingsDialogOpen"
+    v-model:disabled="isSettingsDialogDisabled"
     v-model:prefs="prefs"
-    @save="onSave"
+    @save="onSaving"
   />
 </template>
 
 <style lang="less">
 #app {
   padding: 4px;
+}
+
+.saving-dialog {
+  z-index: 9999;
 }
 </style>
