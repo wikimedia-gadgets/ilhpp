@@ -1,8 +1,13 @@
 import { GREEN_ANCHOR_SELECTOR } from './consts';
 import { attachPopup } from './popups_mobile';
 import { getPreferences, PopupMode } from './prefs';
+import { haveConflicts } from './utils';
 
 function run() {
+  if (haveConflicts()) {
+    return;
+  }
+
   mw.hook('wikipage.content').add(($content) => {
     $content.each((_, root) => {
       root.addEventListener(

@@ -1,6 +1,7 @@
 import { attachPopup, detachPopup, Popup, State } from './popups_desktop';
 import { getPreferences, PopupMode } from './prefs';
 import { DT_ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
+import { haveConflicts } from './utils';
 
 let activePopup: Popup | null = null;
 let activeAnchor: HTMLAnchorElement | null = null;
@@ -9,6 +10,10 @@ let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
 let isTabPressed = false;
 
 function run() {
+  if (haveConflicts()) {
+    return;
+  }
+
   const hoverMediaList = matchMedia('(hover: hover)');
 
   document.body.addEventListener('mouseover', (ev) => {

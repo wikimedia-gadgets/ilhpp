@@ -1,5 +1,5 @@
 import { FOOTER_ANCHOR_ID, PREF_KEY_LS, PREF_KEY_MW } from './consts';
-import { deepClone } from './utils';
+import { deepClone, haveConflicts } from './utils';
 
 enum LinkMode {
   Orig = 'ORIG',
@@ -58,7 +58,8 @@ function reflectChanges(prefs: Preferences) {
   document.documentElement.classList.add(...toCSSClassNames(prefs));
 
   document.getElementById(FOOTER_ANCHOR_ID)?.remove();
-  if (prefs.popup === PopupMode.Disabled) {
+  // When having conflicts or popup mode is disabled, add a setting entry at the footer
+  if (haveConflicts() || prefs.popup === PopupMode.Disabled) {
     const li = document.createElement('li');
     li.id = FOOTER_ANCHOR_ID;
     const settingsAnchor = document.createElement('a');

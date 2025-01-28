@@ -7,7 +7,7 @@ import '../styles/popups_mobile.less';
 
 import { batchConv } from 'ext.gadget.HanAssist';
 import { getPreferences, LinkMode, OrigLinkColor, PopupMode, Preferences, setPreferences } from './prefs';
-import { isMobileDevice } from './utils';
+import { haveConflicts, isMobileDevice } from './utils';
 import runDesktop from './index_desktop';
 import runMobile from './index_mobile';
 
@@ -16,10 +16,10 @@ mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
 const _ = getPreferences();
 
 function toggleInactivityClass() {
-  // Deactivate if MF editor is active, activate otherwise
   document.documentElement.classList.toggle('ilhpp-inactive', location.hash.includes('/editor/'));
 }
 
+// Deactivate if MF editor is active, activate otherwise
 if (mw.config.get('wgMFMode')) {
   window.addEventListener('hashchange', toggleInactivityClass);
   toggleInactivityClass();
@@ -33,5 +33,5 @@ if (isMobileDevice()) {
 
 export {
   type Preferences, LinkMode, OrigLinkColor, PopupMode,
-  getPreferences, setPreferences,
+  getPreferences, setPreferences, haveConflicts,
 };

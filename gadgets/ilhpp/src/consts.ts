@@ -14,6 +14,7 @@ export const RTL_LANGS = [
   'ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ug', 'dv', 'syr',
 ];
 export const FOOTER_ANCHOR_ID = 'ilhpp-footer-places-settings';
+export const NAV_POPUP_OPTION_NAME = 'gadget-Navigation_popups';
 
 // Desktop popup specific
 export const DT_PAGE_POPUP_PADDING_PX = 10;

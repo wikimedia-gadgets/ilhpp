@@ -43,6 +43,10 @@
     "hans": "移动设备上将始终在点击时显示。",
     "hant": "移動裝置上將始終在點選時顯示。"
   },
+  "ilhpps-popup-have-conflicts": {
+    "hans": "请先关闭导航Popup小工具，才可使用本功能。",
+    "hant": "請先關閉導航Popup小工具，才可使用本功能。"
+  },
   "ilhpps-orig-link-color": {
     "hans": "内部链接颜色",
     "hant": "內部連結顏色"

@@ -1,4 +1,4 @@
-import { RTL_LANGS } from './consts';
+import { NAV_POPUP_OPTION_NAME, RTL_LANGS } from './consts';
 import { Dir } from './network';
 
 function isMobileDevice(): boolean {
@@ -32,38 +32,9 @@ function wait(ms: number, signal?: AbortSignal) {
   });
 }
 
-function debounce<T extends (...args: any[]) => unknown>(func: T, delay: number): T {
-  let id: ReturnType<typeof setTimeout> | undefined;
-  return function (this: unknown, ...args: any[]) {
-    clearTimeout(id);
-    id = setTimeout(() => func.apply(this, args), delay);
-  } as T;
-}
-
 // FIXME: Currently use the old method as structuredClone is not widely available
 function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T;
-}
-
-function throttle<T extends (...args: any[]) => unknown>(func: T, limit: number): T {
-  let inThrottle = false;
-  return function (this: unknown, ...args: any[]) {
-    if (!inThrottle) {
-      inThrottle = true;
-      func.apply(this, args);
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  } as T;
-}
-
-function queueTask(func: (...args: any[]) => unknown) {
-  if (queueMicrotask) {
-    queueMicrotask(func);
-  } else {
-    setTimeout(func, 0);
-  }
 }
 
 /**
@@ -107,23 +78,11 @@ function isWikipedia(wikiId: string): boolean {
   return wikiId !== 'd';
 }
 
-class Mutex {
-  private lock: Promise<void> = Promise.resolve();
-
-  acquire(): Promise<() => void> {
-    let release: () => void;
-    const newLock = new Promise<void>((resolve) => {
-      release = resolve;
-    });
-    const currentLock = this.lock;
-    this.lock = this.lock.then(() => newLock);
-    return currentLock.then(() => release);
-  }
+function haveConflicts(): boolean {
+  return (mw.user.options.get(NAV_POPUP_OPTION_NAME) as number | string).toString() === '1';
 }
 
 export {
-  isMobileDevice, wait, debounce, deepClone,
-  throttle, queueTask, getDirection,
-  normalizeTitle, normalizeLang, isWikipedia,
-  Mutex,
+  isMobileDevice, wait, deepClone, getDirection,
+  normalizeTitle, normalizeLang, isWikipedia, haveConflicts,
 };

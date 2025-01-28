@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { CdxDialog, CdxField, CdxRadio, CdxCheckbox } from '@wikimedia/codex';
+import { CdxDialog, CdxField, CdxRadio, CdxCheckbox, CdxMessage } from '@wikimedia/codex';
 import { msg } from './utils';
 import { ref, watch } from 'vue';
-import { LinkMode, OrigLinkColor, PopupMode, Preferences } from 'ext.gadget.ilhpp';
+import { haveConflicts as haveConflictsFn, LinkMode, OrigLinkColor, PopupMode, Preferences } from 'ext.gadget.ilhpp';
 
 const isOpen = defineModel<boolean>('open', { default: true });
 const isDisabled = defineModel<boolean>('disabled', { default: false });
@@ -11,11 +11,12 @@ const emit = defineEmits<{
   save: [],
 }>();
 const isFallbackTipsShowing = ref(false);
-const arePrefsChanged = ref(false);
+const isAnyPrefChanged = ref(false);
+const haveConflicts = haveConflictsFn();
 watch(
   prefs,
   () => {
-    arePrefsChanged.value = true;
+    isAnyPrefChanged.value = true;
   },
   { once: true, deep: true },
 );
@@ -44,7 +45,7 @@ function onPrimary() {
     :primary-action="{
       label: msg('ilhpps-ok'),
       actionType: 'progressive',
-      disabled: isDisabled || !arePrefsChanged,
+      disabled: isDisabled || !isAnyPrefChanged,
     }"
     :use-close-button="true"
     @primary="onPrimary"
@@ -70,7 +71,8 @@ function onPrimary() {
 
       <CdxField
         :is-fieldset="true"
-        :disabled="isDisabled"
+        :disabled="isDisabled || haveConflicts"
+        :status="haveConflicts ? 'error' : 'default'"
       >
         <template #label>
           {{ msg('ilhpps-popup-mode') }}
@@ -90,6 +92,9 @@ function onPrimary() {
             <span class="ilhpps-small">{{ msg('ilhpps-popup-mode-footnote') }}</span>
           </template>
         </CdxRadio>
+        <template #error>
+          {{ msg('ilhpps-popup-have-conflicts') }}
+        </template>
       </CdxField>
 
       <CdxField
@@ -160,11 +165,11 @@ function onPrimary() {
     .mw-dark({
       background-image: url(../assets/footer-link-ltr-dark.svg);
     });
-  }
-  
-  &__text {
-    margin-left: 8px;
-    margin-top: calc(@height - 1.2em * 2);
-  }
+}
+
+&__text {
+  margin-left: 8px;
+  margin-top: calc(@height - 1.2em * 2);
+}
 }
 </style>

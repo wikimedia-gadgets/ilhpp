@@ -21,11 +21,7 @@ Object.defineProperties(window, {
         isNamed() {
           return false; // Mock up an anonymous user
         },
-        options: {
-          get() {
-            return null;
-          },
-        },
+        options: new Map(),
       },
       config: new Map([
         ['wgUserLanguage', 'zh-cn'],
@@ -201,10 +197,17 @@ document.addEventListener('keydown', (ev) => {
 const mockMf = document.getElementById('mock-mf') as HTMLInputElement | null;
 if (mockMf) {
   mw.config.set('wgMFMode', mockMf.checked ? 'active' : undefined);
-  // @ts-expect-error Only `matches` is used in the code
-  window.matchMedia = () => ({ matches: mockMf.checked });
   mockMf.addEventListener('change', () => {
     mw.config.set('wgMFMode', mockMf.checked ? 'active' : undefined);
+  });
+}
+
+// Nav popup mock functionality
+const mockNavPopup = document.getElementById('enable-nav-popup') as HTMLInputElement | null;
+if (mockNavPopup) {
+  mw.user.options.set('gadget-Navigation_popups', mockNavPopup.checked ? 1 : 0);
+  mockNavPopup.addEventListener('change', () => {
+    mw.user.options.set('gadget-Navigation_popups', mockNavPopup.checked ? 1 : 0);
   });
 }
 
