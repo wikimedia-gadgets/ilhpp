@@ -20,8 +20,8 @@ export default defineConfig(({ command }) => {
         'ext.gadget.HanAssist': 'hanassist',
         'ext.gadget.ilhpp': `${import.meta.dirname}/src/index`,
         'ext.gadget.ilhpp-settings': `${import.meta.dirname}/../ilhpp-settings/src/index`,
-        vue: `${import.meta.dirname}/../ilhpp-settings/src/mockup_vue`,
-        '@wikimedia/codex': `${import.meta.dirname}/../ilhpp-settings/src/mockup_codex`,
+        vue: `${import.meta.dirname}/../ilhpp-settings/server/mockup_vue`,
+        '@wikimedia/codex': `${import.meta.dirname}/../ilhpp-settings/server/mockup_codex`,
       },
     } : undefined,
 

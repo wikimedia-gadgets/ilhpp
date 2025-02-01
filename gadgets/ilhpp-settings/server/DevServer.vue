@@ -2,7 +2,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import SettingsDialog from './SettingsDialog.vue';
+import SettingsDialog from '../src/SettingsDialog.vue';
 import { CdxButton } from '@wikimedia/codex';
 import { getPreferences } from 'ext.gadget.ilhpp';
 

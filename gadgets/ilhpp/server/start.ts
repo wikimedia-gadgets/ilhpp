@@ -2,7 +2,7 @@
 
 import '../styles/mockup.less';
 import $ from 'jquery';
-import { getPreferences, LinkMode, OrigLinkColor, PopupMode, setPreferences } from './prefs';
+import { getPreferences, LinkMode, OrigLinkColor, PopupMode, setPreferences } from '../src/prefs';
 
 // Mockups
 const mwMessageMap = new Map<string, string>();
@@ -78,7 +78,7 @@ if (colorSelect) {
 // Load button logics
 const loadButton = document.getElementById('load');
 loadButton?.addEventListener('click', () => {
-  void import('./index').then(() => {
+  void import('../src/index').then(() => {
     (loadButton as HTMLInputElement).disabled = true;
 
     const options = document.getElementById('options');
