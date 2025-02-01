@@ -79,7 +79,7 @@ function isWikipedia(wikiId: string): boolean {
 }
 
 function haveConflicts(): boolean {
-  return (mw.user.options.get(NAV_POPUP_OPTION_NAME) as number | string).toString() === '1';
+  return String(mw.user.options.get(NAV_POPUP_OPTION_NAME) as number | string) === '1';
 }
 
 export {

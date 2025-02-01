@@ -19,6 +19,8 @@ export default defineConfig(({ command }) => {
         'ext.gadget.HanAssist': 'hanassist',
         'ext.gadget.ilhpp': `${import.meta.dirname}/../ilhpp/src/index`,
         'ext.gadget.ilhpp-settings': `${import.meta.dirname}/src/index`,
+        vue: `${import.meta.dirname}/src/mockup_vue`,
+        '@wikimedia/codex': `${import.meta.dirname}/src/mockup_codex`,
       },
     } : undefined,
 

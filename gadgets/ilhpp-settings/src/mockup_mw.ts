@@ -9,6 +9,7 @@ Object.defineProperties(window, {
         isNamed() {
           return false; // Mock up an anonymous user
         },
+        options: new Map(),
       },
       config: new Map([
         ['wgUserLanguage', 'zh-cn'],
@@ -28,6 +29,9 @@ Object.defineProperties(window, {
             return mwMessageMap.get(key)
               ?.replaceAll(/\[\[(.*)\|(.*)\]\]/g, '<a title="$1" href="/wiki/$1">$2</a>')
               ?.replaceAll(/\$(\d+)/g, (_, p1: string) => params[parseInt(p1) - 1]);
+          },
+          text() {
+            return mw.msg(key, ...params);
           },
         };
       },

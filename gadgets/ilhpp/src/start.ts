@@ -42,6 +42,9 @@ Object.defineProperties(window, {
               ?.replaceAll(/\[\[(.*)\|(.*)\]\]/g, '<a title="$1" href="/wiki/$1">$2</a>')
               ?.replaceAll(/\$(\d+)/g, (_, p1: string) => params[parseInt(p1) - 1]);
           },
+          text() {
+            return mw.msg(key, ...params);
+          },
         };
       },
       msg(key: string, ...params: string[]) {

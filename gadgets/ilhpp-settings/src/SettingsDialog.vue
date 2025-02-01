@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { CdxDialog, CdxField, CdxRadio, CdxCheckbox, CdxMessage } from '@wikimedia/codex';
-import { msg } from './utils';
+import { CdxDialog, CdxField, CdxRadio, CdxCheckbox } from '@wikimedia/codex';
 import { ref, watch } from 'vue';
 import { haveConflicts as haveConflictsFn, LinkMode, OrigLinkColor, PopupMode, Preferences } from 'ext.gadget.ilhpp';
 
@@ -41,9 +40,9 @@ function onPrimary() {
 <template>
   <CdxDialog
     v-model:open="isOpen"
-    :title="msg('ilhpps-title')"
+    :title="$i18n('ilhpps-title').text()"
     :primary-action="{
-      label: msg('ilhpps-ok'),
+      label: $i18n('ilhpps-ok').text(),
       actionType: 'progressive',
       disabled: isDisabled || !isAnyPrefChanged,
     }"
@@ -56,7 +55,7 @@ function onPrimary() {
         :disabled="isDisabled"
       >
         <template #label>
-          {{ msg('ilhpps-link-mode') }}
+          {{ $i18n('ilhpps-link-mode').text() }}
         </template>
         <CdxRadio
           v-for="option in LinkMode"
@@ -65,7 +64,7 @@ function onPrimary() {
           :input-value="option"
           name="ilhpps-link-mode"
         >
-          {{ msg(`ilhpps-link-mode-${option.toLowerCase().replace(/_/g, '-')}`) }}
+          {{ $i18n(`ilhpps-link-mode-${option.toLowerCase().replace(/_/g, '-')}`).text() }}
         </CdxRadio>
       </CdxField>
 
@@ -75,7 +74,7 @@ function onPrimary() {
         :status="haveConflicts ? 'error' : 'default'"
       >
         <template #label>
-          {{ msg('ilhpps-popup-mode') }}
+          {{ $i18n('ilhpps-popup-mode').text() }}
         </template>
         <CdxRadio
           v-for="option in PopupMode"
@@ -84,16 +83,16 @@ function onPrimary() {
           :input-value="option"
           name="ilhpps-popup-mode"
         >
-          {{ msg(`ilhpps-popup-mode-${option.toLowerCase().replace(/_/g, '-')}`) }}
+          {{ $i18n(`ilhpps-popup-mode-${option.toLowerCase().replace(/_/g, '-')}`).text() }}
           <template
             v-if="option === PopupMode.OnHover"
             #description
           >
-            <span class="ilhpps-small">{{ msg('ilhpps-popup-mode-footnote') }}</span>
+            <span class="ilhpps-small">{{ $i18n('ilhpps-popup-mode-footnote').text() }}</span>
           </template>
         </CdxRadio>
         <template #error>
-          {{ msg('ilhpps-popup-have-conflicts') }}
+          {{ $i18n('ilhpps-popup-have-conflicts').text() }}
         </template>
       </CdxField>
 
@@ -102,7 +101,7 @@ function onPrimary() {
         :disabled="isDisabled"
       >
         <template #label>
-          {{ msg('ilhpps-orig-link-color') }}
+          {{ $i18n('ilhpps-orig-link-color').text() }}
         </template>
         <CdxRadio
           v-for="option in OrigLinkColor"
@@ -111,7 +110,7 @@ function onPrimary() {
           :input-value="option"
           name="ilhpps-orig-link-color"
         >
-          {{ msg(`ilhpps-orig-link-color-${option.toLowerCase().replace(/_/g, '-')}`) }}
+          {{ $i18n(`ilhpps-orig-link-color-${option.toLowerCase().replace(/_/g, '-')}`).text() }}
         </CdxRadio>
       </CdxField>
 
@@ -120,7 +119,7 @@ function onPrimary() {
         :disabled="isDisabled"
       >
         <CdxCheckbox v-model="prefs.highlightExisting">
-          {{ msg('ilhpps-highlight-existing') }}
+          {{ $i18n('ilhpps-highlight-existing').text() }}
         </CdxCheckbox>
       </CdxField>
     </div>
@@ -130,7 +129,7 @@ function onPrimary() {
     >
       <div class="ilhpps-fallback__img" />
       <p class="ilhpps-fallback__text ilhpps-small">
-        {{ msg('ilhpps-fallback-tips') }}
+        {{ $i18n('ilhpps-fallback-tips').text() }}
       </p>
     </div>
 
@@ -139,7 +138,7 @@ function onPrimary() {
       #footer-text
     >
       <!-- MF is messing around font size, so do it ourselves -->
-      <span class="ilhpps-small">{{ msg('ilhpps-footnote') }}</span>
+      <span class="ilhpps-small">{{ $i18n('ilhpps-footnote').text() }}</span>
     </template>
   </CdxDialog>
 </template>
