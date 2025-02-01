@@ -6,14 +6,20 @@
     "lib": [
       "ESNext",
       "DOM",
-      "DOM.Iterable"
+      "DOM.Iterable",
+    ],
+    "types": [
+      "types-mediawiki",
     ],
     "paths": {
       "ext.gadget.ilhpp": [
-        "./gadgets/ilhpp/src/index"
+        "./gadgets/ilhpp/src/index",
       ],
       "ext.gadget.ilhpp-settings": [
-        "./gadgets/ilhpp-settings/src/index"
+        "./gadgets/ilhpp-settings/src/index",
+      ],
+      "ext.gadget.HanAssist": [
+        "./node_modules/hanassist",
       ],
     },
     "rootDir": ".",
@@ -23,14 +29,27 @@
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "emitDeclarationOnly": true,
+    "composite": true,
   },
+  "references": [
+    {
+      "path": "gadgets/ilhpp",
+    },
+    {
+      "path": "gadgets/ilhpp-settings",
+    },
+  ],
   "include": [
     "gadgets/*/src/**/*.ts",
-    "gadgets/*/src/**/*.d.ts",
     "gadgets/*/src/**/*.tsx",
     "gadgets/*/src/**/*.vue",
     "gadgets/*/*.config.js",
+    "gadgets/*/messages.json",
+    "gadgets/*/package.json",
+    "gadgets/env.d.ts",
     "scripts/*.js",
-    "eslint.config.js"
-  ]
+    "eslint.config.js",
+  ],
 }
