@@ -27,10 +27,10 @@ async function getPagePreview(
   );
 
   if (resp.status === 404) {
-    throw new Error('Page not found');
+    throw new DOMException('Page not found', 'NotFoundError');
   }
   if (!resp.ok) {
-    throw new Error('Invalid response');
+    throw new DOMException('Invalid response', 'InvalidStateError');
   }
 
   const respJson = (await resp.json()) as SummaryApiResponse;
