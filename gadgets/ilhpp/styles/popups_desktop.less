@@ -128,11 +128,6 @@
 
       // Note: .skin-invert is handled by MW, so there's no worry about black text on dark backgrounds
     }
-
-
-    &__more {
-      font-size: @font-size-small;
-    }
   }
 
   &__cta {
@@ -277,20 +272,20 @@
     &__main__more {
       position: absolute;
       bottom: 0;
-      width: 40%;
+      width: 6ch * 2 + 4ch;
     }
   }
 
   &--standard&--foreign-ltr &__main__more {
     right: 0;
     text-align: right;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 40%);
   }
 
   &--standard&--foreign-rtl &__main__more {
     left: 0;
     text-align: left;
-    background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 50%);
+    background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 40%);
   }
 
   &--disam &,

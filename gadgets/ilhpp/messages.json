@@ -8,8 +8,8 @@
     "hant": "維基百科"
   },
   "ilhpp-more": {
-    "hans": "阅读更多",
-    "hant": "閱讀更多"
+    "hans": "阅读更多内容",
+    "hant": "閱讀更多內容"
   },
   "ilhpp-cta": {
     "hans": "中文维基百科暂无“$1”条目，但您可以帮助我们<a href=\"/w/index.php?title=$1&action=edit&redlink=1\">创建它</a>！",
