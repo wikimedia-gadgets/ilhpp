@@ -8,14 +8,26 @@ let activeAnchor: HTMLAnchorElement | null = null;
 let activeAnchorTooltip: string | null = null;
 let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
 let isTabPressed = false;
+const elemPointerTypeMap = new WeakMap<HTMLElement, string>();
 
 function run() {
   if (haveConflicts()) {
     return;
   }
 
+  // This fires earlier than mouseover and click, which is why this works
+  document.body.addEventListener('pointerup', (ev) => {
+    if (ev.target instanceof HTMLElement) {
+      elemPointerTypeMap.set(ev.target, ev.pointerType);
+    }
+  });
+
   document.body.addEventListener('mouseover', (ev) => {
-    if (getPreferences().popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+    if (
+      getPreferences().popup === PopupMode.OnHover
+      && ev.target instanceof HTMLElement
+      && elemPointerTypeMap.get(ev.target) !== 'touch' // Ignore when hover is caused by touch
+    ) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       clearTimeout(mouseOverTimeoutId);
@@ -47,6 +59,7 @@ function run() {
         mouseOverTimeoutId = setTimeout(() => {
           activePopup = attachPopup(
             currentAnchor,
+            false,
             activeAnchorTooltip,
             { pageX: ev.pageX, pageY: ev.pageY },
           );
@@ -58,7 +71,20 @@ function run() {
   document.body.addEventListener(
     'click',
     (ev) => {
-      if (getPreferences().popup === PopupMode.OnClick && ev.target instanceof HTMLElement) {
+      const prefs = getPreferences();
+      // Used to disable popup mouse leave detaching handler when touch clicked in hover mode
+      let isCausedByTouch = false;
+
+      if (
+        ev.target instanceof HTMLElement
+        && (
+          prefs.popup === PopupMode.OnClick
+          // Work as in click mode if touch clicked
+          || prefs.popup === PopupMode.OnHover && (isCausedByTouch = (elemPointerTypeMap.get(ev.target) === 'touch'))
+        )
+      ) {
+        elemPointerTypeMap.delete(ev.target);
+
         const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
         if (currentAnchor) {
@@ -83,10 +109,15 @@ function run() {
           const oldTooltip = currentAnchor.getAttribute('title');
           currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
 
-          activePopup = attachPopup(currentAnchor, oldTooltip, {
-            pageX: ev.pageX,
-            pageY: ev.pageY,
-          });
+          activePopup = attachPopup(
+            currentAnchor,
+            isCausedByTouch,
+            oldTooltip,
+            {
+              pageX: ev.pageX,
+              pageY: ev.pageY,
+            },
+          );
         } else if (!activePopup?.elem.contains(ev.target)) {
           // Clicked something else outside of popup and <a>
           if (activePopup && activePopup.state === State.Attached) {
@@ -100,6 +131,7 @@ function run() {
     true, // Add at capture phase to "mock an overlay"
   );
 
+  // Firing sequence: keydown -> focusin -> keyup
   document.body.addEventListener('keydown', (ev) => {
     if (ev.key === 'Tab') {
       isTabPressed = true;
@@ -138,7 +170,7 @@ function run() {
           const oldTooltip = currentAnchor.getAttribute('title');
           currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
 
-          activePopup = attachPopup(currentAnchor, oldTooltip);
+          activePopup = attachPopup(currentAnchor, false, oldTooltip);
         }
       } else if (!activePopup?.elem.contains(ev.target)) {
         // Focused something else outside of popup and <a>

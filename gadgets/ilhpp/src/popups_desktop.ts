@@ -36,6 +36,7 @@ interface Popup extends PopupBase {
   oldTooltip: string | null,
 
   cursor?: CursorParam,
+  isCausedByTouch: boolean,
   abortController: AbortController,
   detachHandler: () => void,
   cancelDetachingHandler: () => void,
@@ -254,7 +255,8 @@ function buildPopup(popup: Popup) {
  * @returns
  */
 function attachPopup(
-  anchor: HTMLAnchorElement, oldTooltip: string | null, cursor?: CursorParam,
+  anchor: HTMLAnchorElement, isCausedByTouch: boolean,
+  oldTooltip: string | null, cursor?: CursorParam,
 ): Popup | null {
   const popupBase = createPopupBase(anchor);
   if (!popupBase) {
@@ -270,9 +272,10 @@ function attachPopup(
     anchor,
     oldTooltip,
     cursor,
+    isCausedByTouch,
     abortController: new AbortController(),
     detachHandler() {
-      if (getPreferences().popup === PopupMode.OnHover) {
+      if (!isCausedByTouch && getPreferences().popup === PopupMode.OnHover) {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
           void detachPopup(popup);
@@ -280,7 +283,7 @@ function attachPopup(
       }
     },
     cancelDetachingHandler() {
-      if (getPreferences().popup === PopupMode.OnHover) {
+      if (!isCausedByTouch && getPreferences().popup === PopupMode.OnHover) {
         clearTimeout(timeoutId);
       }
     },
