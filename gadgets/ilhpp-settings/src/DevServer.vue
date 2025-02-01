@@ -6,9 +6,9 @@ import SettingsDialog from './SettingsDialog.vue';
 import { CdxButton } from '@wikimedia/codex';
 import { getPreferences } from 'ext.gadget.ilhpp';
 
-let isSettingsDialogOpen = ref(false);
-let isSettingsDialogDisabled = ref(false);
-let prefs = reactive(getPreferences());
+const isSettingsDialogOpen = ref(false);
+const isSettingsDialogDisabled = ref(false);
+const prefs = reactive(getPreferences());
 
 function onSaving() {
   isSettingsDialogDisabled.value = true;

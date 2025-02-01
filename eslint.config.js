@@ -6,16 +6,15 @@ import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 
 export default tsEslint.config(
-  eslint.configs.recommended,
-  ...tsEslint.configs.recommendedTypeChecked,
-  ...pluginVue.configs['flat/recommended'],
   {
-    ignores: [
-      'dist/',
-      'assets/',
+    files: [
+      '**/*.ts', '**/*.d.ts', '**/*.js', '**/*.vue',
     ],
-  },
-  {
+    extends: [
+      eslint.configs.recommended,
+      ...tsEslint.configs.recommendedTypeChecked,
+      ...pluginVue.configs['flat/recommended'],
+    ],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -24,23 +23,6 @@ export default tsEslint.config(
         extraFileExtensions: ['.vue'],
       },
     },
-  },
-  {
-    files: [
-      '**/*.js',
-      'gadgets/ilhpp-settings/**', // Incompatible with Vue
-    ],
-    ...tsEslint.configs.disableTypeChecked,
-  },
-  {
-    files: ['scripts/*.js'],
-    languageOptions: {
-      globals: {
-        ...globals.nodeBuiltin,
-      },
-    },
-  },
-  {
     rules: {
       semi: 'error',
       'comma-dangle': ['error', 'always-multiline'],
@@ -86,5 +68,26 @@ export default tsEslint.config(
       ],
       'no-console': ['warn'],
     },
+  },
+
+  {
+    files: ['**/*.js'],
+    ...tsEslint.configs.disableTypeChecked,
+  },
+
+  {
+    files: ['scripts/*.js', '**/*.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.nodeBuiltin,
+      },
+    },
+  },
+
+  {
+    ignores: [
+      'dist/',
+      'assets/',
+    ],
   },
 );

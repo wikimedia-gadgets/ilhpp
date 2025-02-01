@@ -3,7 +3,6 @@
 import '../styles/mockup.less';
 import $ from 'jquery';
 import { getPreferences, LinkMode, OrigLinkColor, PopupMode, setPreferences } from './prefs';
-import { PREF_KEY_LS } from './consts';
 
 // Mockups
 const mwMessageMap = new Map<string, string>();
