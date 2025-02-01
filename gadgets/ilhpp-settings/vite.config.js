@@ -5,6 +5,7 @@ import mwGadget from 'rollup-plugin-mediawiki-gadget';
 import { readFileSync } from 'node:fs';
 import { name as packageName } from './package.json';
 import autoprefixer from 'autoprefixer';
+import browserslistToEsbuild from '../../scripts/browserslist_to_esbuild';
 
 export default defineConfig(({ command }) => {
   return {
@@ -41,7 +42,7 @@ export default defineConfig(({ command }) => {
       },
       minify: false, // Let MediaWiki do its job
       target: ['es2016'], // MediaWiki >= 1.42.0-wmf.13 supports up to ES2016
-      // cssTarget: browserslistToEsbuild(), // Tell esbuild not to use too modern CSS features
+      cssTarget: browserslistToEsbuild(), // Tell esbuild not to use too modern CSS features
       rollupOptions: {
         output: {
           entryFileNames: `Gadget-${packageName}.js`,
