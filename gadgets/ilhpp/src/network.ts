@@ -1,4 +1,4 @@
-import { API_USER_AGENT } from './consts';
+// import { API_USER_AGENT } from './consts';
 
 const hostRest = location.hostname.endsWith('wmflabs.org')
   ? '.wikipedia.beta.wmflabs.org'
