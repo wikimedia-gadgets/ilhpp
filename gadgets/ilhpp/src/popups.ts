@@ -1,4 +1,4 @@
-import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, INTERWIKI_A_SELECTOR } from './consts';
+import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, FOREIGN_A_SELECTOR } from './consts';
 import { normalizeLang, normalizeTitle } from './utils';
 
 interface PopupBase {
@@ -16,11 +16,11 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
     return null;
   }
 
-  const interwikiAnchor = dataElement.querySelector<HTMLAnchorElement>(INTERWIKI_A_SELECTOR);
-  if (!interwikiAnchor) {
+  const foreignAnchor = dataElement.querySelector<HTMLAnchorElement>(FOREIGN_A_SELECTOR);
+  if (!foreignAnchor) {
     return null;
   }
-  const foreignHref = interwikiAnchor.href;
+  const foreignHref = foreignAnchor.href;
 
   const origTitle = dataElement.dataset.origTitle;
   const wikiCode = dataElement.dataset.langCode;

@@ -1,9 +1,9 @@
 import { version } from '../package.json';
 
 export const DATA_ELEM_SELECTOR = '.ilh-all:not(.ilh-blue)';
-export const GREEN_ANCHOR_SELECTOR = '.ilh-all:not(.ilh-blue) a';
+export const ORIG_A_SELECTOR = '.ilh-all:not(.ilh-blue) .ilh-page > a'; // Intentionally avoid .new which is subject to change
+export const FOREIGN_A_SELECTOR = `.ilh-all:not(.ilh-blue) .ilh-link > a`; // Intentionally avoid .extiw which is subject to change
 export const ILH_LANG_SELECTOR = '.ilh-lang';
-export const INTERWIKI_A_SELECTOR = `.ilh-link > a`;
 export const ROOT_CLASS_DESKTOP = 'ilhpp-popup-desktop';
 export const ROOT_CLASS_MOBILE = 'ilhpp-popup-mobile';
 export const OVERLAY_CLASS_MOBILE = 'ilhpp-mobile-overlay';

@@ -1,6 +1,8 @@
 html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
   &-link {
-    &-orig {
+
+    &-orig,
+    &-foreign {
       .ilh-comment {
         display: none;
       }
@@ -27,59 +29,22 @@ html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
       }
     }
 
-    &-foreign {
-      .ilh-all:not(.ilh-blue) {
-
-        .ilh-page,
-        .ilh-comment>:not(.ilh-link) {
-          display: none;
-        }
-
-        // Override noprint to make it appear on printings
-        @media print {
-          .noprint {
-            display: unset;
-          }
-        }
-      }
-    }
-
     &-foreign-n-lang-code {
-      .ilh-all:not(.ilh-blue) {
-        .ilh-page {
+      .ilh-comment {
+
+        .ilh-paren,
+        .ilh-lang {
+          font-size: 0.8em;
+          color: var(--color-subtle, #54595d);
+          font-weight: bold;
+        }
+
+        .ilh-colon,
+        .ilh-link {
           display: none;
-        }
-
-        // FIXME: This has accessibility issues
-        .ilh-comment {
-          display: inline-flex;
-          align-items: baseline;
-
-          .ilh-link {
-            order: -1;
-          }
-
-          .ilh-paren,
-          .ilh-lang {
-            font-size: 0.8em;
-            color: var(--color-subtle, #54595d);
-            font-weight: bold;
-          }
-
-          .ilh-colon {
-            display: none;
-          }
-        }
-
-        // Override noprint to make it appear on printings
-        @media print {
-          .noprint {
-            display: inline-flex;
-          }
         }
       }
     }
-
   }
 
   &-popup {

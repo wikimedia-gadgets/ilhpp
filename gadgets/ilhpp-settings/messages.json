@@ -16,12 +16,12 @@
     "hant": "顯示內部連結和不含連結的原文"
   },
   "ilhpps-link-mode-foreign": {
-    "hans": "只显示外部链接",
-    "hant": "只顯示外部連結"
+    "hans": "只显示跨维基链接",
+    "hant": "只顯示跨維基連結"
   },
   "ilhpps-link-mode-foreign-n-lang-code": {
-    "hans": "显示外部链接和语言名后缀",
-    "hant": "顯示外部連結和語言名字尾"
+    "hans": "显示跨维基链接和语言名后缀",
+    "hant": "顯示跨維基連結和語言名字尾"
   },
   "ilhpps-popup-mode": {
     "hans": "弹框模式",

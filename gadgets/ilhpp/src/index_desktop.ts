@@ -1,6 +1,6 @@
 import { attachPopup, detachPopup, Popup, State } from './popups_desktop';
 import { getPreferences, PopupMode } from './prefs';
-import { DT_ATTACH_DELAY_MS, GREEN_ANCHOR_SELECTOR } from './consts';
+import { DT_ATTACH_DELAY_MS, ORIG_A_SELECTOR } from './consts';
 import { haveConflicts } from './utils';
 
 let activePopup: Popup | null = null;
@@ -21,7 +21,7 @@ function run() {
       getPreferences().popup === PopupMode.OnHover && hoverMediaList.matches
       && ev.target instanceof HTMLElement
     ) {
-      const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+      const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       clearTimeout(mouseOverTimeoutId);
       // Restore tooltips cleared by previous calls
@@ -67,7 +67,7 @@ function run() {
         (getPreferences().popup === PopupMode.OnClick || !hoverMediaList.matches)
         && ev.target instanceof HTMLElement
       ) {
-        const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+        const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
         if (currentAnchor) {
           // Do not prevent navigation when clicking on the same <a> with a popup
@@ -127,7 +127,7 @@ function run() {
       && getPreferences().popup !== PopupMode.Disabled
       && ev.target instanceof HTMLElement
     ) {
-      const currentAnchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+      const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       // Do not reattach when hovering on the same <a> with a popup
       if (currentAnchor) {

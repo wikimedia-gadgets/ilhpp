@@ -1,4 +1,4 @@
-import { GREEN_ANCHOR_SELECTOR } from './consts';
+import { ORIG_A_SELECTOR } from './consts';
 import { attachPopup } from './popups_mobile';
 import { getPreferences, PopupMode } from './prefs';
 import { haveConflicts } from './utils';
@@ -14,7 +14,7 @@ function run() {
         'click',
         (ev) => {
           if (getPreferences().popup !== PopupMode.Disabled && ev.target instanceof HTMLElement) {
-            const anchor = ev.target.closest<HTMLAnchorElement>(GREEN_ANCHOR_SELECTOR);
+            const anchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
             if (anchor) {
               ev.preventDefault();
               // Block MobileFrontend's event listeners

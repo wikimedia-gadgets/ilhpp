@@ -1,4 +1,4 @@
-import { FOOTER_ANCHOR_ID, PREF_KEY_LS, PREF_KEY_MW } from './consts';
+import { DATA_ELEM_SELECTOR, FOOTER_ANCHOR_ID, FOREIGN_A_SELECTOR, ORIG_A_SELECTOR, PREF_KEY_LS, PREF_KEY_MW } from './consts';
 import { deepClone, haveConflicts } from './utils';
 
 enum LinkMode {
@@ -56,6 +56,28 @@ function toCSSClassNames(prefs: Preferences): string[] {
 function reflectChanges(prefs: Preferences) {
   document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
   document.documentElement.classList.add(...toCSSClassNames(prefs));
+
+  document.querySelectorAll(DATA_ELEM_SELECTOR).forEach((root) => {
+    const origAnchor = root.querySelector<HTMLAnchorElement>(ORIG_A_SELECTOR);
+    const foreignAnchor = root.querySelector<HTMLAnchorElement>(FOREIGN_A_SELECTOR);
+
+    if (!origAnchor || !foreignAnchor) {
+      return;
+    }
+
+    // Reset to neutral state
+    if (origAnchor.dataset.oldHref !== undefined) {
+      origAnchor.href = origAnchor.dataset.oldHref;
+    }
+    delete origAnchor.dataset.oldHref;
+    origAnchor.className = 'new';
+
+    if ([LinkMode.ForeignAndLangCode, LinkMode.Foreign].includes(prefs.link)) {
+      origAnchor.dataset.oldHref = origAnchor.href;
+      origAnchor.href = foreignAnchor.href;
+      origAnchor.className = 'extiw'; // External interwiki class
+    }
+  });
 
   document.getElementById(FOOTER_ANCHOR_ID)?.remove();
   // When having conflicts or popup mode is disabled, add a setting entry at the footer
@@ -161,8 +183,8 @@ async function setPreferences(prefs: Preferences) {
       throw new Error('Failed to save options!');
     }
   }
-
   localStorage.setItem(PREF_KEY_LS, serialized);
+
   reflectChanges(prefs);
 }
 
