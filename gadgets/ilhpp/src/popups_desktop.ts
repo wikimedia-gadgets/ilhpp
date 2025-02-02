@@ -251,6 +251,8 @@ function buildPopup(popup: Popup) {
 /**
  *
  * @param anchor
+ * @param isCausedByTouch `true` will prevent popup itself's detaching event from working
+ * @param oldTooltip <a>'s old tooltip if removed first, if `null` this function will do the removal
  * @param cursor `undefined` if attaching is not caused by pointing devices (e.g. keyboard focus)
  * @returns
  */
