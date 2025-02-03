@@ -30,17 +30,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "emitDeclarationOnly": true,
     "composite": true,
   },
-  "references": [
-    {
-      "path": "gadgets/ilhpp",
-    },
-    {
-      "path": "gadgets/ilhpp-settings",
-    },
-  ],
   "include": [
     "gadgets/*/src/**/*.ts",
     "gadgets/*/src/**/*.tsx",

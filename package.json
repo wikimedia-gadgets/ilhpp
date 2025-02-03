@@ -6,7 +6,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm -r run build",
-    "lint": "eslint . ; vue-tsc -b",
+    "lint": "vue-tsc --noEmit && eslint .",
     "prepare": "husky"
   },
   "author": "diskdance",
