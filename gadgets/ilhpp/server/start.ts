@@ -25,6 +25,7 @@ Object.defineProperties(window, {
       config: new Map([
         ['wgUserLanguage', 'zh-cn'],
         ['wgUserVariant', 'zh-cn'],
+        ['wgPageName', 'PAGE_NAME'],
       ]),
       messages: {
         // Mock batch set only

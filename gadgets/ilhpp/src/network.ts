@@ -35,6 +35,10 @@ async function getPagePreview(
 
   const respJson = (await resp.json()) as SummaryApiResponse;
 
+  if (!respJson.extract_html) {
+    throw new DOMException('No preview for this page', 'NotSupportedError');
+  }
+
   // `displaytitle` may contain HTML tags, so strip them
   const temp = document.createElement('div');
   temp.innerHTML = respJson.displaytitle;

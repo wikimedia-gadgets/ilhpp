@@ -226,13 +226,24 @@ function buildPopup(popup: Popup) {
         case 'AbortError':
           // Exclude AbortError to prevent glitches
           break;
+
         case 'NotSupportedError':
           root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
-          root.classList.add(`${ROOT_CLASS_DESKTOP}--wikidata`);
+          root.classList.add(`${ROOT_CLASS_DESKTOP}--no-preview`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          extract.innerText = mw.msg('ilhpp-wikidata');
+          extract.innerText = mw.msg('ilhpp-no-preview');
           more.innerText = mw.msg('ilhpp-goto');
+          break;
+
+        case 'NotFoundError':
+          root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
+          root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
+          extract.removeAttribute('lang'); // This is Chinese now
+
+          extract.innerText = mw.msg('ilhpp-error-not-found');
+          more.innerText = mw.msg('ilhpp-error-not-found-more');
+          more.href = `/w/index.php?title=${encodeURIComponent(mw.config.get('wgPageName'))}&action=edit`;
           break;
 
         default:

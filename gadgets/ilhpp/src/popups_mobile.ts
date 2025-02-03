@@ -110,13 +110,29 @@ function buildPopup(popup: Popup) {
         case 'AbortError':
           // Exclude AbortError to prevent glitches
           break;
+
         case 'NotSupportedError':
           root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
-          root.classList.add(`${ROOT_CLASS_MOBILE}--wikidata`);
+          root.classList.add(`${ROOT_CLASS_MOBILE}--no-preview`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          extract.innerText = mw.msg('ilhpp-wikidata');
+          extract.innerText = mw.msg('ilhpp-no-preview');
           moreButton.innerText = mw.msg('ilhpp-goto');
+          break;
+
+        case 'NotFoundError':
+          root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
+          root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
+          extract.removeAttribute('lang'); // This is Chinese now
+
+          // Design decision: `moreButton.href` is unchanged because if so there will be "href shift"
+          // causing unpleasant user experience
+          // messages.json is trusted
+          extract.innerHTML = mw.msg(
+            'ilhpp-error-not-found-mobile',
+            mw.msg('ilhpp-error-not-found'),
+            `<a href="/w/index.php?title=${encodeURIComponent(mw.config.get('wgPageName'))}&action=edit">${mw.msg('ilhpp-error-not-found-more')}</a>`,
+          );
           break;
 
         default:

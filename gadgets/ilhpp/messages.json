@@ -31,10 +31,21 @@
     "hans": "查看相似页面",
     "hant": "顯示類似的頁面"
   },
-  "ilhpp-wikidata": {
-    "hans": "该页面列出了相关的结构化数据。",
-    "hant": "該頁面列出了相關的結構化數據。",
-    "tw": "該頁面列出了相關的結構化資料。"
+  "ilhpp-no-preview": {
+    "hans": "该页面暂无预览。",
+    "hant": "該頁面暫無預覽。"
+  },
+  "ilhpp-error-not-found": {
+    "hans": "该页面不存在。",
+    "hant": "該頁面不存在。"
+  },
+  "ilhpp-error-not-found-more": {
+    "hans": "帮助我们修复该问题",
+    "hant": "幫助我們修復該問題"
+  },
+  "ilhpp-error-not-found-mobile": {
+    "hans": "$1您可以$2。",
+    "hant": "$1您可以$2。"
   },
   "ilhpp-error": {
     "hans": "显示此预览时出现问题。",
