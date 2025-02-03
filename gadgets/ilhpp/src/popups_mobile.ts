@@ -70,7 +70,12 @@ function buildPopup(popup: Popup) {
 
   const cta = document.createElement('div');
   cta.className = `${ROOT_CLASS_MOBILE}__cta`;
-  cta.innerHTML = mw.msg('ilhpp-cta', popup.origTitle); // Safely escaped
+
+  const ctaInner = document.createElement('div');
+  ctaInner.className = `${ROOT_CLASS_MOBILE}__cta__inner`;
+  ctaInner.innerHTML = mw.msg('ilhpp-cta', popup.origTitle); // Safely escaped
+
+  cta.append(ctaInner);
 
   const settingsButton = document.createElement('button');
   settingsButton.className = `${ROOT_CLASS_MOBILE}__settings ilhpp-mobile-button`;
