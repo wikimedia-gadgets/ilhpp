@@ -43,10 +43,7 @@
     "hans": "帮助我们修复该问题",
     "hant": "幫助我們修復該問題"
   },
-  "ilhpp-error-not-found-mobile": {
-    "hans": "$1您可以$2。",
-    "hant": "$1您可以$2。"
-  },
+  "ilhpp-error-not-found-mobile": "$1<br>您可以$2。",
   "ilhpp-error": {
     "hans": "显示此预览时出现问题。",
     "hant": "顯示此頁面預覽時出現問題。"

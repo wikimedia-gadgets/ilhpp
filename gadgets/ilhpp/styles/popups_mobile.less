@@ -137,6 +137,9 @@
 }
 
 .ilhpp-popup-mobile {
+  @precise-7lh: $font-size * $line-height * @lines-shown;
+  @precise-7lh-plus-margin: calc(@precise-7lh + @popup-margin-base);
+
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -150,8 +153,9 @@
   background-color: var(--background-color-base, #fff);
 
   display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  // Make extract's min height fixed
+  grid-template-rows: auto auto minmax(@precise-7lh-plus-margin, auto) auto auto;
+  grid-template-columns: auto 1fr auto;
   font-size: 1rem;
   line-height: (24 / 16);
   word-break: break-word;
@@ -209,10 +213,6 @@
 
     margin: @popup-margin-base @popup-margin-wide 0;
     position: relative;
-
-    // Hardcode the min height to 7lh
-    @precise-7lh: $font-size * $line-height * @lines-shown;
-    min-height: @precise-7lh;
 
     &__inner {
       // HACK: Uses the de-facto standard -webkit-line-clamp to show a fixed number of lines
@@ -379,14 +379,11 @@
 
   &--loading & {
     &__extract {
-      // Hardcode the height to 7lh
-      @precise-7lh: $font-size * $line-height * @lines-shown;
-      height: @precise-7lh;
-
       &__inner {
         height: 100%;
 
         .ilhpp-mobile-skeleton {
+          // Evenly divide parent's space
           height: (@precise-7lh / 6) * 0.7;
           margin-top: (@precise-7lh / 6) - $height;
           width: 100%;
@@ -420,10 +417,9 @@
   &--disam &,
   &--error & {
     &__extract {
+      margin-top: 0; // Prevent conflicts on centering
+      place-self: center;
       text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 
