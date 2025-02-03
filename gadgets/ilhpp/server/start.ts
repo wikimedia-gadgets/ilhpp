@@ -38,7 +38,8 @@ Object.defineProperties(window, {
       message(key: string, ...params: string[]) {
         return {
           parse() {
-            return mwMessageMap.get(key)
+            return mwMessageMap
+              .get(key)
               ?.replaceAll(/\[\[(.*)\|(.*)\]\]/g, '<a title="$1" href="/wiki/$1">$2</a>')
               ?.replaceAll(/\$(\d+)/g, (_, p1: string) => params[parseInt(p1) - 1]);
           },
@@ -48,7 +49,8 @@ Object.defineProperties(window, {
         };
       },
       msg(key: string, ...params: string[]) {
-        return mwMessageMap.get(key)
+        return mwMessageMap
+          .get(key)
           ?.replaceAll(/\$(\d+)/g, (_, p1: string) => params[parseInt(p1) - 1]);
       },
     },
@@ -61,7 +63,10 @@ const colorSelect = document.getElementById('color') as HTMLSelectElement | null
 if (colorSelect) {
   colorSelect.value = 'light';
   colorSelect.addEventListener('change', () => {
-    document.documentElement.className = document.documentElement.className.replace(/skin-theme-clientpref-\w+\b/g, '');
+    document.documentElement.className = document.documentElement.className.replace(
+      /skin-theme-clientpref-\w+\b/g,
+      '',
+    );
     switch (colorSelect.value) {
       case 'light':
         document.documentElement.classList.add('skin-theme-clientpref-day');
@@ -88,11 +93,13 @@ loadButton?.addEventListener('click', () => {
       const prefs = getPreferences();
 
       // Build dropdowns
-      ([
-        ['link-mode', LinkMode, 'link'],
-        ['popup-mode', PopupMode, 'popup'],
-        ['orig-link-color', OrigLinkColor, 'origLinkColor'],
-      ] as const).forEach(([id, enumName, prefKey]) => {
+      (
+        [
+          ['link-mode', LinkMode, 'link'],
+          ['popup-mode', PopupMode, 'popup'],
+          ['orig-link-color', OrigLinkColor, 'origLinkColor'],
+        ] as const
+      ).forEach(([id, enumName, prefKey]) => {
         const select = document.getElementById(id) as HTMLSelectElement | null;
         if (select) {
           Object.values(enumName).forEach((item: string) => {
@@ -111,7 +118,9 @@ loadButton?.addEventListener('click', () => {
       });
 
       // Build checkboxes
-      const highlightExisting = document.getElementById('highlight-existing') as HTMLInputElement | null;
+      const highlightExisting = document.getElementById(
+        'highlight-existing',
+      ) as HTMLInputElement | null;
       if (highlightExisting) {
         highlightExisting.checked = prefs.highlightExisting;
         highlightExisting.addEventListener('change', () => {
@@ -133,7 +142,10 @@ loadButton?.addEventListener('click', () => {
 
 // Drag functionality
 function dragElement(elem: HTMLElement) {
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
   const header = document.getElementById('draggable-header');
   if (header) {
     header.onmousedown = dragMouseDown;
@@ -159,8 +171,8 @@ function dragElement(elem: HTMLElement) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     // Set the element's new position:
-    elem.style.top = (elem.offsetTop - pos2) + 'px';
-    elem.style.left = (elem.offsetLeft - pos1) + 'px';
+    elem.style.top = elem.offsetTop - pos2 + 'px';
+    elem.style.left = elem.offsetLeft - pos1 + 'px';
   }
 
   function closeDragElement() {
@@ -233,18 +245,22 @@ Object.getPrototypeOf(localStorage).setItem = function (...args: Parameters<type
   setTimeout(() => {
     const newPrefs = getPreferences();
 
-    ([
-      ['link-mode', newPrefs.link],
-      ['popup-mode', newPrefs.popup],
-      ['orig-link-color', newPrefs.origLinkColor],
-    ] as const).forEach(([id, newValue]) => {
+    (
+      [
+        ['link-mode', newPrefs.link],
+        ['popup-mode', newPrefs.popup],
+        ['orig-link-color', newPrefs.origLinkColor],
+      ] as const
+    ).forEach(([id, newValue]) => {
       const select = document.getElementById(id) as HTMLSelectElement | null;
       if (select) {
         select.value = newValue;
       }
     });
 
-    const highlightExisting = document.getElementById('highlight-existing') as HTMLInputElement | null;
+    const highlightExisting = document.getElementById(
+      'highlight-existing',
+    ) as HTMLInputElement | null;
     if (highlightExisting) {
       highlightExisting.checked = newPrefs.highlightExisting;
     }

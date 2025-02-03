@@ -10,9 +10,7 @@ export const OVERLAY_CLASS_MOBILE = 'ilhpp-mobile-overlay';
 export const API_USER_AGENT = `Gadget-ilhpp/${version}`;
 export const PREF_KEY_LS = 'ilhpp-prefs'; // Used in local storage
 export const PREF_KEY_MW = 'userjs-ilhpp-prefs'; // Used in MediaWiki user options
-export const RTL_LANGS = [
-  'ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ug', 'dv', 'syr',
-];
+export const RTL_LANGS = ['ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ug', 'dv', 'syr'];
 export const FOOTER_ANCHOR_ID = 'ilhpp-footer-places-settings';
 export const NAV_POPUP_OPTION_NAME = 'gadget-Navigation_popups';
 

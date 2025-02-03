@@ -7,8 +7,10 @@ function isMobileDevice(): boolean {
   // Chromium on Samsung devices has "(hover: hover)" set
   // (https://www.ctrl.blog/entry/css-media-hover-samsung.html)
   // So check pointer together
-  return !!(mw.config.get('wgMFMode') as string)
-    && matchMedia('(hover: none), (pointer: coarse)').matches;
+  return (
+    !!(mw.config.get('wgMFMode') as string) &&
+    matchMedia('(hover: none), (pointer: coarse)').matches
+  );
 }
 
 /**
@@ -83,6 +85,12 @@ function haveConflicts(): boolean {
 }
 
 export {
-  isMobileDevice, wait, deepClone, getDirection,
-  normalizeTitle, normalizeLang, isWikipedia, haveConflicts,
+  isMobileDevice,
+  wait,
+  deepClone,
+  getDirection,
+  normalizeTitle,
+  normalizeLang,
+  isWikipedia,
+  haveConflicts,
 };

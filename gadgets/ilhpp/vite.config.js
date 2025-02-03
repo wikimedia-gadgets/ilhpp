@@ -15,21 +15,22 @@ export default defineConfig(({ command }) => {
       footer: readFileSync('../../assets/outro.js').toString().trim(),
     },
 
-    resolve: command === 'serve' ? {
-      alias: {
-        'ext.gadget.HanAssist': 'hanassist',
-        'ext.gadget.ilhpp': `${import.meta.dirname}/src/index`,
-        'ext.gadget.ilhpp-settings': `${import.meta.dirname}/../ilhpp-settings/src/index`,
-        vue: `${import.meta.dirname}/../ilhpp-settings/server/mockup_vue`,
-        '@wikimedia/codex': `${import.meta.dirname}/../ilhpp-settings/server/mockup_codex`,
-      },
-    } : undefined,
+    resolve:
+      command === 'serve'
+        ? {
+            alias: {
+              'ext.gadget.HanAssist': 'hanassist',
+              'ext.gadget.ilhpp': `${import.meta.dirname}/src/index`,
+              'ext.gadget.ilhpp-settings': `${import.meta.dirname}/../ilhpp-settings/src/index`,
+              vue: `${import.meta.dirname}/../ilhpp-settings/server/mockup_vue`,
+              '@wikimedia/codex': `${import.meta.dirname}/../ilhpp-settings/server/mockup_codex`,
+            },
+          }
+        : undefined,
 
     css: {
       postcss: {
-        plugins: [
-          autoprefixer(),
-        ],
+        plugins: [autoprefixer()],
       },
     },
 

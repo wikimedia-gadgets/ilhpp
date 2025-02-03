@@ -1,4 +1,11 @@
-import { DATA_ELEM_SELECTOR, FOOTER_ANCHOR_ID, FOREIGN_A_SELECTOR, ORIG_A_SELECTOR, PREF_KEY_LS, PREF_KEY_MW } from './consts';
+import {
+  DATA_ELEM_SELECTOR,
+  FOOTER_ANCHOR_ID,
+  FOREIGN_A_SELECTOR,
+  ORIG_A_SELECTOR,
+  PREF_KEY_LS,
+  PREF_KEY_MW,
+} from './consts';
 import { deepClone, haveConflicts } from './utils';
 
 enum LinkMode {
@@ -20,10 +27,10 @@ enum OrigLinkColor {
 }
 
 interface Preferences {
-  link: LinkMode,
-  popup: PopupMode,
-  highlightExisting: boolean,
-  origLinkColor: OrigLinkColor,
+  link: LinkMode;
+  popup: PopupMode;
+  highlightExisting: boolean;
+  origLinkColor: OrigLinkColor;
 }
 
 const DEFAULT_PREFS: Preferences = {
@@ -54,7 +61,10 @@ function toCSSClassNames(prefs: Preferences): string[] {
 }
 
 function reflectChanges(prefs: Preferences) {
-  document.documentElement.className = document.documentElement.className.replace(/\bilhpp-pref[\w-]+\b/g, '');
+  document.documentElement.className = document.documentElement.className.replace(
+    /\bilhpp-pref[\w-]+\b/g,
+    '',
+  );
   document.documentElement.classList.add(...toCSSClassNames(prefs));
 
   document.querySelectorAll(DATA_ELEM_SELECTOR).forEach((root) => {
@@ -119,10 +129,10 @@ function getPreferences(): Preferences {
 
       // Only accept valid object structure
       if (
-        Object.values(LinkMode).includes((maybePrefs as Preferences).link)
-        && Object.values(PopupMode).includes((maybePrefs as Preferences).popup)
-        && typeof (maybePrefs as Preferences).highlightExisting === 'boolean'
-        && Object.values(OrigLinkColor).includes((maybePrefs as Preferences).origLinkColor)
+        Object.values(LinkMode).includes((maybePrefs as Preferences).link) &&
+        Object.values(PopupMode).includes((maybePrefs as Preferences).popup) &&
+        typeof (maybePrefs as Preferences).highlightExisting === 'boolean' &&
+        Object.values(OrigLinkColor).includes((maybePrefs as Preferences).origLinkColor)
       ) {
         mwOptionPrefs = maybePrefs as Preferences;
       }
@@ -132,10 +142,10 @@ function getPreferences(): Preferences {
       const maybePrefs: unknown = JSON.parse(localStorageSerialized);
 
       if (
-        Object.values(LinkMode).includes((maybePrefs as Preferences).link)
-        && Object.values(PopupMode).includes((maybePrefs as Preferences).popup)
-        && typeof (maybePrefs as Preferences).highlightExisting === 'boolean'
-        && Object.values(OrigLinkColor).includes((maybePrefs as Preferences).origLinkColor)
+        Object.values(LinkMode).includes((maybePrefs as Preferences).link) &&
+        Object.values(PopupMode).includes((maybePrefs as Preferences).popup) &&
+        typeof (maybePrefs as Preferences).highlightExisting === 'boolean' &&
+        Object.values(OrigLinkColor).includes((maybePrefs as Preferences).origLinkColor)
       ) {
         localStoragePrefs = maybePrefs as Preferences;
       }
@@ -159,12 +169,10 @@ function getPreferences(): Preferences {
       if (!localStoragePrefs) {
         localStorage.setItem(PREF_KEY_LS, JSON.stringify(DEFAULT_PREFS));
       }
-    }
-    else {
+    } else {
       localStorage.setItem(PREF_KEY_LS, JSON.stringify(mwOptionPrefs));
     }
-  }
-  catch { }
+  } catch {}
 
   currentPrefs = result;
   reflectChanges(result);
@@ -188,7 +196,4 @@ async function setPreferences(prefs: Preferences) {
   reflectChanges(prefs);
 }
 
-export {
-  LinkMode, OrigLinkColor, PopupMode, type Preferences,
-  getPreferences, setPreferences,
-};
+export { LinkMode, OrigLinkColor, PopupMode, type Preferences, getPreferences, setPreferences };

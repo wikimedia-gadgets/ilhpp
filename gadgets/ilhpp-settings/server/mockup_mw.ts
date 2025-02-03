@@ -26,7 +26,8 @@ Object.defineProperties(window, {
       message(key: string, ...params: string[]) {
         return {
           parse() {
-            return mwMessageMap.get(key)
+            return mwMessageMap
+              .get(key)
               ?.replaceAll(/\[\[(.*)\|(.*)\]\]/g, '<a title="$1" href="/wiki/$1">$2</a>')
               ?.replaceAll(/\$(\d+)/g, (_, p1: string) => params[parseInt(p1) - 1]);
           },
@@ -36,7 +37,8 @@ Object.defineProperties(window, {
         };
       },
       msg(key: string, ...params: string[]) {
-        return mwMessageMap.get(key)
+        return mwMessageMap
+          .get(key)
           ?.replaceAll(/\$(\d+)/g, (_, p1: string) => params[parseInt(p1) - 1]);
       },
     },

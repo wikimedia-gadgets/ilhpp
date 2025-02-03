@@ -6,7 +6,14 @@ import '../styles/popups_desktop.less';
 import '../styles/popups_mobile.less';
 
 import { batchConv } from 'ext.gadget.HanAssist';
-import { getPreferences, LinkMode, OrigLinkColor, PopupMode, Preferences, setPreferences } from './prefs';
+import {
+  getPreferences,
+  LinkMode,
+  OrigLinkColor,
+  PopupMode,
+  Preferences,
+  setPreferences,
+} from './prefs';
 import { haveConflicts, isMobileDevice } from './utils';
 import runDesktop from './index_desktop';
 import runMobile from './index_mobile';
@@ -32,6 +39,11 @@ if (isMobileDevice()) {
 }
 
 export {
-  type Preferences, LinkMode, OrigLinkColor, PopupMode,
-  getPreferences, setPreferences, haveConflicts,
+  type Preferences,
+  LinkMode,
+  OrigLinkColor,
+  PopupMode,
+  getPreferences,
+  setPreferences,
+  haveConflicts,
 };

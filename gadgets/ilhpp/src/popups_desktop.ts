@@ -1,26 +1,32 @@
-import { DT_PTR_SHORT_SIDE_LENGTH_PX, DT_PTR_WIDTH_PX, ROOT_CLASS_DESKTOP, DT_DETACH_ANIMATION_MS, DT_DETACH_DELAY_MS } from './consts';
+import {
+  DT_PTR_SHORT_SIDE_LENGTH_PX,
+  DT_PTR_WIDTH_PX,
+  ROOT_CLASS_DESKTOP,
+  DT_DETACH_ANIMATION_MS,
+  DT_DETACH_DELAY_MS,
+} from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
 import { getPreferences, PopupMode } from './prefs';
 import { getDirection, isWikipedia, wait } from './utils';
 
 interface CursorParam {
-  pageX: number,
-  pageY: number,
+  pageX: number;
+  pageY: number;
 }
 
 interface LayoutParam {
-  cursor?: CursorParam,
-  popupRect: DOMRect,
-  anchorBoundingRect: DOMRect,
-  anchorRects: DOMRectList,
+  cursor?: CursorParam;
+  popupRect: DOMRect;
+  anchorBoundingRect: DOMRect;
+  anchorRects: DOMRectList;
 }
 
 interface Layout {
-  pageX: number,
-  pageY: number,
-  isRight: boolean,
-  isBottom: boolean,
+  pageX: number;
+  pageY: number;
+  isRight: boolean;
+  isBottom: boolean;
 }
 
 const enum State {
@@ -29,17 +35,17 @@ const enum State {
 }
 
 interface Popup extends PopupBase {
-  state: State,
+  state: State;
 
-  elem: HTMLElement,
-  anchor: HTMLAnchorElement,
-  oldTooltip: string | null,
+  elem: HTMLElement;
+  anchor: HTMLAnchorElement;
+  oldTooltip: string | null;
 
-  cursor?: CursorParam,
-  isCausedByTouch: boolean,
-  abortController: AbortController,
-  detachHandler: () => void,
-  cancelDetachingHandler: () => void,
+  cursor?: CursorParam;
+  isCausedByTouch: boolean;
+  abortController: AbortController;
+  detachHandler: () => void;
+  cancelDetachingHandler: () => void;
 }
 
 /**
@@ -79,19 +85,24 @@ function getLayout(layoutParam: LayoutParam): Layout {
   const height = layoutParam.popupRect.height;
 
   // Falls back to this value to align with left boundary
-  const cursorPageX = layoutParam.cursor?.pageX
-    ?? layoutParam.anchorBoundingRect.left + DT_PTR_SHORT_SIDE_LENGTH_PX;
+  const cursorPageX =
+    layoutParam.cursor?.pageX ?? layoutParam.anchorBoundingRect.left + DT_PTR_SHORT_SIDE_LENGTH_PX;
 
   // Get the rect of the correct line the cursor is right in
   // by determining which line's mid point the cursor is closest to
   // This will happen if the <a> is line wrapped
   const currentAnchorLineRect = layoutParam.cursor
     ? [...layoutParam.anchorRects]
-      .map((rect) => [
-        rect,
-        Math.abs(pageScrollOffsetY + (rect.top + rect.bottom) / 2 - layoutParam.cursor!.pageY),
-      ] as const)
-      .reduce((prev, curr) => curr[1] < prev[1] ? curr : prev)[0]
+        .map(
+          (rect) =>
+            [
+              rect,
+              Math.abs(
+                pageScrollOffsetY + (rect.top + rect.bottom) / 2 - layoutParam.cursor!.pageY,
+              ),
+            ] as const,
+        )
+        .reduce((prev, curr) => (curr[1] < prev[1] ? curr : prev))[0]
     : layoutParam.anchorBoundingRect; // Falls back to full bounding rect
 
   const anchorPageTop = currentAnchorLineRect.top + pageScrollOffsetY;
@@ -193,7 +204,6 @@ function buildPopup(popup: Popup) {
       // Guaranteed to have only one entry
       const newTop = layout.pageY + rect.height - root.clientHeight;
       root.style.top = `${newTop}px`;
-
     });
     observer.observe(popup.elem, { subtree: true, childList: true });
   }
@@ -268,8 +278,10 @@ function buildPopup(popup: Popup) {
  * @returns
  */
 function attachPopup(
-  anchor: HTMLAnchorElement, isCausedByTouch: boolean,
-  oldTooltip: string | null, cursor?: CursorParam,
+  anchor: HTMLAnchorElement,
+  isCausedByTouch: boolean,
+  oldTooltip: string | null,
+  cursor?: CursorParam,
 ): Popup | null {
   const popupBase = createPopupBase(anchor);
   if (!popupBase) {

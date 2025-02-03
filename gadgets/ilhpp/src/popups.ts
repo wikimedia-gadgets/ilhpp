@@ -2,12 +2,12 @@ import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, FOREIGN_A_SELECTOR } from './con
 import { normalizeLang, normalizeTitle } from './utils';
 
 interface PopupBase {
-  origTitle: string,
-  wikiCode: string,
-  langCode: string,
-  langName: string,
-  foreignTitle: string,
-  foreignHref: string,
+  origTitle: string;
+  wikiCode: string;
+  langCode: string;
+  langName: string;
+  foreignTitle: string;
+  foreignHref: string;
 }
 
 function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {

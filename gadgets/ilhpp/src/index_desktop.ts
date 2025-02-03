@@ -24,30 +24,24 @@ function run() {
 
   document.body.addEventListener('mouseover', (ev) => {
     if (
-      getPreferences().popup === PopupMode.OnHover
-      && ev.target instanceof HTMLElement
-      && elemPointerTypeMap.get(ev.target) !== 'touch' // Ignore when hover is caused by touch
+      getPreferences().popup === PopupMode.OnHover &&
+      ev.target instanceof HTMLElement &&
+      elemPointerTypeMap.get(ev.target) !== 'touch' // Ignore when hover is caused by touch
     ) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       clearTimeout(mouseOverTimeoutId);
       // Restore tooltips cleared by previous calls
-      if (
-        activeAnchor
-        && activeAnchorTooltip
-        && activePopup?.state !== State.Attached
-      ) {
+      if (activeAnchor && activeAnchorTooltip && activePopup?.state !== State.Attached) {
         activeAnchor.title = activeAnchorTooltip;
         activeAnchor = null;
         activeAnchorTooltip = null;
       }
       // Do not reattach when hovering on the same <a> with a popup
       if (
-        currentAnchor
-        && (
-          activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor
-          || activePopup?.state !== State.Attached
-        )
+        currentAnchor &&
+        ((activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+          activePopup?.state !== State.Attached)
       ) {
         if (activePopup) {
           void detachPopup(activePopup);
@@ -57,12 +51,10 @@ function run() {
         activeAnchor = currentAnchor;
 
         mouseOverTimeoutId = setTimeout(() => {
-          activePopup = attachPopup(
-            currentAnchor,
-            false,
-            activeAnchorTooltip,
-            { pageX: ev.pageX, pageY: ev.pageY },
-          );
+          activePopup = attachPopup(currentAnchor, false, activeAnchorTooltip, {
+            pageX: ev.pageX,
+            pageY: ev.pageY,
+          });
         }, DT_ATTACH_DELAY_MS);
       }
     }
@@ -76,12 +68,11 @@ function run() {
       let isCausedByTouch = false;
 
       if (
-        ev.target instanceof HTMLElement
-        && (
-          prefs.popup === PopupMode.OnClick
+        ev.target instanceof HTMLElement &&
+        (prefs.popup === PopupMode.OnClick ||
           // Work as in click mode if touch clicked
-          || prefs.popup === PopupMode.OnHover && (isCausedByTouch = (elemPointerTypeMap.get(ev.target) === 'touch'))
-        )
+          (prefs.popup === PopupMode.OnHover &&
+            (isCausedByTouch = elemPointerTypeMap.get(ev.target) === 'touch')))
       ) {
         elemPointerTypeMap.delete(ev.target);
 
@@ -90,8 +81,8 @@ function run() {
         if (currentAnchor) {
           // Do not prevent navigation when clicking on the same <a> with a popup
           if (
-            activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor
-            || activePopup?.state !== State.Attached
+            (activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+            activePopup?.state !== State.Attached
           ) {
             ev.stopImmediatePropagation();
             ev.preventDefault();
@@ -109,15 +100,10 @@ function run() {
           const oldTooltip = currentAnchor.getAttribute('title');
           currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
 
-          activePopup = attachPopup(
-            currentAnchor,
-            isCausedByTouch,
-            oldTooltip,
-            {
-              pageX: ev.pageX,
-              pageY: ev.pageY,
-            },
-          );
+          activePopup = attachPopup(currentAnchor, isCausedByTouch, oldTooltip, {
+            pageX: ev.pageX,
+            pageY: ev.pageY,
+          });
         } else if (!activePopup?.elem.contains(ev.target)) {
           // Clicked something else outside of popup and <a>
           if (activePopup && activePopup.state === State.Attached) {
@@ -147,23 +133,23 @@ function run() {
   document.body.addEventListener('focusin', (ev) => {
     // Only handle this in hover mode, otherwise it causes conflicts
     if (
-      isTabPressed
-      && getPreferences().popup !== PopupMode.Disabled
-      && ev.target instanceof HTMLElement
+      isTabPressed &&
+      getPreferences().popup !== PopupMode.Disabled &&
+      ev.target instanceof HTMLElement
     ) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       // Do not reattach when hovering on the same <a> with a popup
       if (currentAnchor) {
         if (
-          activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor
-          || activePopup?.state !== State.Attached
+          (activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+          activePopup?.state !== State.Attached
         ) {
           // Is there an active popup on another <a>?
           if (
-            activePopup
-            && activePopup.state === State.Attached
-            && activePopup.anchor !== currentAnchor
+            activePopup &&
+            activePopup.state === State.Attached &&
+            activePopup.anchor !== currentAnchor
           ) {
             void detachPopup(activePopup);
           }

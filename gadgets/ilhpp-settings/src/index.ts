@@ -16,22 +16,27 @@ export function showSettingsDialog() {
       const isDisabled = ref(false);
       const prefs = reactive(getPreferences());
 
-      return () => h(SettingsDialog, {
-        open: isOpen.value,
-        'onUpdate:open': (val: boolean) => { isOpen.value = val; },
-        disabled: isDisabled.value,
-        'onUpdate:disabled': (val: boolean) => { isDisabled.value = val; },
-        prefs,
-        async onSave() {
-          try {
-            isDisabled.value = true;
-            await setPreferences(prefs);
-            isOpen.value = false;
-          } catch {
-            // No-op, gives user a feeling that it keeps saving
-          }
-        },
-      });
+      return () =>
+        h(SettingsDialog, {
+          open: isOpen.value,
+          'onUpdate:open': (val: boolean) => {
+            isOpen.value = val;
+          },
+          disabled: isDisabled.value,
+          'onUpdate:disabled': (val: boolean) => {
+            isDisabled.value = val;
+          },
+          prefs,
+          async onSave() {
+            try {
+              isDisabled.value = true;
+              await setPreferences(prefs);
+              isOpen.value = false;
+            } catch {
+              // No-op, gives user a feeling that it keeps saving
+            }
+          },
+        });
     },
   }).mount(root);
 }

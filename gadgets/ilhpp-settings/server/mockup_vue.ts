@@ -6,4 +6,4 @@ export function createMwApp(...args: Parameters<typeof createApp>) {
   const app = createApp(...args);
   app.config.globalProperties.$i18n = mw.message;
   return app;
-};
+}

@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { CdxDialog, CdxField, CdxRadio, CdxCheckbox } from '@wikimedia/codex';
 import { ref, watch } from 'vue';
-import { haveConflicts as haveConflictsFn, LinkMode, OrigLinkColor, PopupMode, Preferences } from 'ext.gadget.ilhpp';
+import {
+  haveConflicts as haveConflictsFn,
+  LinkMode,
+  OrigLinkColor,
+  PopupMode,
+  Preferences,
+} from 'ext.gadget.ilhpp';
 
 const isOpen = defineModel<boolean>('open', { default: true });
 const isDisabled = defineModel<boolean>('disabled', { default: false });
 const prefs = defineModel<Preferences>('prefs', { required: true });
 const emit = defineEmits<{
-  save: [],
+  save: [];
 }>();
 const isFallbackTipsShowing = ref(false);
 const isAnyPrefChanged = ref(false);
@@ -50,10 +56,7 @@ function onPrimary() {
     @primary="onPrimary"
   >
     <div v-if="!isFallbackTipsShowing">
-      <CdxField
-        :is-fieldset="true"
-        :disabled="isDisabled"
-      >
+      <CdxField :is-fieldset="true" :disabled="isDisabled">
         <template #label>
           {{ $i18n('ilhpps-link-mode').text() }}
         </template>
@@ -84,10 +87,7 @@ function onPrimary() {
           name="ilhpps-popup-mode"
         >
           {{ $i18n(`ilhpps-popup-mode-${option.toLowerCase().replace(/_/g, '-')}`).text() }}
-          <template
-            v-if="option === PopupMode.OnHover"
-            #description
-          >
+          <template v-if="option === PopupMode.OnHover" #description>
             <span class="ilhpps-small">{{ $i18n('ilhpps-popup-mode-footnote').text() }}</span>
           </template>
         </CdxRadio>
@@ -96,10 +96,7 @@ function onPrimary() {
         </template>
       </CdxField>
 
-      <CdxField
-        :is-fieldset="true"
-        :disabled="isDisabled"
-      >
+      <CdxField :is-fieldset="true" :disabled="isDisabled">
         <template #label>
           {{ $i18n('ilhpps-orig-link-color').text() }}
         </template>
@@ -114,29 +111,20 @@ function onPrimary() {
         </CdxRadio>
       </CdxField>
 
-      <CdxField
-        :is-fieldset="true"
-        :disabled="isDisabled"
-      >
+      <CdxField :is-fieldset="true" :disabled="isDisabled">
         <CdxCheckbox v-model="prefs.highlightExisting">
           {{ $i18n('ilhpps-highlight-existing').text() }}
         </CdxCheckbox>
       </CdxField>
     </div>
-    <div
-      v-else
-      class="ilhpps-fallback"
-    >
+    <div v-else class="ilhpps-fallback">
       <div class="ilhpps-fallback__img" />
       <p class="ilhpps-fallback__text ilhpps-small">
         {{ $i18n('ilhpps-fallback-tips').text() }}
       </p>
     </div>
 
-    <template
-      v-if="!isFallbackTipsShowing"
-      #footer-text
-    >
+    <template v-if="!isFallbackTipsShowing" #footer-text>
       <!-- MF is messing around font size, so do it ourselves -->
       <span class="ilhpps-small">{{ $i18n('ilhpps-footnote').text() }}</span>
     </template>
@@ -147,7 +135,7 @@ function onPrimary() {
 @import (reference) '../../ilhpp/styles/base.less';
 
 .ilhpps-small {
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 
 .ilhpps-fallback {
@@ -164,11 +152,11 @@ function onPrimary() {
     .mw-dark({
       background-image: url(../assets/footer-link-ltr-dark.svg);
     });
-}
+  }
 
-&__text {
-  margin-left: 8px;
-  margin-top: calc(@height - 1.2em * 2);
-}
+  &__text {
+    margin-left: 8px;
+    margin-top: calc(@height - 1.2em * 2);
+  }
 }
 </style>

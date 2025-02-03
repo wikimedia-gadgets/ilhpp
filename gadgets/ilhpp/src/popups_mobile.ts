@@ -1,13 +1,18 @@
-import { MB_DETACH_ANIMATION_MS, MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
+import {
+  MB_DETACH_ANIMATION_MS,
+  MB_SKELETON_STRIPE_COUNT,
+  OVERLAY_CLASS_MOBILE,
+  ROOT_CLASS_MOBILE,
+} from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
 import { getDirection, isWikipedia, wait } from './utils';
 
 interface Popup extends PopupBase {
-  overlay: HTMLElement,
-  elem: HTMLElement,
-  anchor: HTMLAnchorElement,
-  abortController: AbortController,
+  overlay: HTMLElement;
+  elem: HTMLElement;
+  anchor: HTMLAnchorElement;
+  abortController: AbortController;
 }
 
 function buildPopup(popup: Popup) {

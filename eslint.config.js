@@ -4,16 +4,16 @@ import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default tsEslint.config(
   {
-    files: [
-      '**/*.ts', '**/*.d.ts', '**/*.js', '**/*.vue',
-    ],
+    files: ['**/*.ts', '**/*.d.ts', '**/*.js', '**/*.vue'],
     extends: [
       eslint.configs.recommended,
       ...tsEslint.configs.recommendedTypeChecked,
       ...pluginVue.configs['flat/recommended'],
+      eslintPluginPrettierRecommended,
     ],
     languageOptions: {
       parserOptions: {
@@ -57,15 +57,9 @@ export default tsEslint.config(
         },
       ],
       'quote-props': ['error', 'as-needed'],
-      'no-empty': [
-        'error',
-        { allowEmptyCatch: true },
-      ],
+      'no-empty': ['error', { allowEmptyCatch: true }],
       eqeqeq: ['error', 'smart'],
-      '@typescript-eslint/no-explicit-any': [
-        'error',
-        { fixToUnknown: true, ignoreRestArgs: true },
-      ],
+      '@typescript-eslint/no-explicit-any': ['error', { fixToUnknown: true, ignoreRestArgs: true }],
       'no-console': ['warn'],
     },
   },
@@ -85,9 +79,6 @@ export default tsEslint.config(
   },
 
   {
-    ignores: [
-      'dist/',
-      'assets/',
-    ],
+    ignores: ['dist/', 'assets/'],
   },
 );

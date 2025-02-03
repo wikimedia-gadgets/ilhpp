@@ -5,7 +5,9 @@ const hostRest = location.hostname.endsWith('wmflabs.org')
   : '.wikipedia.org';
 
 async function getPagePreview(
-  wikiCode: string, title: string, signal?: AbortSignal,
+  wikiCode: string,
+  title: string,
+  signal?: AbortSignal,
 ): Promise<PagePreview> {
   if (wikiCode === 'd') {
     // No preview
@@ -56,19 +58,19 @@ async function getPagePreview(
 type Dir = 'ltr' | 'rtl';
 
 interface SummaryApiResponse {
-  type: 'standard' | 'disambiguation',
-  displaytitle: string,
-  dir: Dir,
-  description: string,
-  extract_html: string,
+  type: 'standard' | 'disambiguation';
+  displaytitle: string;
+  dir: Dir;
+  description: string;
+  extract_html: string;
 }
 
 interface PagePreview {
-  isDisambiguation: boolean,
-  title: string,
-  dir: Dir,
-  description: string,
-  mainHtml: string,
+  isDisambiguation: boolean;
+  title: string;
+  dir: Dir;
+  description: string;
+  mainHtml: string;
 }
 
 export { type Dir, type PagePreview, getPagePreview };
