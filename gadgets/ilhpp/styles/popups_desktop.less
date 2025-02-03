@@ -12,7 +12,6 @@
   }
 }
 
-
 @keyframes ilhpp-popup-desktop-top-out {
   0% {
     opacity: 1;
@@ -52,8 +51,9 @@
 .ilhpp-popup-desktop {
   position: absolute;
   z-index: 800;
-
-  box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--background-color-neutral, #eaecf0);
+  box-shadow:
+    0 30px 90px -20px rgb(0 0 0 / 30%),
+    0 0 0 1px var(--background-color-neutral, #eaecf0);
   background: var(--background-color-base, #fff);
   border-radius: @border-radius-base;
   word-break: break-word;
@@ -62,7 +62,6 @@
   line-height: @desktop-popup-line-height;
   width: 300px;
   font-size: 14px;
-
   display: flex;
   flex-direction: column;
 
@@ -134,7 +133,6 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-
     background-color: var(--background-color-neutral, #eaecf0);
     padding: @popup-margin-thin @popup-margin-base;
     margin-top: @popup-margin-thin;
@@ -149,7 +147,7 @@
       height: @desktop-icon-height;
       margin-left: @desktop-margin-article-like-icon-align;
       margin-right: @desktop-margin-icon-text;
-      mask: url(../assets/article_add.svg) no-repeat center / contain;
+      mask: url('../assets/article_add.svg') no-repeat center / contain;
       background-color: var(--color-base, #202122);
     }
 
@@ -159,7 +157,6 @@
 
     &__settings {
       flex: 0 0 auto;
-
       appearance: none;
       background-color: var(--background-color-transparent, transparent);
       border-color: var(--border-color-transparent, transparent);
@@ -167,8 +164,7 @@
       border-width: 1px;
       border-radius: 2px;
       transition-property: background-color, color, border-color, box-shadow;
-      transition-duration: .1s;
-
+      transition-duration: 0.1s;
       padding: 5px;
       margin-left: @desktop-margin-icon-text - ($padding + $border-width);
       margin-right: -($padding + $border-width + 2px); // Add 2px to make it visually align with RTL heading icon
@@ -185,7 +181,7 @@
         background-color: var(--background-color-interactive-subtle--active, #dadde3);
       }
 
-      &:focus:not(:active):not(:disabled) {
+      &:focus:not(:active, :disabled) {
         border-color: var(--border-color-progressive--focus, #36c);
         box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus, #36c);
       }
@@ -196,7 +192,7 @@
         display: inline-block;
         width: @desktop-icon-width;
         height: @desktop-icon-height;
-        mask: url(../assets/settings.svg) no-repeat center / contain;
+        mask: url('../assets/settings.svg') no-repeat center / contain;
         background-color: var(--color-base, #202122);
       }
 
@@ -249,21 +245,21 @@
     &__header::before {
       margin-left: @desktop-margin-article-like-icon-align; // Align icon real boundary with text
       margin-right: @desktop-margin-icon-text;
-      mask: url(../assets/article.svg) no-repeat center / contain;
+      mask: url('../assets/article.svg') no-repeat center / contain;
     }
 
     &__subheader {
       // Align with heading after icon
-      margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
+      margin-left: @popup-margin-base + @desktop-icon-width +
+        @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
     }
   }
-
 
   &--foreign-rtl & {
     &__header::before {
       margin-right: @desktop-margin-article-like-icon-align;
       margin-left: @desktop-margin-icon-text;
-      mask: url(../assets/article.svg) no-repeat center / contain;
+      mask: url('../assets/article.svg') no-repeat center / contain;
       transform: scaleX(-1);
     }
   }
@@ -276,16 +272,22 @@
     }
   }
 
-  &--standard&--foreign-ltr &__main__more {
-    right: 0;
-    text-align: right;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 40%);
-  }
+  &--loading & {
+    &__main {
+      // Hardcode the height to 7lh
+      height: @desktop-popup-line-height * @lines-shown;
 
-  &--standard&--foreign-rtl &__main__more {
-    left: 0;
-    text-align: left;
-    background-image: linear-gradient(to left, rgba(255, 255, 255, 0), var(--background-color-base, #fff) 40%);
+      &__extract {
+        height: 100%;
+        background: var(--background-color-neutral, #eaecf0);
+        animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
+        mask: url('../assets/skeleton_desktop.svg') no-repeat center / contain;
+      }
+
+      &__more {
+        display: none;
+      }
+    }
   }
 
   &--disam &,
@@ -297,42 +299,43 @@
     }
   }
 
+  &--standard&--foreign-ltr &__main__more {
+    right: 0;
+    text-align: right;
+    background-image: linear-gradient(
+      to right,
+      rgb(255 255 255 / 0%),
+      var(--background-color-base, #fff) 40%
+    );
+  }
+
+  &--standard&--foreign-rtl &__main__more {
+    left: 0;
+    text-align: left;
+    background-image: linear-gradient(
+      to left,
+      rgb(255 255 255 / 0%),
+      var(--background-color-base, #fff) 40%
+    );
+  }
+
   &--foreign-ltr&--disam &,
   &--foreign-ltr&--no-preview &,
   &--foreign-ltr&--error & {
     &__main {
       // Align with heading after icon
-      margin-left: @popup-margin-base + @desktop-icon-width + @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
+      margin-left: @popup-margin-base + @desktop-icon-width +
+        @desktop-margin-article-like-icon-align + @desktop-margin-icon-text;
     }
   }
 
   &--disam & {
     &__header::before {
-      mask-image: url(../assets/disam.svg);
-    }
-  }
-
-  &--loading & {
-    &__main {
-      // Hardcode the height to 7lh
-      height: @desktop-popup-line-height * @lines-shown;
-
-      &__extract {
-        height: 100%;
-
-        background: var(--background-color-neutral, #eaecf0);
-        animation: ilhpp-skeleton-breath 1.5s ease-in-out infinite;
-        mask: url(../assets/skeleton_desktop.svg) no-repeat center / contain;
-      }
-
-      &__more {
-        display: none;
-      }
+      mask-image: url('../assets/disam.svg');
     }
   }
 
   &--foreign-rtl&--loading & {
-
     // Flip skeleton in RTL context
     &__main__extract {
       transform: scaleX(-1);

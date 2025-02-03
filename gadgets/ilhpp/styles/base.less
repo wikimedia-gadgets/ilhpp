@@ -1,31 +1,34 @@
 .mw-dark(@rules) {
-
   // Automatic dark mode
   @media screen and (prefers-color-scheme: dark) {
     html.skin-theme-clientpref-os & {
+      // Bugged
+      /* stylelint-disable-next-line */
       @rules();
     }
   }
 
   // Forced dark mode
   html.skin-theme-clientpref-night & {
+    // Bugged
+    /* stylelint-disable-next-line */
     @rules();
   }
 }
 
 :root {
   --ilhpp-link-green: #007a5e;
-  --ilhpp-link-existing: #1E88E5;
-  --ilhpp-link-existing--hover: #2196F3;
-  --ilhpp-link-existing--active: #0D47A1;
-  --ilhpp-link-existing--visited: #AB47BC;
+  --ilhpp-link-existing: #1e88e5;
+  --ilhpp-link-existing--hover: #2196f3;
+  --ilhpp-link-existing--active: #0d47a1;
+  --ilhpp-link-existing--visited: #ab47bc;
 }
 
 .mw-dark({
   --ilhpp-link-green: #009b78;
-  --ilhpp-link-existing: #1E88E5;
-  --ilhpp-link-existing--hover: #2196F3;
-  --ilhpp-link-existing--active: #42A5F5;
+  --ilhpp-link-existing: #1e88e5;
+  --ilhpp-link-existing--hover: #2196f3;
+  --ilhpp-link-existing--active: #42a5f5;
   --ilhpp-link-existing--visited: #BA68C8;
 });
 
@@ -73,7 +76,6 @@
 }
 
 .ilhpp-auto-hyphen {
-
   &:lang(de),
   &:lang(fi),
   &:lang(sv),

@@ -147,10 +147,10 @@ function onPrimary() {
     flex-shrink: 0;
     width: 180px;
     height: @height;
-    background: url(../assets/footer-link-ltr-light.svg) no-repeat center / contain;
+    background: url('../assets/footer-link-ltr-light.svg') no-repeat center / contain;
 
     .mw-dark({
-      background-image: url(../assets/footer-link-ltr-dark.svg);
+      background-image: url('../assets/footer-link-ltr-dark.svg');
     });
   }
 

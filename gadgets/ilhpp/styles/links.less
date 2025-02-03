@@ -1,5 +1,22 @@
-html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
+html:not(.ve-activated, .ilhpp-inactive).ilhpp-pref {
   &-link {
+    &-hl-existing {
+      .ilh-blue a {
+        color: var(--ilhpp-link-existing);
+
+        &:hover {
+          color: var(--ilhpp-link-existing--hover);
+        }
+
+        &:visited {
+          color: var(--ilhpp-link-existing--visited);
+        }
+
+        &:active {
+          color: var(--ilhpp-link-existing--active);
+        }
+      }
+    }
 
     &-orig,
     &-foreign {
@@ -10,7 +27,6 @@ html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
 
     &-orig-n-unlinked-foreign {
       .ilh-comment {
-
         .ilh-lang,
         .ilh-colon {
           display: none;
@@ -31,7 +47,6 @@ html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
 
     &-foreign-n-lang-code {
       .ilh-comment {
-
         .ilh-paren,
         .ilh-lang {
           font-size: 0.8em;
@@ -47,17 +62,7 @@ html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
     }
   }
 
-  &-popup {
-    &-disabled {}
-
-    &-on-hover {}
-
-    &-on-click {}
-  }
-
   &-orig-link-color {
-    &-red {}
-
     &-green {
       .ilh-all .new {
         color: var(--ilhpp-link-green);
@@ -69,24 +74,6 @@ html:not(.ve-activated):not(.ilhpp-inactive).ilhpp-pref {
         &:active {
           color: var(--color-destructive--active, #9f3526);
         }
-      }
-    }
-  }
-
-  &-hl-existing {
-    .ilh-blue a {
-      color: var(--ilhpp-link-existing);
-
-      &:hover {
-        color: var(--ilhpp-link-existing--hover);
-      }
-
-      &:visited {
-        color: var(--ilhpp-link-existing--visited);
-      }
-
-      &:active {
-        color: var(--ilhpp-link-existing--active);
       }
     }
   }
