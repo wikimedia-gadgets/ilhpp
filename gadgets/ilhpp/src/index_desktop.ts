@@ -96,15 +96,14 @@ function run() {
           }
         }
 
-        if (currentAnchor) {
-          // Do not prevent navigation when clicking on the same <a> with a popup
-          if (
-            (activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
-            activePopup?.state !== State.Attached
-          ) {
-            ev.stopImmediatePropagation();
-            ev.preventDefault();
-          }
+        if (
+          currentAnchor &&
+          // When clicking on the same <a> with a popup, detach that popup
+          ((activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+            activePopup?.state !== State.Attached)
+        ) {
+          ev.stopImmediatePropagation();
+          ev.preventDefault();
 
           if (activePopup && activePopup.state === State.Attached) {
             // Is there an active popup on another <a>?
