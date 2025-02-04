@@ -1,4 +1,4 @@
-import { LANG_WIKI_MAP, NAV_POPUP_OPTION_NAME, RTL_LANGS } from './consts';
+import { LANG_WIKI_MAP, RTL_LANGS } from './consts';
 import { Dir } from './network';
 
 function isMobileDevice(): boolean {
@@ -89,7 +89,8 @@ function isWikipedia(wikiId: string): boolean {
 }
 
 function haveConflicts(): boolean {
-  return String(mw.user.options.get(NAV_POPUP_OPTION_NAME) as number | string) === '1';
+  return false; // Per request
+  // return String(mw.user.options.get(NAV_POPUP_OPTION_NAME) as number | string) === '1';
 }
 
 export {
