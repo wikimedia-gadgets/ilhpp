@@ -135,13 +135,10 @@ function buildPopup(popup: Popup) {
           root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          // Design decision: `moreButton.href` is unchanged because if so there will be "href shift"
-          // causing unpleasant user experience
           // messages.json is trusted
           extract.innerHTML = mw.msg(
-            'ilhpp-error-not-found-mobile',
-            mw.msg('ilhpp-error-not-found'),
-            `<a href="/w/index.php?title=${encodeURIComponent(mw.config.get('wgPageName'))}&action=edit">${mw.msg('ilhpp-error-not-found-more')}</a>`,
+            'ilhpp-error-not-found',
+            encodeURIComponent(mw.config.get('wgPageName')),
           );
           break;
 

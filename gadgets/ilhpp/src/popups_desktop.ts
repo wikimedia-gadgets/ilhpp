@@ -251,9 +251,12 @@ function buildPopup(popup: Popup) {
           root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          extract.innerText = mw.msg('ilhpp-error-not-found');
-          more.innerText = mw.msg('ilhpp-error-not-found-more');
-          more.href = `/w/index.php?title=${encodeURIComponent(mw.config.get('wgPageName'))}&action=edit`;
+          // messages.json is trusted
+          extract.innerHTML = mw.msg(
+            'ilhpp-error-not-found',
+            encodeURIComponent(mw.config.get('wgPageName')),
+          );
+          more.innerText = mw.msg('ilhpp-goto');
           break;
 
         default:
