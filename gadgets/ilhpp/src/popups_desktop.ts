@@ -42,10 +42,31 @@ interface Popup extends PopupBase {
   oldTooltip: string | null;
 
   cursor?: CursorParam;
-  isCausedByTouch: boolean;
   abortController: AbortController;
   detachHandler: () => void;
   cancelDetachingHandler: () => void;
+}
+
+let overriddenPopupMode: PopupMode | null = null;
+
+/**
+ * Acts as a wrapper over {@link getPreferences()}, allowing overriding popup mode
+ * without saving preferences.
+ */
+function setOverriddenPopupMode(popupMode: PopupMode | null) {
+  overriddenPopupMode = popupMode;
+}
+
+/**
+ * Get overridden popup mode, falling back to actual popup mode.
+ */
+function getOverriddenPopupMode(): PopupMode {
+  const prefs = getPreferences();
+  // Only override in hover mode
+  if (prefs.popup === PopupMode.OnHover) {
+    return overriddenPopupMode ?? prefs.popup;
+  }
+  return prefs.popup;
 }
 
 /**
@@ -282,7 +303,6 @@ function buildPopup(popup: Popup) {
  */
 function attachPopup(
   anchor: HTMLAnchorElement,
-  isCausedByTouch: boolean,
   oldTooltip: string | null,
   cursor?: CursorParam,
 ): Popup | null {
@@ -300,10 +320,9 @@ function attachPopup(
     anchor,
     oldTooltip,
     cursor,
-    isCausedByTouch,
     abortController: new AbortController(),
     detachHandler() {
-      if (!isCausedByTouch && getPreferences().popup === PopupMode.OnHover) {
+      if (getOverriddenPopupMode() === PopupMode.OnHover) {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
           void detachPopup(popup);
@@ -311,7 +330,7 @@ function attachPopup(
       }
     },
     cancelDetachingHandler() {
-      if (!isCausedByTouch && getPreferences().popup === PopupMode.OnHover) {
+      if (getOverriddenPopupMode() === PopupMode.OnHover) {
         clearTimeout(timeoutId);
       }
     },
@@ -344,4 +363,12 @@ async function detachPopup(popup: Popup) {
   popup.elem.remove();
 }
 
-export { type Popup, type CursorParam, State, attachPopup, detachPopup };
+export {
+  type Popup,
+  type CursorParam,
+  State,
+  setOverriddenPopupMode,
+  getOverriddenPopupMode,
+  attachPopup,
+  detachPopup,
+};
