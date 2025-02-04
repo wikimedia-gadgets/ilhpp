@@ -268,7 +268,12 @@
     &__main__more {
       position: absolute;
       bottom: 0;
-      width: 6ch * 2 + 4ch;
+      width: calc(unit(@more-text-length, em) + @desktop-text-gradient-width);
+
+      // ic works better with Chinese characters
+      @supports (width: 1ic) {
+        width: calc(unit(@more-text-length, ic) + @desktop-text-gradient-width);
+      }
     }
   }
 
@@ -305,7 +310,7 @@
     background-image: linear-gradient(
       to right,
       rgb(255 255 255 / 0%),
-      var(--background-color-base, #fff) 40%
+      var(--background-color-base, #fff) @desktop-text-gradient-width
     );
   }
 
@@ -315,7 +320,7 @@
     background-image: linear-gradient(
       to left,
       rgb(255 255 255 / 0%),
-      var(--background-color-base, #fff) 40%
+      var(--background-color-base, #fff) @desktop-text-gradient-width
     );
   }
 
