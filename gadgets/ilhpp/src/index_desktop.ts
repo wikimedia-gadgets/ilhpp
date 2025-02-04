@@ -8,27 +8,35 @@ let activeAnchor: HTMLAnchorElement | null = null;
 let activeAnchorTooltip: string | null = null;
 let mouseOverTimeoutId: ReturnType<typeof setTimeout>;
 let isTabPressed = false;
-const elemPointerTypeMap = new WeakMap<HTMLElement, string>();
+const anchorPointerTypeMap = new WeakMap<HTMLAnchorElement, string>();
 
 function run() {
   if (haveConflicts()) {
     return;
   }
 
-  // This fires earlier than mouseover and click, which is why this works
+  // Detect touch clicks in hover mode and act like click mode
+  // FIXME: The current logic is verbose because as of early 2025 the majority of browsers
+  // don't provide a `PointerEvent` in `click` event.
+  // Switch to it once it gets more support.
+  // Firing order: pointerup -> mouseover -> click
   document.body.addEventListener('pointerup', (ev) => {
-    if (ev.target instanceof HTMLElement) {
-      elemPointerTypeMap.set(ev.target, ev.pointerType);
+    if (getPreferences().popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
+      const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
+      if (currentAnchor) {
+        anchorPointerTypeMap.set(currentAnchor, ev.pointerType);
+      }
     }
   });
 
   document.body.addEventListener('mouseover', (ev) => {
-    if (
-      getPreferences().popup === PopupMode.OnHover &&
-      ev.target instanceof HTMLElement &&
-      elemPointerTypeMap.get(ev.target) !== 'touch' // Ignore when hover is caused by touch
-    ) {
+    if (getPreferences().popup === PopupMode.OnHover && ev.target instanceof HTMLElement) {
       const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
+
+      // Ignore when hover is caused by touch
+      if (currentAnchor && anchorPointerTypeMap.get(currentAnchor) === 'touch') {
+        return;
+      }
 
       clearTimeout(mouseOverTimeoutId);
       // Restore tooltips cleared by previous calls
@@ -67,16 +75,26 @@ function run() {
       // Used to disable popup mouse leave detaching handler when touch clicked in hover mode
       let isCausedByTouch = false;
 
-      if (
-        ev.target instanceof HTMLElement &&
-        (prefs.popup === PopupMode.OnClick ||
-          // Work as in click mode if touch clicked
-          (prefs.popup === PopupMode.OnHover &&
-            (isCausedByTouch = elemPointerTypeMap.get(ev.target) === 'touch')))
-      ) {
-        elemPointerTypeMap.delete(ev.target);
-
+      if (ev.target instanceof HTMLElement) {
         const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
+
+        if (prefs.popup === PopupMode.Disabled) {
+          return;
+        }
+
+        if (prefs.popup === PopupMode.OnHover) {
+          if (activeAnchor) {
+            const pointerType = anchorPointerTypeMap.get(activeAnchor);
+            if (pointerType !== undefined) {
+              anchorPointerTypeMap.delete(activeAnchor);
+              // Ignore when NOT caused by touch
+              if (pointerType !== 'touch') {
+                return;
+              }
+              isCausedByTouch = true;
+            }
+          }
+        }
 
         if (currentAnchor) {
           // Do not prevent navigation when clicking on the same <a> with a popup
@@ -117,7 +135,7 @@ function run() {
     true, // Add at capture phase to "mock an overlay"
   );
 
-  // Firing sequence: keydown -> focusin -> keyup
+  // Firing order: keydown -> focusin -> keyup
   document.body.addEventListener('keydown', (ev) => {
     if (ev.key === 'Tab') {
       isTabPressed = true;
