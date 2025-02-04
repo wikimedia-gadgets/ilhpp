@@ -1,4 +1,4 @@
-import { NAV_POPUP_OPTION_NAME, RTL_LANGS } from './consts';
+import { LANG_WIKI_MAP, NAV_POPUP_OPTION_NAME, RTL_LANGS } from './consts';
 import { Dir } from './network';
 
 function isMobileDevice(): boolean {
@@ -76,6 +76,14 @@ function normalizeLang(lang: string): string {
   return lang === 'd' ? 'en' : lang;
 }
 
+/**
+ * Make the wiki ID always matches their domain name.
+ * @param wikiId
+ */
+function normalizeWikiId(wikiId: string): string {
+  return LANG_WIKI_MAP[wikiId as keyof typeof LANG_WIKI_MAP] ?? wikiId;
+}
+
 function isWikipedia(wikiId: string): boolean {
   return wikiId !== 'd';
 }
@@ -91,6 +99,7 @@ export {
   getDirection,
   normalizeTitle,
   normalizeLang,
+  normalizeWikiId,
   isWikipedia,
   haveConflicts,
 };

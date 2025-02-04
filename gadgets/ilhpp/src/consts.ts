@@ -11,6 +11,15 @@ export const API_USER_AGENT = `Gadget-ilhpp/${version}`;
 export const PREF_KEY_LS = 'ilhpp-prefs'; // Used in local storage
 export const PREF_KEY_MW = 'userjs-ilhpp-prefs'; // Used in MediaWiki user options
 export const RTL_LANGS = ['ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ug', 'dv', 'syr'];
+// https://meta.wikimedia.org/wiki/Special_language_codes#Subdomains_that_do_not_match_their_lang_attribute
+export const LANG_WIKI_MAP = {
+  gsw: 'als',
+  bho: 'bh',
+  rup: 'roa-rup',
+  lzh: 'zh-classical',
+  nan: 'zh-min-nan',
+  yue: 'zh-yue',
+};
 export const FOOTER_ANCHOR_ID = 'ilhpp-footer-places-settings';
 export const NAV_POPUP_OPTION_NAME = 'gadget-Navigation_popups';
 

@@ -141,7 +141,7 @@ function buildPopup(popup: Popup) {
   subheader.innerText = mw.msg(
     'ilhpp-from',
     popup.langName,
-    isWikipedia(popup.wikiCode) ? mw.msg('ilhpp-wp') : '',
+    isWikipedia(popup.wikiId) ? mw.msg('ilhpp-wp') : '',
   );
 
   const main = document.createElement('div');
@@ -214,7 +214,7 @@ function buildPopup(popup: Popup) {
   root.addEventListener('mouseenter', popup.cancelDetachingHandler);
   popup.anchor.addEventListener('mouseenter', popup.cancelDetachingHandler);
 
-  void getPagePreview(popup.wikiCode, popup.foreignTitle, popup.abortController.signal).then(
+  void getPagePreview(popup.wikiId, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
       root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
       header.innerText = preview.title;

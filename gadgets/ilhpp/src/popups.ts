@@ -1,9 +1,9 @@
 import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, FOREIGN_A_SELECTOR } from './consts';
-import { normalizeLang, normalizeTitle } from './utils';
+import { normalizeLang, normalizeTitle, normalizeWikiId } from './utils';
 
 interface PopupBase {
   origTitle: string;
-  wikiCode: string;
+  wikiId: string;
   langCode: string;
   langName: string;
   foreignTitle: string;
@@ -23,19 +23,19 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
   const foreignHref = foreignAnchor.href;
 
   const origTitle = dataElement.dataset.origTitle;
-  const wikiCode = dataElement.dataset.langCode;
-  const langCode = wikiCode;
+  const wikiId = dataElement.dataset.langCode;
+  const langCode = wikiId;
   // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
   const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
   const foreignTitle = dataElement.dataset.foreignTitle;
 
-  if (!origTitle || !wikiCode || !langCode || !langName || !foreignTitle) {
+  if (!origTitle || !wikiId || !langCode || !langName || !foreignTitle) {
     return null;
   }
 
   return {
     origTitle,
-    wikiCode,
+    wikiId: normalizeWikiId(wikiId),
     langCode: normalizeLang(langCode),
     langName,
     foreignTitle: normalizeTitle(foreignTitle),

@@ -40,7 +40,7 @@ function buildPopup(popup: Popup) {
   subheader.innerText = mw.msg(
     'ilhpp-from',
     popup.langName,
-    isWikipedia(popup.wikiCode) ? mw.msg('ilhpp-wp') : '',
+    isWikipedia(popup.wikiId) ? mw.msg('ilhpp-wp') : '',
   );
 
   const closeButton = document.createElement('button');
@@ -98,7 +98,7 @@ function buildPopup(popup: Popup) {
 
   popup.overlay.append(root);
 
-  void getPagePreview(popup.wikiCode, popup.foreignTitle, popup.abortController.signal).then(
+  void getPagePreview(popup.wikiId, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
       root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
       header.innerText = preview.title;

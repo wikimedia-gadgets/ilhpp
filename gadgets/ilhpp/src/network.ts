@@ -5,17 +5,17 @@ const hostRest = location.hostname.endsWith('wmflabs.org')
   : '.wikipedia.org';
 
 async function getPagePreview(
-  wikiCode: string,
+  wikiId: string,
   title: string,
   signal?: AbortSignal,
 ): Promise<PagePreview> {
-  if (wikiCode === 'd') {
+  if (wikiId === 'd') {
     // No preview
     throw new DOMException('No preview for this wiki', 'NotSupportedError');
   }
 
   const resp = await fetch(
-    `https://${wikiCode}${hostRest}/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
+    `https://${wikiId}${hostRest}/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
     {
       signal,
       // Design decision: we want to minimize loading time as much as possible as it introduces
