@@ -78,7 +78,7 @@ function buildPopup(popup: Popup) {
 
   const ctaInner = document.createElement('div');
   ctaInner.className = `${ROOT_CLASS_MOBILE}__cta__inner`;
-  ctaInner.innerHTML = mw.msg('ilhpp-cta', popup.origTitle); // Safely escaped
+  ctaInner.innerHTML = mw.msg('ilhpp-cta', popup.origTitle, encodeURIComponent(popup.origTitle)); // Safely escaped
 
   cta.append(ctaInner);
 

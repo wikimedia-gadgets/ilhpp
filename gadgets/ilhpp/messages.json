@@ -12,8 +12,8 @@
     "hant": "閱讀更多內容"
   },
   "ilhpp-cta": {
-    "hans": "中文维基百科暂无“$1”条目，但您可以帮助我们<a href=\"/w/index.php?title=$1&action=edit&redlink=1\">创建它</a>！",
-    "hant": "中文維基百科暫無「$1」條目，但您可以幫助我們<a href=\"/w/index.php?title=$1&action=edit&redlink=1\">建立它</a>！"
+    "hans": "中文维基百科暂无“$1”条目，但您可以帮助我们<a href=\"/w/index.php?title=$2&action=edit&redlink=1\">创建它</a>！",
+    "hant": "中文維基百科暫無「$1」條目，但您可以幫助我們<a href=\"/w/index.php?title=$2&action=edit&redlink=1\">建立它</a>！"
   },
   "ilhpp-settings": {
     "hans": "设置",
