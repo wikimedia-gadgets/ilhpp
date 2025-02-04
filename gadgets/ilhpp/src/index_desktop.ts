@@ -83,10 +83,10 @@ function run() {
         }
 
         if (prefs.popup === PopupMode.OnHover) {
-          if (activeAnchor) {
-            const pointerType = anchorPointerTypeMap.get(activeAnchor);
+          if (currentAnchor) {
+            const pointerType = anchorPointerTypeMap.get(currentAnchor);
             if (pointerType !== undefined) {
-              anchorPointerTypeMap.delete(activeAnchor);
+              anchorPointerTypeMap.delete(currentAnchor);
               // Ignore when NOT caused by touch
               if (pointerType !== 'touch') {
                 return;
