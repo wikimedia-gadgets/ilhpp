@@ -47,7 +47,7 @@ function run() {
 
   document.body.addEventListener('mouseover', (ev) => {
     if (getOverriddenPopupMode() === PopupMode.OnHover && ev.target instanceof HTMLElement) {
-      const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
+      const targetAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       clearTimeout(mouseOverTimeoutId);
       // Restore tooltips cleared by previous calls
@@ -58,19 +58,19 @@ function run() {
       }
       // Do not reattach when hovering on the same <a> with a popup
       if (
-        currentAnchor &&
-        ((activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+        targetAnchor &&
+        ((activePopup?.state === State.Attached && activePopup?.anchor !== targetAnchor) ||
           activePopup?.state !== State.Attached)
       ) {
         if (activePopup) {
           void detachPopup(activePopup);
         }
-        activeAnchorTooltip = currentAnchor.getAttribute('title');
-        currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
-        activeAnchor = currentAnchor;
+        activeAnchorTooltip = targetAnchor.getAttribute('title');
+        targetAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+        activeAnchor = targetAnchor;
 
         mouseOverTimeoutId = setTimeout(() => {
-          activePopup = attachPopup(currentAnchor, activeAnchorTooltip, {
+          activePopup = attachPopup(targetAnchor, activeAnchorTooltip, {
             pageX: ev.pageX,
             pageY: ev.pageY,
           });
@@ -83,12 +83,12 @@ function run() {
     'click',
     (ev) => {
       if (getOverriddenPopupMode() === PopupMode.OnClick && ev.target instanceof HTMLElement) {
-        const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
+        const targetAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
         if (
-          currentAnchor &&
+          targetAnchor &&
           // When clicking on the same <a> with a popup, detach that popup
-          ((activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+          ((activePopup?.state === State.Attached && activePopup?.anchor !== targetAnchor) ||
             activePopup?.state !== State.Attached)
         ) {
           ev.stopImmediatePropagation();
@@ -96,17 +96,17 @@ function run() {
 
           if (activePopup && activePopup.state === State.Attached) {
             // Is there an active popup on another <a>?
-            if (activePopup.anchor !== currentAnchor) {
+            if (activePopup.anchor !== targetAnchor) {
               void detachPopup(activePopup);
             } else {
               // No-op
               return;
             }
           }
-          const oldTooltip = currentAnchor.getAttribute('title');
-          currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+          const oldTooltip = targetAnchor.getAttribute('title');
+          targetAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
 
-          activePopup = attachPopup(currentAnchor, oldTooltip, {
+          activePopup = attachPopup(targetAnchor, oldTooltip, {
             pageX: ev.pageX,
             pageY: ev.pageY,
           });
@@ -143,26 +143,26 @@ function run() {
       getOverriddenPopupMode() !== PopupMode.Disabled &&
       ev.target instanceof HTMLElement
     ) {
-      const currentAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
+      const targetAnchor = ev.target.closest<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
       // Do not reattach when hovering on the same <a> with a popup
-      if (currentAnchor) {
+      if (targetAnchor) {
         if (
-          (activePopup?.state === State.Attached && activePopup?.anchor !== currentAnchor) ||
+          (activePopup?.state === State.Attached && activePopup?.anchor !== targetAnchor) ||
           activePopup?.state !== State.Attached
         ) {
           // Is there an active popup on another <a>?
           if (
             activePopup &&
             activePopup.state === State.Attached &&
-            activePopup.anchor !== currentAnchor
+            activePopup.anchor !== targetAnchor
           ) {
             void detachPopup(activePopup);
           }
-          const oldTooltip = currentAnchor.getAttribute('title');
-          currentAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
+          const oldTooltip = targetAnchor.getAttribute('title');
+          targetAnchor.removeAttribute('title'); // Clear tooltip to prevent "double popups"
 
-          activePopup = attachPopup(currentAnchor, oldTooltip);
+          activePopup = attachPopup(targetAnchor, oldTooltip);
         }
       } else if (!activePopup?.elem.contains(ev.target)) {
         // Focused something else outside of popup and <a>
