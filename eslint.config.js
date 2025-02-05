@@ -4,7 +4,8 @@ import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import pluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import pluginCompat from 'eslint-plugin-compat';
 
 export default tsEslint.config(
   {
@@ -13,7 +14,8 @@ export default tsEslint.config(
       eslint.configs.recommended,
       ...tsEslint.configs.recommendedTypeChecked,
       ...pluginVue.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
+      pluginPrettierRecommended,
+      pluginCompat.configs['flat/recommended'],
     ],
     languageOptions: {
       parserOptions: {
@@ -24,25 +26,6 @@ export default tsEslint.config(
       },
     },
     rules: {
-      semi: 'error',
-      'comma-dangle': ['error', 'always-multiline'],
-      quotes: [
-        'error',
-        'single',
-        {
-          avoidEscape: true,
-          allowTemplateLiterals: true,
-        },
-      ],
-      'max-len': [
-        'error',
-        {
-          code: 100,
-          ignoreComments: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-        },
-      ],
       'no-constant-condition': [
         'error',
         {
@@ -56,7 +39,6 @@ export default tsEslint.config(
           varsIgnorePattern: '^_',
         },
       ],
-      'quote-props': ['error', 'as-needed'],
       'no-empty': ['error', { allowEmptyCatch: true }],
       eqeqeq: ['error', 'smart'],
       '@typescript-eslint/no-explicit-any': ['error', { fixToUnknown: true, ignoreRestArgs: true }],

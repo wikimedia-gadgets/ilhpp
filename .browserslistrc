@@ -1,5 +1,7 @@
-defaults
-last 3 years
+# https://www.mediawiki.org/wiki/Compatibility, Grade A
+last 3 years and chrome > 0
+last 3 years and edge > 0
+last 3 years and firefox > 0
 safari >= 11.1
 ios >= 11.3
-android >= 5
+ChromeAndroid >= 96

@@ -174,6 +174,7 @@
 
       &:hover:not(:disabled) {
         background-color: var(--background-color-interactive-subtle--hover, #eaecf0);
+        // stylelint-disable-next-line plugin/no-unsupported-browser-features
         mix-blend-mode: var(--mix-blend-mode-blend, multiply);
       }
 
@@ -307,6 +308,7 @@
   &--standard&--foreign-ltr &__main__more {
     right: 0;
     text-align: right;
+    // stylelint-disable-next-line plugin/no-unsupported-browser-features
     background-image: linear-gradient(
       to right,
       rgb(255 255 255 / 0%),
@@ -317,6 +319,7 @@
   &--standard&--foreign-rtl &__main__more {
     left: 0;
     text-align: left;
+    // stylelint-disable-next-line plugin/no-unsupported-browser-features
     background-image: linear-gradient(
       to left,
       rgb(255 255 255 / 0%),

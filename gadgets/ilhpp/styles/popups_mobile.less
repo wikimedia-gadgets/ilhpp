@@ -66,6 +66,7 @@
 
   &:hover:not(:disabled) {
     background-color: var(--background-color-interactive-subtle--hover, #eaecf0);
+    // stylelint-disable-next-line plugin/no-unsupported-browser-features
     mix-blend-mode: var(--mix-blend-mode-blend, multiply);
     text-decoration: none;
   }
@@ -97,6 +98,7 @@
     &:hover:not(:disabled) {
       background-color: var(--background-color-progressive--hover, #3056a9);
       border-color: var(--border-color-transparent, transparent);
+      // stylelint-disable-next-line plugin/no-unsupported-browser-features
       mix-blend-mode: unset;
     }
 
@@ -116,7 +118,10 @@
 
 .ilhpp-mobile-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 400;
   display: flex;
   flex-direction: column;
@@ -144,6 +149,7 @@
   background-color: var(--background-color-base, #fff);
   display: grid;
   // Make extract's min height fixed
+  // stylelint-disable-next-line plugin/no-unsupported-browser-features
   grid-template-rows: auto auto minmax(@precise-7lh-plus-margin, auto) auto auto;
   grid-template-columns: auto 1fr auto;
   font-size: 1rem;
@@ -436,6 +442,7 @@
   &--standard&--foreign-ltr & {
     &__extract::after {
       right: 0;
+      // stylelint-disable-next-line plugin/no-unsupported-browser-features
       background-image: linear-gradient(
         to right,
         rgb(255 255 255 / 0%),
@@ -447,6 +454,7 @@
   &--standard&--foreign-rtl & {
     &__extract::after {
       left: 0;
+      // stylelint-disable-next-line plugin/no-unsupported-browser-features
       background-image: linear-gradient(
         to left,
         rgb(255 255 255 / 0%),

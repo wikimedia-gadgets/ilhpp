@@ -320,6 +320,8 @@ function attachPopup(
     anchor,
     oldTooltip,
     cursor,
+    // Support Safari 11.1: Partial support is enough for our use case
+    // eslint-disable-next-line compat/compat
     abortController: new AbortController(),
     detachHandler() {
       if (getOverriddenPopupMode() === PopupMode.OnHover) {

@@ -167,6 +167,8 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   const elem = document.createElement('div');
   elem.className = ROOT_CLASS_MOBILE;
 
+  // Support Safari 11.1: Partial support is enough for our use case
+  // eslint-disable-next-line compat/compat
   const abortController = new AbortController();
 
   const result: Popup = {

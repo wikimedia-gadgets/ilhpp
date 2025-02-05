@@ -7,7 +7,29 @@ export default {
     'stylelint-prettier/recommended',
     'stylelint-config-html/vue',
   ],
+  plugins: ['stylelint-no-unsupported-browser-features'],
   rules: {
+    'plugin/no-unsupported-browser-features': [
+      true,
+      {
+        severity: 'warning',
+
+        ignore: [
+          'css-nesting', // It mistakenly treat LESS nesting as CSS one
+          'css-overflow', // We don't use clip value
+          'css-masks', // Supported via autoprefixer
+          'css-appearance', // appearance: none supported via autoprefixer
+        ],
+      },
+    ],
+    'declaration-block-no-redundant-longhand-properties': [
+      true,
+      {
+        ignoreShorthands: [
+          'inset', // Bad browser support
+        ],
+      },
+    ],
     'custom-property-pattern': null,
   },
 };
