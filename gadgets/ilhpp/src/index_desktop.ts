@@ -41,7 +41,10 @@ function run() {
           setOverriddenPopupMode(ev.pointerType === 'touch' ? PopupMode.OnClick : null);
         }
       },
-      true, // Add at capture phase to be triggered as early as possible
+      {
+        passive: true,
+        capture: true, // Add at capture phase to be triggered as early as possible
+      },
     );
   });
 
@@ -120,7 +123,10 @@ function run() {
         }
       }
     },
-    true, // Add at capture phase to "mock an overlay"
+    {
+      passive: false,
+      capture: true, // Add at capture phase to "mock an overlay"
+    },
   );
 
   // Firing order: keydown -> focusin -> keyup
