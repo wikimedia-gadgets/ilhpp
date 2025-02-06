@@ -171,7 +171,7 @@ function buildPopup(popup: Popup) {
   const extract = document.createElement('a');
   extract.href = popup.foreignHref;
   extract.lang = popup.langCode;
-  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract ilhpp-text-like ilhpp-auto-hyphen`;
+  extract.className = `${ROOT_CLASS_DESKTOP}__main__extract ilhpp-text-like ilhpp-auto-hyphen ilhpp-extract`;
   extract.dir = 'auto';
 
   const more = document.createElement('a');

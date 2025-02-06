@@ -32,6 +32,11 @@ export default defineConfig(({ command }) => {
       postcss: {
         plugins: [autoprefixer()],
       },
+      preprocessorOptions: {
+        less: {
+          strictUnits: true,
+        },
+      },
     },
 
     build: {

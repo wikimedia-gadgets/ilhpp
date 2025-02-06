@@ -62,7 +62,7 @@ function buildPopup(popup: Popup) {
   const extractInner = document.createElement('a');
   extractInner.href = popup.foreignHref;
   extractInner.lang = popup.langCode;
-  extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen`;
+  extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen ilhpp-extract`;
   extractInner.dir = 'auto';
 
   Array.from({ length: MB_SKELETON_STRIPE_COUNT }).forEach(() => {

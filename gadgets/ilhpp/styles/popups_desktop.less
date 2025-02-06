@@ -106,27 +106,6 @@
     display: block;
     margin: @popup-margin-thin @popup-margin-base 0;
     overflow: hidden;
-
-    &__extract {
-      // HACK: Uses the de-facto standard -webkit-line-clamp to show a fixed number of lines
-      // FIXME: Fix this once becoming a real standard
-      display: -webkit-box;
-      -webkit-line-clamp: @lines-shown;
-      -webkit-box-orient: vertical;
-
-      // Endpoint's results are usually wrapped in <p>
-      p {
-        margin: 0;
-      }
-
-      // Prevent these 2 from expanding actual line height, causing misalignment with the "more" text
-      sub,
-      sup {
-        line-height: 0;
-      }
-
-      // Note: .skin-invert is handled by MW, so there's no worry about black text on dark backgrounds
-    }
   }
 
   &__cta {

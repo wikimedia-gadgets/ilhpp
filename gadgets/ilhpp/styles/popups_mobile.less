@@ -205,22 +205,7 @@
     grid-column: span 3;
     margin: @popup-margin-base @popup-margin-wide 0;
     position: relative;
-
-    &__inner {
-      // HACK: Uses the de-facto standard -webkit-line-clamp to show a fixed number of lines
-      // FIXME: Fix this once becoming a real standard
-      display: -webkit-box;
-      -webkit-line-clamp: @lines-shown;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-
-      // Endpoint's results are usually wrapped in <p>
-      p {
-        margin: 0;
-      }
-
-      // Note: .skin-invert is handled by MW, so there's no worry about black text on dark backgrounds
-    }
+    overflow: hidden;
   }
 
   &__more {
