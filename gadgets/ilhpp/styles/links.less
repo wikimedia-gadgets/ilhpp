@@ -1,23 +1,5 @@
 html:not(.ve-activated, .ilhpp-inactive).ilhpp-pref {
   &-link {
-    &-hl-existing {
-      .ilh-blue a {
-        color: var(--ilhpp-link-existing);
-
-        &:hover {
-          color: var(--ilhpp-link-existing--hover);
-        }
-
-        &:visited {
-          color: var(--ilhpp-link-existing--visited);
-        }
-
-        &:active {
-          color: var(--ilhpp-link-existing--active);
-        }
-      }
-    }
-
     &-orig,
     &-foreign {
       .ilh-comment {
@@ -74,6 +56,24 @@ html:not(.ve-activated, .ilhpp-inactive).ilhpp-pref {
         &:active {
           color: var(--color-destructive--active, #9f3526);
         }
+      }
+    }
+  }
+
+  &-hl-existing {
+    .ilh-blue .ilh-page a {
+      color: var(--ilhpp-link-existing);
+
+      &:hover {
+        color: var(--ilhpp-link-existing--hover);
+      }
+
+      &:visited {
+        color: var(--ilhpp-link-existing--visited);
+      }
+
+      &:active {
+        color: var(--ilhpp-link-existing--active);
       }
     }
   }
