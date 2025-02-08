@@ -52,7 +52,7 @@ export default tsEslint.config(
   },
 
   {
-    files: ['scripts/*.js', '**/*.config.js'],
+    files: ['scripts/*.js', 'scripts/*.ts', '**/*.config.js', '**/__tests__/*.ts'],
     languageOptions: {
       globals: {
         ...globals.nodeBuiltin,

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
     "lib": [
@@ -39,10 +39,12 @@
     "gadgets/*/server/**/*.ts",
     "gadgets/*/server/**/*.tsx",
     "gadgets/*/server/**/*.vue",
+    "gadgets/*/__tests__/**/*.ts",
     "gadgets/*/messages.json",
     "gadgets/*/package.json",
     "gadgets/env.d.ts",
     "scripts/*.js",
+    "scripts/*.ts",
     "**/*.config.js",
   ],
 }

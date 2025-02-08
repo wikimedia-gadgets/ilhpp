@@ -1,4 +1,5 @@
 // @ts-check
+/// <reference types="vitest/config" />
 import { readFileSync } from 'node:fs';
 import mwGadget from 'rollup-plugin-mediawiki-gadget';
 import { defineConfig } from 'vite';
@@ -68,5 +69,12 @@ export default defineConfig(({ command }) => {
         }),
       },
     ],
+
+    test: {
+      globalSetup: [
+        `${import.meta.dirname}/../../scripts/test_global_setup_teardown`,
+        `${import.meta.dirname}/__tests__/_setup`,
+      ],
+    },
   };
 });

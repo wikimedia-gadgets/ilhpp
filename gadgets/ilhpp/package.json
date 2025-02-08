@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "dev:host": "vite --host",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest run",
+    "test:update": "vitest run -u"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
