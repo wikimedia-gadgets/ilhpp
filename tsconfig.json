@@ -39,6 +39,7 @@
     "gadgets/*/server/**/*.ts",
     "gadgets/*/server/**/*.tsx",
     "gadgets/*/server/**/*.vue",
+    "gadgets/*/__tests__/**/*.ts",
     "gadgets/*/messages.json",
     "gadgets/*/package.json",
     "gadgets/env.d.ts",
