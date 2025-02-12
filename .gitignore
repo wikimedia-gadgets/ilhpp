@@ -140,3 +140,9 @@ dist
 
 # Generated docs
 docs
+
+# Playwright
+test-results
+playwright-report
+blob-report
+playwright/.cache

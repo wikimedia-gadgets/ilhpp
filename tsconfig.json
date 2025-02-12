@@ -31,6 +31,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "composite": true,
+    "allowJs": true,
   },
   "include": [
     "gadgets/*/src/**/*.ts",
@@ -39,6 +40,7 @@
     "gadgets/*/server/**/*.ts",
     "gadgets/*/server/**/*.tsx",
     "gadgets/*/server/**/*.vue",
+    "gadgets/*/__tests__/**/*.ts",
     "gadgets/*/messages.json",
     "gadgets/*/package.json",
     "gadgets/env.d.ts",

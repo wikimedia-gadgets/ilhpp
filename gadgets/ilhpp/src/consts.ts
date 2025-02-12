@@ -1,4 +1,4 @@
-import { version } from '../package.json';
+import packageJson from '../package.json' with { type: 'json' };
 
 export const DATA_ELEM_SELECTOR = '.ilh-all:not(.ilh-blue)';
 export const ORIG_A_SELECTOR = '.ilh-all:not(.ilh-blue) .ilh-page > a'; // Intentionally avoid .new which is subject to change
@@ -7,7 +7,7 @@ export const ILH_LANG_SELECTOR = '.ilh-lang';
 export const ROOT_CLASS_DESKTOP = 'ilhpp-popup-desktop';
 export const ROOT_CLASS_MOBILE = 'ilhpp-popup-mobile';
 export const OVERLAY_CLASS_MOBILE = 'ilhpp-mobile-overlay';
-export const API_USER_AGENT = `Gadget-ilhpp/${version}`;
+export const API_USER_AGENT = `Gadget-ilhpp/${packageJson.version}`;
 export const PREF_KEY_LS = 'ilhpp-prefs'; // Used in local storage
 export const PREF_KEY_MW = 'userjs-ilhpp-prefs'; // Used in MediaWiki user options
 export const RTL_LANGS = ['ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ug', 'dv', 'syr'];

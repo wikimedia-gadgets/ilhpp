@@ -140,6 +140,7 @@ function buildPopup(popup: Popup) {
             'ilhpp-error-not-found',
             encodeURIComponent(mw.config.get('wgPageName')),
           );
+          moreButton.innerText = mw.msg('ilhpp-goto');
           break;
 
         default:

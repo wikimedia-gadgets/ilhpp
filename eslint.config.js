@@ -61,6 +61,6 @@ export default tsEslint.config(
   },
 
   {
-    ignores: ['dist/', 'assets/'],
+    ignores: ['**/dist/', '**/assets/', '**/test-results/', '**/playwright-report/'],
   },
 );
