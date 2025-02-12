@@ -9,6 +9,7 @@
     "lint": "vue-tsc --noEmit && eslint . && stylelint \"**/*.{less,vue}\"",
     "lint:fix": "eslint . --fix && stylelint \"**/*.{less,vue}\" --fix",
     "test:e2e": "pnpm -r run test:e2e",
+    "test:e2e:prepare": "playwright install --with-deps",
     "prepare": "husky"
   },
   "author": "diskdance",
