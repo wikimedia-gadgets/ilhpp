@@ -15,6 +15,9 @@ export const test = base.extend<TestFixtures>({
     await page.addScriptTag({ content: await getMockupJS() });
     await page.addStyleTag({ content: await getMockupCSS() });
 
+    // Fix flakey tests caused by animations
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+
     if (isMobile) {
       await page.evaluate(() => {
         mw.config.set('wgMFMode', 'active');
