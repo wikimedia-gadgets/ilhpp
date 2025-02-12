@@ -1,4 +1,4 @@
-import packageJson from '../package.json' assert { type: 'json' };
+import packageJson from '../package.json' with { type: 'json' };
 
 export const DATA_ELEM_SELECTOR = '.ilh-all:not(.ilh-blue)';
 export const ORIG_A_SELECTOR = '.ilh-all:not(.ilh-blue) .ilh-page > a'; // Intentionally avoid .new which is subject to change
