@@ -9,8 +9,7 @@ export default defineConfig({
   fullyParallel: true,
   // Fail the build on CI if you accidentally left test.only in the source code.
   forbidOnly: !!process.env.CI,
-  // Retry on CI only
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
   // Opt out of parallel tests on CI
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
@@ -26,16 +25,18 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium',
+      name: 'Chromium',
       use: { ...devices['Desktop Chrome'] },
+      grep: /(links_|popups_desktop_)/,
+    },
+    {
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 7'] },
+      grep: /popups_mobile_/,
     },
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
-    // },
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 7 Pro'] },
     // },
     // {
     //   name: 'Mobile Safari',

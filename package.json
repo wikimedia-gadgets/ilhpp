@@ -8,6 +8,7 @@
     "build": "pnpm -r run build",
     "lint": "vue-tsc --noEmit && eslint . && stylelint \"**/*.{less,vue}\"",
     "lint:fix": "eslint . --fix && stylelint \"**/*.{less,vue}\" --fix",
+    "test:e2e": "pnpm -r run test:e2e",
     "prepare": "husky"
   },
   "author": "diskdance",
@@ -34,6 +35,7 @@
     "postcss-html": "^1.8.0",
     "prettier": "^3.4.2",
     "requirejs": "^2.3.7",
+    "rollup": "^4.34.0",
     "rollup-plugin-mediawiki-gadget": "^1.2.1",
     "stylelint": "^16.14.1",
     "stylelint-config-html": "^1.1.0",

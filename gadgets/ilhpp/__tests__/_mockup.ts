@@ -1,3 +1,4 @@
+/// <reference types="requirejs" />
 import '../server/mockup_mw';
 import * as HanAssist from 'hanassist';
 
