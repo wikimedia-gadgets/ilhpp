@@ -54,7 +54,7 @@ testCombinations.forEach((combination) => {
       await expect(page.getByText('阅读更多内容')).toBeVisible();
       await expect(page).toHaveScreenshot({
         // Font family difference is causing problems on CI, so be more forgiving
-        maxDiffPixelRatio: 0.2,
+        maxDiffPixelRatio: 0.02,
       });
 
       await page.getByTitle('关闭').click(); // Reset
