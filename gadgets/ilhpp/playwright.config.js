@@ -7,18 +7,15 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './__tests__',
   fullyParallel: true,
-  // Fail the build on CI if you accidentally left test.only in the source code.
-  forbidOnly: !!process.env.CI,
-  retries: 2,
-  // Opt out of parallel tests on CI
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: !!process.env.CI, // Fail the build on CI if accidentally left test.only in the source code.
+  retries: process.env.CI ? 2 : undefined, // Opt out of retries on CI
+  workers: process.env.CI ? 1 : undefined, // Opt out of parallel tests on CI
   reporter: 'html',
   globalSetup: './__tests__/_global_setup',
 
   // Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions.
   use: {
-    // Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
   },
 
   expect: {

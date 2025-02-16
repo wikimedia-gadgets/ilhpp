@@ -15,12 +15,11 @@ export const test = base.extend<TestFixtures>({
     await page.addScriptTag({ content: await getMockupJS() });
     await page.addStyleTag({ content: await getMockupCSS() });
 
-    // Fix flakey tests caused by animations
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-
     if (isMobile) {
       await page.evaluate(() => {
         mw.config.set('wgMFMode', 'active');
+        // emulateMedia doesn't provide a way to mock this, so replace this method directly
+        // and forcibly return true on the query we want
         const _oldMatchMedia = window.matchMedia;
         window.matchMedia = function (...args: Parameters<typeof matchMedia>) {
           if (args[0] === '(hover: none), (pointer: coarse)') {

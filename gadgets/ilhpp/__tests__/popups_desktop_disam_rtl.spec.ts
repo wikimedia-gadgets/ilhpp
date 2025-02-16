@@ -53,12 +53,12 @@ testCombinations.forEach((combination) => {
       await anchor.hover();
       await requestPromise;
 
-      await expect(page.getByText('查看相似页面')).toBeVisible();
+      await expect.soft(page.getByText('查看相似页面')).toBeInViewport();
       await expect(anchor).not.toHaveAttribute('title');
       await expect(page).toHaveScreenshot();
 
       await page.mouse.move(0, 0); // Reset
-      await expect(page.getByText('查看相似页面')).not.toBeVisible();
+      await expect.soft(page.getByText('查看相似页面')).not.toBeInViewport();
       await expect(anchor).toHaveAttribute('title');
     });
   });
