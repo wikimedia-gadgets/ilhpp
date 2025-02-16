@@ -22,14 +22,26 @@ import runMobile from './index_mobile';
 mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
 const _ = getPreferences();
 
-function toggleInactivityClass() {
-  document.documentElement.classList.toggle('ilhpp-inactive', location.hash.includes('/editor/'));
-}
-
-// Deactivate if MF editor is active, activate otherwise
+// Deactivate if MF Visual editor is active, activate otherwise
 if (mw.config.get('wgMFMode')) {
-  window.addEventListener('hashchange', toggleInactivityClass);
-  toggleInactivityClass();
+  void import('mobile.startup').then(({ getOverlayManager }) => {
+    getOverlayManager(); // Forcibly make .mw-overlays-container to be available
+
+    const overlayContainer = document.getElementsByClassName('mw-overlays-container')[0];
+    if (!overlayContainer) {
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      const veOverlay = overlayContainer.querySelector('.editor-overlay.editor-overlay-ve');
+      document.documentElement.classList.toggle('ilhpp-inactive', !!veOverlay);
+    });
+    observer.observe(overlayContainer, {
+      childList: true,
+      attributes: true,
+      attributeFilter: ['style'],
+    });
+  });
 }
 
 if (isMobileDevice()) {

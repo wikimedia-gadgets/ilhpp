@@ -64,7 +64,7 @@ export default defineConfig(({ command }) => {
         enforce: 'pre',
         ...mwGadget({
           gadgetDef: '.gadgetdefinition',
-          softDependencies: ['ext.gadget.ilhpp-settings'],
+          softDependencies: ['ext.gadget.ilhpp-settings', 'mobile.startup'],
         }),
       },
     ],

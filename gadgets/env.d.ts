@@ -16,3 +16,7 @@ declare namespace Intl {
     direction: 'ltr' | 'rtl';
   }
 }
+
+declare module 'mobile.startup' {
+  export function getOverlayManager(): void; // Return value unused
+}
