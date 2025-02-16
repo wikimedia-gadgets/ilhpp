@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import mwGadget from 'rollup-plugin-mediawiki-gadget';
 import { defineConfig } from 'vite';
-import { name as packageName } from './package.json';
+import packageJson from './package.json' with { type: 'json' };
 import browserslistToEsbuild from '../../scripts/browserslist_to_esbuild';
 import autoprefixer from 'autoprefixer';
 import vue from '@vitejs/plugin-vue';
@@ -51,9 +51,9 @@ export default defineConfig(({ command }) => {
       cssTarget: browserslistToEsbuild(), // Tell esbuild not to use too modern CSS features
       rollupOptions: {
         output: {
-          entryFileNames: `Gadget-${packageName}.js`,
-          chunkFileNames: `Gadget-${packageName}-[name].js`,
-          assetFileNames: `Gadget-${packageName}.css`,
+          entryFileNames: `Gadget-${packageJson.name}.js`,
+          chunkFileNames: `Gadget-${packageJson.name}-[name].js`,
+          assetFileNames: `Gadget-${packageJson.name}.css`,
         },
       },
     },
