@@ -42,12 +42,12 @@ testCombinations.forEach((combination) => {
       await expect(anchor).toHaveAttribute('title');
       await anchor.hover();
 
-      await expect(page.getByText('前往该页面')).toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).toBeInViewport();
       await expect(anchor).not.toHaveAttribute('title');
       await expect(page).toHaveScreenshot();
 
       await page.mouse.move(0, 0); // Reset
-      await expect(page.getByText('前往该页面')).not.toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).not.toBeInViewport();
       await expect(anchor).toHaveAttribute('title');
     });
   });
