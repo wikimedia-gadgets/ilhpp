@@ -51,11 +51,11 @@ testCombinations.forEach((combination) => {
       await page.locator('css=.ilh-page a').click();
       await requestPromise;
 
-      await expect(page.getByText('阅读更多内容')).toBeVisible();
+      await expect.soft(page.getByText('阅读更多内容')).toBeInViewport();
       await expect(page).toHaveScreenshot();
 
       await page.getByTitle('关闭').click(); // Reset
-      await expect(page.getByText('阅读更多内容')).not.toBeVisible();
+      await expect.soft(page.getByText('阅读更多内容')).not.toBeInViewport();
     });
   });
 });

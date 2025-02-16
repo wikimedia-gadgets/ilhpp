@@ -40,11 +40,11 @@ testCombinations.forEach((combination) => {
     test('popup should have correct appearance', async ({ page }) => {
       await page.locator('css=.ilh-page a').click();
 
-      await expect(page.getByText('前往该页面')).toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).toBeInViewport();
       await expect(page).toHaveScreenshot();
 
       await page.getByTitle('关闭').click(); // Reset
-      await expect(page.getByText('前往该页面')).not.toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).not.toBeInViewport();
     });
   });
 });
