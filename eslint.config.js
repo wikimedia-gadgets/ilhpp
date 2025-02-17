@@ -58,6 +58,9 @@ export default tsEslint.config(
         ...globals.nodeBuiltin,
       },
     },
+    rules: {
+      'no-console': ['off'],
+    },
   },
 
   {
