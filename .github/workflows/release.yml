@@ -16,6 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+          run_install: true
       - name: Update all package.json versions
         run: |
           node scripts/update_version.js ${{ inputs.tag }}
@@ -27,14 +35,6 @@ jobs:
           git add package.json gadgets/*/package.json
           git commit -m "chore: release $NEW_VERSION"
           git push
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
-          run_install: true
       - name: Build
         run: pnpm run build
       - name: Create GitHub release
