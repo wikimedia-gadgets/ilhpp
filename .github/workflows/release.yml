@@ -33,7 +33,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           git add package.json gadgets/*/package.json
-          git commit -m "chore: release $NEW_VERSION"
+          git commit -m "chore: release ${{ inputs.tag }}"
           git push
       - name: Build
         run: pnpm run build
