@@ -1,7 +1,7 @@
 // Dev server entry point. This is not included in the build!
 
 import '../styles/mockup.less';
-import './mockup_mw';
+import '../../../server/mockup_mw';
 import { getPreferences, LinkMode, OrigLinkColor, PopupMode, setPreferences } from '../src/prefs';
 
 // Color scheme switch

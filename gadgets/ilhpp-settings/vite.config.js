@@ -24,6 +24,7 @@ export default defineConfig(({ command }) => {
               'ext.gadget.ilhpp-settings': `${import.meta.dirname}/src/index`,
               vue: `${import.meta.dirname}/server/mockup_vue`,
               '@wikimedia/codex': `${import.meta.dirname}/server/mockup_codex`,
+              'mobile.startup': `${import.meta.dirname}/../../server/mockup_mobile_startup`,
             },
           }
         : undefined,

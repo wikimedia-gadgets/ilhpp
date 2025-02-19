@@ -1,6 +1,6 @@
 /// <reference types="requirejs" />
-import '../server/mockup_mw';
-import * as MobileStartup from '../server/mockup_mobile_startup';
+import '../../../server/mockup_mw';
+import * as MobileStartup from '../../../server/mockup_mobile_startup';
 import * as HanAssist from 'hanassist';
 
 // Mockup mw.loader.using by redirecting to requirejs

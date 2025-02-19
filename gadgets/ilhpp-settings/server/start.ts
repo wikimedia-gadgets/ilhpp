@@ -1,5 +1,5 @@
 // Dev server entry point. This is not included in the build!
-import './mockup_mw';
+import '../../../server/mockup_mw';
 import { createMwApp } from 'vue';
 import { batchConv } from 'ext.gadget.HanAssist';
 import messages from '../messages.json';

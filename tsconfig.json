@@ -44,6 +44,7 @@
     "gadgets/*/messages.json",
     "gadgets/*/package.json",
     "gadgets/env.d.ts",
+    "server/*.ts",
     "scripts/*.js",
     "**/*.config.js",
   ],
