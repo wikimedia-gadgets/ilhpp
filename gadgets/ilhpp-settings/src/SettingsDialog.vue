@@ -9,8 +9,8 @@ import {
   Preferences,
 } from 'ext.gadget.ilhpp';
 
-const isOpen = defineModel<boolean>('open', { default: true });
-const isDisabled = defineModel<boolean>('disabled', { default: false });
+const isOpen = defineModel<boolean>('open', { required: true });
+const isDisabled = defineModel<boolean>('disabled', { required: true });
 const prefs = defineModel<Preferences>('prefs', { required: true });
 const emit = defineEmits<{
   save: [];
