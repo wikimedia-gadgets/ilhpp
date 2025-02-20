@@ -33,4 +33,3 @@ export const DT_DETACH_ANIMATION_MS = 200; // Must sync with LESS out animation 
 
 // Mobile popup specific
 export const MB_SKELETON_STRIPE_COUNT = 6; // Must keep in sync with styles in popups_mobile.less!
-export const MB_DETACH_ANIMATION_MS = 400; // Must sync with LESS out animation time!

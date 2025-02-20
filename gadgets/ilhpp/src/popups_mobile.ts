@@ -1,12 +1,7 @@
-import {
-  MB_DETACH_ANIMATION_MS,
-  MB_SKELETON_STRIPE_COUNT,
-  OVERLAY_CLASS_MOBILE,
-  ROOT_CLASS_MOBILE,
-} from './consts';
+import { MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
-import { getDirection, isWikipedia, wait } from './utils';
+import { getDirection, isWikipedia } from './utils';
 
 interface Popup extends PopupBase {
   overlay: HTMLElement;
@@ -30,12 +25,22 @@ function buildPopup(popup: Popup) {
     `${ROOT_CLASS_MOBILE}--loading`,
   );
 
-  let initialTouch: Touch | null = null;
+  let initialTouch: { screenY: number; timeStamp: number; identifier: number } | null = null;
   root.addEventListener('touchstart', (ev) => {
-    root.classList.add('ilhpp-mobile-panned');
-    popup.overlay.classList.add('ilhpp-mobile-panned');
+    // Do not respond to touch actions if something is selected
+    // This is to prevent bugs around selections and transforms
+    if (window.getSelection()?.type === 'Range') {
+      return;
+    }
 
-    initialTouch = ev.touches[0];
+    popup.overlay.classList.add('ilhpp-mobile-panned');
+    root.classList.add('ilhpp-mobile-panned');
+
+    initialTouch = {
+      screenY: ev.touches[0].screenY,
+      identifier: ev.touches[0].identifier,
+      timeStamp: ev.timeStamp,
+    };
   });
   root.addEventListener('touchmove', (ev) => {
     if (!initialTouch) {
@@ -55,17 +60,18 @@ function buildPopup(popup: Popup) {
       popup.overlay.style.opacity = `${1 - offset / root.offsetHeight}`;
     } else {
       // Emulate resistance when moving towards the opposite direction
-      root.style.transform = `translateY(${Math.expm1(offset / 100) * 10}px)`;
+      root.style.transform = `translateY(${Math.expm1(offset / 100) * 20}px)`;
       popup.overlay.style.removeProperty('opacity');
     }
   });
-
   (['touchend', 'touchcancel'] as const).forEach((eventName) => {
     root.addEventListener(eventName, (ev) => {
-      root.classList.remove('ilhpp-mobile-panned');
       popup.overlay.classList.remove('ilhpp-mobile-panned');
+      root.classList.remove('ilhpp-mobile-panned');
 
       if (!initialTouch) {
+        popup.overlay.style.removeProperty('opacity');
+        root.style.removeProperty('transform');
         return;
       }
       const realInitialTouch = initialTouch;
@@ -75,12 +81,20 @@ function buildPopup(popup: Popup) {
         (touch) => touch.identifier === realInitialTouch.identifier,
       );
       if (!effectiveTouch) {
+        popup.overlay.style.removeProperty('opacity');
+        root.style.removeProperty('transform');
         return;
       }
 
       const offset = effectiveTouch.screenY - realInitialTouch.screenY;
-      if (offset / root.offsetHeight > 0.5) {
-        // Moved to the lower half of the original popup region, detach it
+      const averageSpeedInPixelsPerSec =
+        offset / ((ev.timeStamp - realInitialTouch.timeStamp) / 1000);
+      const thresholdSpeedInPixelsPerSec = root.offsetHeight * 2;
+      if (
+        averageSpeedInPixelsPerSec > thresholdSpeedInPixelsPerSec ||
+        offset / root.offsetHeight > 0.5
+      ) {
+        // High speed or moved to the lower half of the original popup region, detach it
         // Inline styles are not removed to prevent glitch
         void detachPopup(popup);
       } else {
