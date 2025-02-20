@@ -29,7 +29,6 @@ export const DT_PTR_SHORT_SIDE_LENGTH_PX = 20; // Must sync with LESS @desktop-p
 export const DT_PTR_WIDTH_PX = 8; // Must sync with LESS @desktop-popup-pointer-with!
 export const DT_ATTACH_DELAY_MS = 300;
 export const DT_DETACH_DELAY_MS = 300;
-export const DT_DETACH_ANIMATION_MS = 200; // Must sync with LESS out animation time!
 
 // Mobile popup specific
 export const MB_SKELETON_STRIPE_COUNT = 6; // Must keep in sync with styles in popups_mobile.less!

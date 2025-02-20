@@ -2,13 +2,12 @@ import {
   DT_PTR_SHORT_SIDE_LENGTH_PX,
   DT_PTR_WIDTH_PX,
   ROOT_CLASS_DESKTOP,
-  DT_DETACH_ANIMATION_MS,
   DT_DETACH_DELAY_MS,
 } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
 import { getPreferences, PopupMode } from './prefs';
-import { getDirection, isWikipedia, wait } from './utils';
+import { getDirection, isWikipedia } from './utils';
 
 interface CursorParam {
   pageX: number;
@@ -357,7 +356,9 @@ async function detachPopup(popup: Popup) {
     popup.anchor.title = popup.oldTooltip;
   }
 
-  await wait(DT_DETACH_ANIMATION_MS);
+  await new Promise((resolve) => {
+    popup.elem.addEventListener('animationend', resolve, { once: true });
+  });
 
   popup.anchor.removeEventListener('mouseleave', popup.detachHandler);
   popup.anchor.removeEventListener('mouseenter', popup.cancelDetachingHandler);
