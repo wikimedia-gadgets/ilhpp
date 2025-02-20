@@ -1,12 +1,7 @@
-import {
-  MB_DETACH_ANIMATION_MS,
-  MB_SKELETON_STRIPE_COUNT,
-  OVERLAY_CLASS_MOBILE,
-  ROOT_CLASS_MOBILE,
-} from './consts';
+import { MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
-import { getDirection, isWikipedia, wait } from './utils';
+import { getDirection, isWikipedia } from './utils';
 
 interface Popup extends PopupBase {
   overlay: HTMLElement;
@@ -18,14 +13,97 @@ interface Popup extends PopupBase {
 function buildPopup(popup: Popup) {
   const dir = getDirection(popup.langCode);
 
-  popup.overlay.addEventListener('click', (ev) => {
-    if (ev.target === ev.currentTarget) {
-      void detachPopup(popup);
-    }
+  popup.overlay.className = OVERLAY_CLASS_MOBILE;
+  popup.overlay.addEventListener('click', () => {
+    void detachPopup(popup);
   });
 
   const root = popup.elem;
-  root.classList.add(`${ROOT_CLASS_MOBILE}--foreign-${dir}`, `${ROOT_CLASS_MOBILE}--loading`);
+  root.classList.add(
+    ROOT_CLASS_MOBILE,
+    `${ROOT_CLASS_MOBILE}--foreign-${dir}`,
+    `${ROOT_CLASS_MOBILE}--loading`,
+  );
+
+  let initialTouch: { screenY: number; timeStamp: number; identifier: number } | null = null;
+  root.addEventListener('touchstart', (ev) => {
+    // Do not respond to touch actions if something is selected
+    // This is to prevent bugs around selections and transforms
+    if (window.getSelection()?.type === 'Range') {
+      return;
+    }
+
+    popup.overlay.classList.add('ilhpp-mobile-panned');
+    root.classList.add('ilhpp-mobile-panned');
+
+    initialTouch = {
+      screenY: ev.touches[0].screenY,
+      identifier: ev.touches[0].identifier,
+      timeStamp: ev.timeStamp,
+    };
+  });
+  root.addEventListener('touchmove', (ev) => {
+    if (!initialTouch) {
+      return;
+    }
+
+    const effectiveTouch = [...ev.touches].find(
+      (touch) => touch.identifier === initialTouch!.identifier,
+    );
+    if (!effectiveTouch) {
+      return;
+    }
+
+    const offset = effectiveTouch.screenY - initialTouch.screenY;
+    if (offset >= 0) {
+      root.style.transform = `translateY(${offset}px)`;
+      popup.overlay.style.opacity = `${1 - offset / root.offsetHeight}`;
+    } else {
+      // Emulate resistance when moving towards the opposite direction
+      root.style.transform = `translateY(${Math.expm1(offset / 100) * 20}px)`;
+      popup.overlay.style.removeProperty('opacity');
+    }
+  });
+  (['touchend', 'touchcancel'] as const).forEach((eventName) => {
+    root.addEventListener(eventName, (ev) => {
+      popup.overlay.classList.remove('ilhpp-mobile-panned');
+      root.classList.remove('ilhpp-mobile-panned');
+
+      if (!initialTouch) {
+        popup.overlay.style.removeProperty('opacity');
+        root.style.removeProperty('transform');
+        return;
+      }
+      const realInitialTouch = initialTouch;
+      initialTouch = null;
+
+      const effectiveTouch = [...ev.changedTouches].find(
+        (touch) => touch.identifier === realInitialTouch.identifier,
+      );
+      if (!effectiveTouch) {
+        popup.overlay.style.removeProperty('opacity');
+        root.style.removeProperty('transform');
+        return;
+      }
+
+      const offset = effectiveTouch.screenY - realInitialTouch.screenY;
+      const averageSpeedInPixelsPerSec =
+        offset / ((ev.timeStamp - realInitialTouch.timeStamp) / 1000);
+      const thresholdSpeedInPixelsPerSec = root.offsetHeight * 2;
+      if (
+        averageSpeedInPixelsPerSec > thresholdSpeedInPixelsPerSec ||
+        offset / root.offsetHeight > 0.5
+      ) {
+        // High speed or moved to the lower half of the original popup region, detach it
+        // Inline styles are not removed to prevent glitch
+        void detachPopup(popup);
+      } else {
+        // Otherwise, restore to the original state
+        popup.overlay.style.removeProperty('opacity');
+        root.style.removeProperty('transform');
+      }
+    });
+  });
 
   const header = document.createElement('a');
   header.href = popup.foreignHref;
@@ -65,6 +143,8 @@ function buildPopup(popup: Popup) {
   extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen ilhpp-extract`;
   extractInner.dir = 'auto';
 
+  // Build skeleton stripes as real elements
+  // Because mobile popups have variable width, so the SVG mask techniques in desktop popups no longer work
   Array.from({ length: MB_SKELETON_STRIPE_COUNT }).forEach(() => {
     const skeletonStripe = document.createElement('div');
     skeletonStripe.className = 'ilhpp-mobile-skeleton';
@@ -95,8 +175,6 @@ function buildPopup(popup: Popup) {
   });
 
   root.append(header, subheader, closeButton, extract, moreButton, cta, settingsButton);
-
-  popup.overlay.append(root);
 
   void getPagePreview(popup.wikiId, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
@@ -162,20 +240,14 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
     return null;
   }
 
-  const overlay = document.createElement('div');
-  overlay.className = OVERLAY_CLASS_MOBILE;
-
-  const elem = document.createElement('div');
-  elem.className = ROOT_CLASS_MOBILE;
-
   // Support Safari 11.1: Partial support is enough for our use case
   // eslint-disable-next-line compat/compat
   const abortController = new AbortController();
 
   const result: Popup = {
     ...popupBase,
-    overlay,
-    elem,
+    overlay: document.createElement('div'),
+    elem: document.createElement('div'),
     anchor,
     abortController,
   };
@@ -183,7 +255,7 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   buildPopup(result);
 
   document.body.classList.add('ilhpp-scroll-locked');
-  document.body.appendChild(overlay);
+  document.body.append(result.overlay, result.elem);
 
   return result;
 }
@@ -194,11 +266,18 @@ async function detachPopup(popup: Popup) {
   popup.overlay.classList.add(`${OVERLAY_CLASS_MOBILE}--out`);
   popup.elem.classList.add(`${ROOT_CLASS_MOBILE}--out`);
 
-  await wait(MB_DETACH_ANIMATION_MS);
+  // Wait for the two animations to finish
+  await Promise.all(
+    [popup.overlay, popup.elem].map((target) =>
+      new Promise((resolve) => {
+        target.addEventListener('animationend', resolve, { once: true });
+      }).then(() => {
+        target.remove();
+      }),
+    ),
+  );
 
   document.body.classList.remove('ilhpp-scroll-locked');
-  popup.elem.remove();
-  popup.overlay.remove();
 }
 
 export { type Popup, attachPopup, detachPopup };
