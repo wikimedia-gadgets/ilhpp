@@ -446,12 +446,14 @@
 
   &&--out {
     animation-name: ilhpp-slide-out-to-bottom;
-    // animation-fill-mode: forwards;
+  }
+
+  &.ilhpp-mobile-panned {
+    // stylelint-disable-next-line plugin/no-unsupported-browser-features
+    touch-action: pan-y;
   }
 }
 
 .ilhpp-mobile-panned {
   transition: none;
-  // stylelint-disable-next-line plugin/no-unsupported-browser-features
-  touch-action: pan-y;
 }

@@ -25,7 +25,8 @@ function buildPopup(popup: Popup) {
     `${ROOT_CLASS_MOBILE}--loading`,
   );
 
-  let initialTouch: { screenY: number; timeStamp: number; identifier: number } | null = null;
+  let effectiveTouchInitialState: Touch | null = null;
+  let touchOffset: number = 0;
   root.addEventListener('touchstart', (ev) => {
     // Do not respond to touch actions if something is selected
     // This is to prevent "floating selections" bugs found in e.g. iOS Safari
@@ -36,72 +37,53 @@ function buildPopup(popup: Popup) {
     popup.overlay.classList.add('ilhpp-mobile-panned');
     root.classList.add('ilhpp-mobile-panned');
 
-    initialTouch = {
-      screenY: ev.touches[0].screenY,
-      identifier: ev.touches[0].identifier,
-      timeStamp: ev.timeStamp,
-    };
+    if (!effectiveTouchInitialState) {
+      effectiveTouchInitialState = ev.touches[0];
+    }
   });
   root.addEventListener('touchmove', (ev) => {
-    if (!initialTouch) {
+    if (
+      window.getSelection()?.type === 'Range' || // Do not respond to touch actions if something is selected
+      !effectiveTouchInitialState
+    ) {
       return;
     }
 
-    const effectiveTouch = [...ev.touches].find(
-      (touch) => touch.identifier === initialTouch!.identifier,
+    const effectiveTouch = [...ev.changedTouches].find(
+      (touch) => touch.identifier === effectiveTouchInitialState!.identifier,
     );
     if (!effectiveTouch) {
       return;
     }
 
-    const offset = effectiveTouch.screenY - initialTouch.screenY;
-    if (offset >= 0) {
-      root.style.transform = `translateY(${offset}px)`;
-      popup.overlay.style.opacity = `${1 - offset / root.offsetHeight}`;
+    touchOffset = effectiveTouch.screenY - effectiveTouchInitialState.screenY;
+    if (touchOffset >= 0) {
+      root.style.transform = `translateY(${touchOffset}px)`;
+      popup.overlay.style.opacity = `${1 - touchOffset / root.offsetHeight}`;
     } else {
       // Emulate elastic effect when moving towards the opposite direction
-      root.style.transform = `translateY(${Math.expm1(offset / 100) * 20}px)`;
+      root.style.transform = `translateY(${Math.expm1(touchOffset / 100) * 20}px)`;
       // Opacity cannot be larger than 1, so simply remove it
       popup.overlay.style.removeProperty('opacity');
     }
   });
   (['touchend', 'touchcancel'] as const).forEach((eventName) => {
     root.addEventListener(eventName, (ev) => {
-      popup.overlay.classList.remove('ilhpp-mobile-panned');
-      root.classList.remove('ilhpp-mobile-panned');
+      // Are there no touches on the popup?
+      if (ev.touches.length === 0 && effectiveTouchInitialState) {
+        popup.overlay.classList.remove('ilhpp-mobile-panned');
+        root.classList.remove('ilhpp-mobile-panned');
+        effectiveTouchInitialState = null;
 
-      if (!initialTouch) {
-        popup.overlay.style.removeProperty('opacity');
-        root.style.removeProperty('transform');
-        return;
-      }
-      const realInitialTouch = initialTouch;
-      initialTouch = null;
-
-      const effectiveTouch = [...ev.changedTouches].find(
-        (touch) => touch.identifier === realInitialTouch.identifier,
-      );
-      if (!effectiveTouch) {
-        popup.overlay.style.removeProperty('opacity');
-        root.style.removeProperty('transform');
-        return;
-      }
-
-      const offset = effectiveTouch.screenY - realInitialTouch.screenY;
-      const averageVelocityInPixelsPerSec =
-        offset / ((ev.timeStamp - realInitialTouch.timeStamp) / 1000);
-      const thresholdVelocityInPixelsPerSec = root.offsetHeight * 2;
-      if (
-        averageVelocityInPixelsPerSec > thresholdVelocityInPixelsPerSec ||
-        offset / root.offsetHeight > 0.5
-      ) {
-        // High speed or moved to the lower half of the original popup region, detach it
-        // Inline styles are not removed to prevent glitch
-        void detachPopup(popup);
-      } else {
-        // Otherwise, restore to the original state
-        popup.overlay.style.removeProperty('opacity');
-        root.style.removeProperty('transform');
+        if (touchOffset / root.offsetHeight > 0.1) {
+          // Moved to the lower part of the original popup region, detach it
+          // Inline styles are not removed to prevent glitch
+          void detachPopup(popup);
+        } else {
+          // Otherwise, restore to the original state
+          popup.overlay.style.removeProperty('opacity');
+          root.style.removeProperty('transform');
+        }
       }
     });
   });
