@@ -1,7 +1,7 @@
 import { MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
-import { getDirection, isWikipedia, togglePageScroll } from './utils';
+import { getDirection, getUniqueId, isWikipedia, togglePageScroll } from './utils';
 
 interface Popup extends PopupBase {
   overlay: HTMLElement;
@@ -13,12 +13,10 @@ interface Popup extends PopupBase {
 function buildPopup(popup: Popup) {
   const dir = getDirection(popup.langCode);
 
-  popup.overlay.className = OVERLAY_CLASS_MOBILE;
-  popup.overlay.addEventListener('click', () => {
-    void detachPopup(popup);
-  });
-
   const root = popup.elem;
+  root.id = getUniqueId();
+  root.setAttribute('role', 'dialog');
+  root.setAttribute('aria-modal', 'true');
   root.classList.add(
     ROOT_CLASS_MOBILE,
     `${ROOT_CLASS_MOBILE}--foreign-${dir}`,
@@ -89,11 +87,14 @@ function buildPopup(popup: Popup) {
   });
 
   const header = document.createElement('a');
+  header.id = getUniqueId();
   header.href = popup.foreignHref;
   header.className = `${ROOT_CLASS_MOBILE}__header ilhpp-text-like ilhpp-auto-hyphen`;
   header.lang = popup.langCode;
   header.dir = 'auto';
   header.innerText = popup.foreignTitle;
+
+  root.setAttribute('aria-labelledby', header.id);
 
   const subheader = document.createElement('div');
   subheader.className = `${ROOT_CLASS_MOBILE}__subheader`;
@@ -136,7 +137,7 @@ function buildPopup(popup: Popup) {
 
   extract.appendChild(extractInner);
 
-  const cta = document.createElement('div');
+  const cta = document.createElement('footer');
   cta.className = `${ROOT_CLASS_MOBILE}__cta`;
 
   const ctaInner = document.createElement('div');
@@ -232,7 +233,7 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   // eslint-disable-next-line compat/compat
   const abortController = new AbortController();
 
-  const result: Popup = {
+  const popup: Popup = {
     ...popupBase,
     overlay: document.createElement('div'),
     elem: document.createElement('div'),
@@ -240,12 +241,21 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
     abortController,
   };
 
-  buildPopup(result);
-
   togglePageScroll(true);
-  document.body.append(result.overlay, result.elem);
+  buildPopup(popup);
 
-  return result;
+  popup.overlay.className = OVERLAY_CLASS_MOBILE;
+  popup.overlay.setAttribute('aria-hidden', 'true');
+  popup.overlay.addEventListener('click', () => {
+    void detachPopup(popup);
+  });
+
+  popup.anchor.setAttribute('aria-haspopup', 'dialog');
+  popup.anchor.setAttribute('aria-controls', popup.elem.id);
+
+  document.body.append(popup.overlay, popup.elem);
+
+  return popup;
 }
 
 async function detachPopup(popup: Popup) {
@@ -264,6 +274,9 @@ async function detachPopup(popup: Popup) {
       }),
     ),
   );
+
+  popup.anchor.removeAttribute('aria-haspopup');
+  popup.anchor.removeAttribute('aria-controls');
 
   togglePageScroll(false);
 }

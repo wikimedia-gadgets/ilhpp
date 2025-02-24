@@ -7,7 +7,7 @@ import {
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
 import { getPreferences, PopupMode } from './prefs';
-import { getDirection, isWikipedia } from './utils';
+import { getDirection, getUniqueId, isWikipedia } from './utils';
 
 interface CursorParam {
   pageX: number;
@@ -143,14 +143,19 @@ function getLayout(layoutParam: LayoutParam): Layout {
 
 function buildPopup(popup: Popup) {
   const root = popup.elem;
+  root.id = getUniqueId();
   root.className = `${ROOT_CLASS_DESKTOP} ${ROOT_CLASS_DESKTOP}--foreign-${getDirection(popup.langCode)} ${ROOT_CLASS_DESKTOP}--loading`;
+  root.setAttribute('role', 'dialog');
 
   const header = document.createElement('a');
+  header.id = getUniqueId();
   header.href = popup.foreignHref;
   header.className = `${ROOT_CLASS_DESKTOP}__header ilhpp-text-like ilhpp-auto-hyphen`;
   header.lang = popup.langCode;
   header.dir = 'auto';
   header.innerText = popup.foreignTitle;
+
+  root.setAttribute('aria-labelledby', header.id);
 
   const subheader = document.createElement('div');
   subheader.className = `${ROOT_CLASS_DESKTOP}__subheader`;
@@ -177,7 +182,7 @@ function buildPopup(popup: Popup) {
 
   main.append(extract, more);
 
-  const cta = document.createElement('div');
+  const cta = document.createElement('footer');
   cta.className = `${ROOT_CLASS_DESKTOP}__cta`;
 
   const ctaInner = document.createElement('div');
@@ -226,10 +231,7 @@ function buildPopup(popup: Popup) {
   }
 
   root.addEventListener('mouseleave', popup.detachHandler);
-  popup.anchor.addEventListener('mouseleave', popup.detachHandler);
-
   root.addEventListener('mouseenter', popup.cancelDetachingHandler);
-  popup.anchor.addEventListener('mouseenter', popup.cancelDetachingHandler);
 
   void getPagePreview(popup.wikiId, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
@@ -335,6 +337,13 @@ function attachPopup(
   };
 
   buildPopup(popup);
+
+  popup.anchor.addEventListener('mouseleave', popup.detachHandler);
+  popup.anchor.addEventListener('mouseenter', popup.cancelDetachingHandler);
+
+  popup.anchor.setAttribute('aria-haspopup', 'dialog');
+  popup.anchor.setAttribute('aria-controls', popup.elem.id);
+
   document.body.appendChild(popup.elem);
 
   return popup;
@@ -359,6 +368,9 @@ async function detachPopup(popup: Popup) {
 
   popup.anchor.removeEventListener('mouseleave', popup.detachHandler);
   popup.anchor.removeEventListener('mouseenter', popup.cancelDetachingHandler);
+
+  popup.anchor.removeAttribute('aria-haspopup');
+  popup.anchor.removeAttribute('aria-controls');
 
   popup.elem.remove();
 }

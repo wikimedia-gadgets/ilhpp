@@ -97,6 +97,11 @@ function togglePageScroll(lock: boolean) {
   document.body.classList.toggle('ilhpp-scroll-locked', lock);
 }
 
+let idCounter = 1;
+function getUniqueId(): string {
+  return `ilhpp-${idCounter++}`;
+}
+
 export {
   isMobileDevice,
   wait,
@@ -108,4 +113,5 @@ export {
   isWikipedia,
   haveConflicts,
   togglePageScroll,
+  getUniqueId,
 };
