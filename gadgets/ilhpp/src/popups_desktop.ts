@@ -28,10 +28,7 @@ interface Layout {
   isBottom: boolean;
 }
 
-const enum State {
-  Attached,
-  Detached,
-}
+type State = 'attached' | 'detached';
 
 interface Popup extends PopupBase {
   state: State;
@@ -314,7 +311,7 @@ function attachPopup(
 
   const popup: Popup = {
     ...popupBase,
-    state: State.Attached,
+    state: 'attached',
     elem: document.createElement('div'),
     anchor,
     oldTooltip,
@@ -344,11 +341,11 @@ function attachPopup(
 }
 
 async function detachPopup(popup: Popup) {
-  if (popup.state === State.Detached) {
+  if (popup.state === 'detached') {
     return;
   }
 
-  popup.state = State.Detached;
+  popup.state = 'detached';
   popup.abortController.abort();
   popup.elem.classList.add(`${ROOT_CLASS_DESKTOP}--out`);
 
@@ -369,7 +366,7 @@ async function detachPopup(popup: Popup) {
 export {
   type Popup,
   type CursorParam,
-  State,
+  type State,
   setOverriddenPopupMode,
   getOverriddenPopupMode,
   attachPopup,

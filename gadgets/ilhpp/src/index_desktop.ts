@@ -4,7 +4,6 @@ import {
   getOverriddenPopupMode,
   Popup,
   setOverriddenPopupMode,
-  State,
 } from './popups_desktop';
 import { getPreferences, PopupMode } from './prefs';
 import { DT_ATTACH_DELAY_MS, ORIG_A_SELECTOR } from './consts';
@@ -54,7 +53,7 @@ function run() {
 
       clearTimeout(mouseOverTimeoutId);
       // Restore tooltips cleared by previous calls
-      if (activeAnchor && activeAnchorTooltip && activePopup?.state !== State.Attached) {
+      if (activeAnchor && activeAnchorTooltip && activePopup?.state !== 'attached') {
         activeAnchor.title = activeAnchorTooltip;
         activeAnchor = null;
         activeAnchorTooltip = null;
@@ -62,8 +61,8 @@ function run() {
       // Do not reattach when hovering on the same <a> with a popup
       if (
         targetAnchor &&
-        ((activePopup?.state === State.Attached && activePopup?.anchor !== targetAnchor) ||
-          activePopup?.state !== State.Attached)
+        ((activePopup?.state === 'attached' && activePopup?.anchor !== targetAnchor) ||
+          activePopup?.state !== 'attached')
       ) {
         if (activePopup) {
           void detachPopup(activePopup);
@@ -91,13 +90,13 @@ function run() {
         if (
           targetAnchor &&
           // When clicking on the same <a> with a popup, detach that popup
-          ((activePopup?.state === State.Attached && activePopup?.anchor !== targetAnchor) ||
-            activePopup?.state !== State.Attached)
+          ((activePopup?.state === 'attached' && activePopup?.anchor !== targetAnchor) ||
+            activePopup?.state !== 'attached')
         ) {
           ev.stopImmediatePropagation();
           ev.preventDefault();
 
-          if (activePopup && activePopup.state === State.Attached) {
+          if (activePopup && activePopup.state === 'attached') {
             // Is there an active popup on another <a>?
             if (activePopup.anchor !== targetAnchor) {
               void detachPopup(activePopup);
@@ -115,7 +114,7 @@ function run() {
           });
         } else if (!activePopup?.elem.contains(ev.target)) {
           // Clicked something else outside of popup and <a>
-          if (activePopup && activePopup.state === State.Attached) {
+          if (activePopup && activePopup.state === 'attached') {
             ev.stopImmediatePropagation();
             ev.preventDefault();
             void detachPopup(activePopup);
@@ -154,13 +153,13 @@ function run() {
       // Do not reattach when hovering on the same <a> with a popup
       if (targetAnchor) {
         if (
-          (activePopup?.state === State.Attached && activePopup?.anchor !== targetAnchor) ||
-          activePopup?.state !== State.Attached
+          (activePopup?.state === 'attached' && activePopup?.anchor !== targetAnchor) ||
+          activePopup?.state !== 'attached'
         ) {
           // Is there an active popup on another <a>?
           if (
             activePopup &&
-            activePopup.state === State.Attached &&
+            activePopup.state === 'attached' &&
             activePopup.anchor !== targetAnchor
           ) {
             void detachPopup(activePopup);
@@ -172,7 +171,7 @@ function run() {
         }
       } else if (!activePopup?.elem.contains(ev.target)) {
         // Focused something else outside of popup and <a>
-        if (activePopup && activePopup.state === State.Attached) {
+        if (activePopup && activePopup.state === 'attached') {
           void detachPopup(activePopup);
         }
       }
