@@ -189,6 +189,7 @@ function buildPopup(popup: Popup) {
 
           // Do not replace the entire content, this will cause skeletons where touch events originate
           // don't fire the corresponding touchend event, causing visual glitch
+          // See: https://github.com/angular/angular/issues/8035#issuecomment-239712784
           extract.insertAdjacentText('beforeend', mw.msg('ilhpp-no-preview'));
           moreButton.innerText = mw.msg('ilhpp-goto');
           break;
