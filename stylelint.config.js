@@ -16,9 +16,7 @@ export default {
 
         ignore: [
           'css-nesting', // It mistakenly treat LESS nesting as CSS one
-          'css-overflow', // We don't use clip value
           'css-masks', // Supported via autoprefixer
-          'css-appearance', // appearance: none supported via autoprefixer
         ],
       },
     ],
