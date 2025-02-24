@@ -187,7 +187,9 @@ function buildPopup(popup: Popup) {
           root.classList.add(`${ROOT_CLASS_MOBILE}--no-preview`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          extract.innerText = mw.msg('ilhpp-no-preview');
+          // Do not replace the entire content, this will cause skeletons where touch events originate
+          // don't fire the corresponding touchend event, causing visual glitch
+          extract.insertAdjacentText('beforeend', mw.msg('ilhpp-no-preview'));
           moreButton.innerText = mw.msg('ilhpp-goto');
           break;
 
@@ -197,9 +199,10 @@ function buildPopup(popup: Popup) {
           extract.removeAttribute('lang'); // This is Chinese now
 
           // messages.json is trusted
-          extract.innerHTML = mw.msg(
-            'ilhpp-error-not-found',
-            encodeURIComponent(mw.config.get('wgPageName')),
+          // Not replacing the entire content for same reasons above
+          extract.insertAdjacentHTML(
+            'beforeend',
+            mw.msg('ilhpp-error-not-found', encodeURIComponent(mw.config.get('wgPageName'))),
           );
           moreButton.innerText = mw.msg('ilhpp-goto');
           break;
@@ -209,7 +212,8 @@ function buildPopup(popup: Popup) {
           root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          extract.innerText = mw.msg('ilhpp-error');
+          // Not replacing the entire content for same reasons above
+          extract.insertAdjacentText('beforeend', mw.msg('ilhpp-error'));
           moreButton.innerText = mw.msg('ilhpp-goto');
           break;
       }
