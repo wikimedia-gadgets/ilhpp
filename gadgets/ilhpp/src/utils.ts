@@ -93,6 +93,10 @@ function haveConflicts(): boolean {
   // return String(mw.user.options.get(NAV_POPUP_OPTION_NAME) as number | string) === '1';
 }
 
+function togglePageScroll(lock: boolean) {
+  document.body.classList.toggle('ilhpp-scroll-locked', lock);
+}
+
 export {
   isMobileDevice,
   wait,
@@ -103,4 +107,5 @@ export {
   normalizeWikiId,
   isWikipedia,
   haveConflicts,
+  togglePageScroll,
 };

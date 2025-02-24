@@ -76,6 +76,10 @@
 .ilhpp-scroll-locked {
   // stylelint-disable-next-line plugin/no-unsupported-browser-features
   overflow: hidden;
+  // Support iOS Safari: Below 2 are required additionally to disable scroll
+  // See https://stackoverflow.com/questions/3047337/how-to-disable-scrolling-on-mobile-safari
+  position: relative;
+  height: 100%;
 }
 
 .ilhpp-auto-hyphen {

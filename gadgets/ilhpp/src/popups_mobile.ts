@@ -1,7 +1,7 @@
 import { MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
 import { createPopupBase, PopupBase } from './popups';
-import { getDirection, isWikipedia } from './utils';
+import { getDirection, isWikipedia, togglePageScroll } from './utils';
 
 interface Popup extends PopupBase {
   overlay: HTMLElement;
@@ -254,7 +254,7 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
 
   buildPopup(result);
 
-  document.body.classList.add('ilhpp-scroll-locked');
+  togglePageScroll(true);
   document.body.append(result.overlay, result.elem);
 
   return result;
@@ -277,7 +277,7 @@ async function detachPopup(popup: Popup) {
     ),
   );
 
-  document.body.classList.remove('ilhpp-scroll-locked');
+  togglePageScroll(false);
 }
 
 export { type Popup, attachPopup, detachPopup };
