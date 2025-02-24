@@ -28,7 +28,7 @@ function buildPopup(popup: Popup) {
   let initialTouch: { screenY: number; timeStamp: number; identifier: number } | null = null;
   root.addEventListener('touchstart', (ev) => {
     // Do not respond to touch actions if something is selected
-    // This is to prevent bugs around selections and transforms
+    // This is to prevent "floating selections" bugs found in e.g. iOS Safari
     if (window.getSelection()?.type === 'Range') {
       return;
     }
@@ -59,8 +59,9 @@ function buildPopup(popup: Popup) {
       root.style.transform = `translateY(${offset}px)`;
       popup.overlay.style.opacity = `${1 - offset / root.offsetHeight}`;
     } else {
-      // Emulate resistance when moving towards the opposite direction
+      // Emulate elastic effect when moving towards the opposite direction
       root.style.transform = `translateY(${Math.expm1(offset / 100) * 20}px)`;
+      // Opacity cannot be larger than 1, so simply remove it
       popup.overlay.style.removeProperty('opacity');
     }
   });
@@ -87,11 +88,11 @@ function buildPopup(popup: Popup) {
       }
 
       const offset = effectiveTouch.screenY - realInitialTouch.screenY;
-      const averageSpeedInPixelsPerSec =
+      const averageVelocityInPixelsPerSec =
         offset / ((ev.timeStamp - realInitialTouch.timeStamp) / 1000);
-      const thresholdSpeedInPixelsPerSec = root.offsetHeight * 2;
+      const thresholdVelocityInPixelsPerSec = root.offsetHeight * 2;
       if (
-        averageSpeedInPixelsPerSec > thresholdSpeedInPixelsPerSec ||
+        averageVelocityInPixelsPerSec > thresholdVelocityInPixelsPerSec ||
         offset / root.offsetHeight > 0.5
       ) {
         // High speed or moved to the lower half of the original popup region, detach it
