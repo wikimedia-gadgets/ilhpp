@@ -191,6 +191,10 @@
     position: relative;
     // stylelint-disable-next-line plugin/no-unsupported-browser-features
     overflow: hidden;
+
+    &__skeleton-container {
+      display: none;
+    }
   }
 
   &__more {
@@ -284,7 +288,8 @@
   &::after {
     content: '';
     position: absolute;
-    top: 100%;
+    // Support Chromium: Subtract 1px to fix subpixel rounding problems
+    top: calc(100% - 1px);
     width: 100%;
     height: 100%;
     background: inherit;
@@ -353,7 +358,8 @@
 
   &--loading & {
     &__extract {
-      &__inner {
+      &__skeleton-container {
+        display: block;
         height: 100%;
 
         .ilhpp-mobile-skeleton {

@@ -119,23 +119,23 @@ function buildPopup(popup: Popup) {
   moreButton.innerText = mw.msg('ilhpp-more');
 
   const extract = document.createElement('div');
-  extract.className = `${ROOT_CLASS_MOBILE}__extract`;
+  extract.lang = popup.langCode;
+  extract.dir = 'auto';
+  extract.className = `${ROOT_CLASS_MOBILE}__extract ilhpp-auto-hyphen ilhpp-extract`;
 
-  const extractInner = document.createElement('a');
-  extractInner.href = popup.foreignHref;
-  extractInner.lang = popup.langCode;
-  extractInner.className = `${ROOT_CLASS_MOBILE}__extract__inner ilhpp-text-like ilhpp-auto-hyphen ilhpp-extract`;
-  extractInner.dir = 'auto';
+  const skeletonContainer = document.createElement('div');
+  skeletonContainer.setAttribute('aria-hidden', 'true');
+  skeletonContainer.className = `${ROOT_CLASS_MOBILE}__extract__skeleton-container`;
 
   // Build skeleton stripes as real elements
   // Because mobile popups have variable width, so the SVG mask techniques in desktop popups no longer work
   Array.from({ length: MB_SKELETON_STRIPE_COUNT }).forEach(() => {
     const skeletonStripe = document.createElement('div');
     skeletonStripe.className = 'ilhpp-mobile-skeleton';
-    extractInner.appendChild(skeletonStripe);
+    skeletonContainer.appendChild(skeletonStripe);
   });
 
-  extract.appendChild(extractInner);
+  extract.appendChild(skeletonContainer);
 
   const cta = document.createElement('footer');
   cta.className = `${ROOT_CLASS_MOBILE}__cta`;
@@ -167,14 +167,21 @@ function buildPopup(popup: Popup) {
 
       if (preview.isDisambiguation) {
         root.classList.add(`${ROOT_CLASS_MOBILE}--disam`);
-        extractInner.removeAttribute('lang'); // This is Chinese now
+        extract.removeAttribute('lang'); // This is Chinese now
 
-        extractInner.innerText = mw.msg('ilhpp-disam');
+        // Do not replace the entire content, this will cause skeletons where touch events originate
+        // don't fire the corresponding touchend event, causing visual glitch
+        // See: https://github.com/angular/angular/issues/8035#issuecomment-239712784
+        extract.insertAdjacentText('beforeend', mw.msg('ilhpp-disam'));
+        //extract.innerText = mw.msg('ilhpp-disam');
         moreButton.innerText = mw.msg('ilhpp-disam-more');
       } else {
         root.classList.add(`${ROOT_CLASS_MOBILE}--standard`);
 
-        extractInner.innerHTML = preview.mainHtml; // Trust gateway's result as safely escaped
+        // Do not replace the entire content, this will cause skeletons where touch events originate
+        // don't fire the corresponding touchend event, causing visual glitch
+        extract.insertAdjacentHTML('beforeend', preview.mainHtml); // Trust gateway's result as safely escaped
+        //extract.innerHTML = preview.mainHtml;
       }
     },
     (err) => {
@@ -200,11 +207,11 @@ function buildPopup(popup: Popup) {
           root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          // messages.json is trusted
-          // Not replacing the entire content for same reasons above
+          // Do not replace the entire content, this will cause skeletons where touch events originate
+          // don't fire the corresponding touchend event, causing visual glitch
           extract.insertAdjacentHTML(
             'beforeend',
-            mw.msg('ilhpp-error-not-found', encodeURIComponent(mw.config.get('wgPageName'))),
+            mw.msg('ilhpp-error-not-found', encodeURIComponent(mw.config.get('wgPageName'))), // messages.json is trusted
           );
           moreButton.innerText = mw.msg('ilhpp-goto');
           break;
@@ -214,7 +221,8 @@ function buildPopup(popup: Popup) {
           root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
           extract.removeAttribute('lang'); // This is Chinese now
 
-          // Not replacing the entire content for same reasons above
+          // Do not replace the entire content, this will cause skeletons where touch events originate
+          // don't fire the corresponding touchend event, causing visual glitch
           extract.insertAdjacentText('beforeend', mw.msg('ilhpp-error'));
           moreButton.innerText = mw.msg('ilhpp-goto');
           break;
