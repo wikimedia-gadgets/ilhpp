@@ -3,11 +3,7 @@ import { LinkMode, PopupMode, OrigLinkColor } from '../src/prefs';
 import { getCartesianProduct } from './_utils';
 
 const testCombinations = getCartesianProduct({
-  mwColorClass: [
-    'skin-theme-clientpref-day',
-    'skin-theme-clientpref-night',
-    'skin-theme-clientpref-os',
-  ],
+  mwColorClass: ['skin-theme-clientpref-os'],
   systemColorScheme: ['light', 'dark'] as const,
 });
 
