@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:host": "vite --host",
-    "build": "vite build",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:show-report": "playwright show-report"
+    "build": "vite build"
   },
   "devDependencies": {},
   "dependencies": {}

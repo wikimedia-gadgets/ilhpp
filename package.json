@@ -8,7 +8,9 @@
     "build": "pnpm -r run build",
     "lint": "vue-tsc --noEmit && eslint . && stylelint \"**/*.{less,vue}\"",
     "lint:fix": "eslint . --fix && stylelint \"**/*.{less,vue}\" --fix",
-    "test:e2e": "pnpm -r run test:e2e",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:show-report": "playwright show-report",
     "test:e2e:prepare": "playwright install --with-deps",
     "prepare": "husky"
   },
