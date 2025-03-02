@@ -45,5 +45,12 @@ export default defineConfig({
       grep: /popups_mobile_/,
       dependencies: ['Setup ilhpp'],
     },
+    {
+      name: 'Mobile Chrome Landscape ilhpp',
+      testDir: './gadgets/ilhpp/__tests__',
+      use: { ...devices['Pixel 7 Landscape'] },
+      grep: /popups_mobile_regular/,
+      dependencies: ['Setup ilhpp'],
+    },
   ],
 });
