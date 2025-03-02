@@ -47,6 +47,7 @@ testCombinations.forEach((combination) => {
         // Font family difference is causing problems on CI, so be more forgiving
         maxDiffPixelRatio: 0.02,
       });
+      await expect(page.locator('css=.ilhpp-popup-mobile')).toMatchAriaSnapshot();
 
       await page.getByTitle('关闭').click(); // Reset
       await expect.soft(page.getByText('阅读更多内容')).not.toBeInViewport();

@@ -47,6 +47,7 @@ testCombinations.forEach((combination) => {
       await expect.soft(page.getByText('阅读更多内容')).toBeInViewport();
       await expect(anchor).not.toHaveAttribute('title');
       await expect(page).toHaveScreenshot();
+      await expect(page.locator('css=.ilhpp-popup-desktop')).toMatchAriaSnapshot();
 
       await page.mouse.move(0, 0); // Reset
       await expect.soft(page.getByText('阅读更多内容')).not.toBeInViewport();
