@@ -49,7 +49,7 @@ testCombinations.forEach((combination) => {
       });
       await expect(page.locator('css=.ilhpp-popup-mobile')).toMatchAriaSnapshot();
 
-      await page.getByTitle('关闭').click(); // Reset
+      await page.locator('css=.ilhpp-mobile-overlay').click({ position: { x: 0, y: 0 } }); // Reset
       await expect.soft(page.getByText('阅读更多内容')).not.toBeInViewport();
     });
   });
