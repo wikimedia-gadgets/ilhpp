@@ -1,0 +1,9 @@
+- dialog "Q125005976":
+  - link "Q125005976"
+  - button "关闭"
+  - button "前往该页面"
+  - contentinfo:
+    - text: 中文维基百科暂无“计算机记忆体类型”条目，但您可以帮助我们
+    - link "创建它"
+    - text: ！
+  - button "设置"

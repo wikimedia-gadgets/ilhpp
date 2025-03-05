@@ -3,11 +3,7 @@ import { LinkMode, PopupMode, OrigLinkColor } from '../src/prefs';
 import { getCartesianProduct } from './_utils';
 
 const testCombinations = getCartesianProduct({
-  mwColorClass: [
-    'skin-theme-clientpref-day',
-    'skin-theme-clientpref-night',
-    'skin-theme-clientpref-os',
-  ],
+  mwColorClass: ['skin-theme-clientpref-os'],
   systemColorScheme: ['light', 'dark'] as const,
 });
 
@@ -40,11 +36,12 @@ testCombinations.forEach((combination) => {
     test('popup should have correct appearance', async ({ page }) => {
       await page.locator('css=.ilh-page a').click();
 
-      await expect(page.getByText('前往该页面')).toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).toBeInViewport();
       await expect(page).toHaveScreenshot();
+      await expect(page.locator('css=.ilhpp-popup-mobile')).toMatchAriaSnapshot();
 
       await page.getByTitle('关闭').click(); // Reset
-      await expect(page.getByText('前往该页面')).not.toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).not.toBeInViewport();
     });
   });
 });

@@ -1,0 +1,11 @@
+- dialog "Earth":
+  - link "Earth"
+  - text: 来自英语维基百科
+  - button "关闭"
+  - paragraph: /Earth is the third planet from the Sun and the only astronomical object known to harbor life\. This is enabled by Earth being an ocean world, the only one in the Solar System sustaining liquid surface water\. Almost all of Earth's water is contained in its global ocean, covering \d+\.\d+% of Earth's crust\. The remaining \d+\.\d+% of Earth's crust is land, most of which is located in the form of continental landmasses within Earth's land hemisphere\. Most of Earth's land is at least somewhat humid and covered by vegetation, while large sheets of ice at Earth's polar deserts retain more water than Earth's groundwater, lakes, rivers, and atmospheric water combined\. Earth's crust consists of slowly moving tectonic plates, which interact to produce mountain ranges, volcanoes, and earthquakes\. Earth has a liquid outer core that generates a magnetosphere capable of deflecting most of the destructive solar winds and cosmic radiation\./
+  - button "阅读更多内容"
+  - contentinfo:
+    - text: 中文维基百科暂无“地球”条目，但您可以帮助我们
+    - link "创建它"
+    - text: ！
+  - button "设置"

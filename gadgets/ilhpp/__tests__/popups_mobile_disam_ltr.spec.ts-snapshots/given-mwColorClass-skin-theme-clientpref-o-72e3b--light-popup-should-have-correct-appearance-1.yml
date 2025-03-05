@@ -1,0 +1,9 @@
+- dialog "Apple (disambiguation)":
+  - link "Apple (disambiguation)"
+  - button "关闭"
+  - button "查看相似页面"
+  - contentinfo:
+    - text: 中文维基百科暂无“我有歧义”条目，但您可以帮助我们
+    - link "创建它"
+    - text: ！
+  - button "设置"

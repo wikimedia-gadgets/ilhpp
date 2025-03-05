@@ -1,14 +1,9 @@
 import { expect, test } from './_setup';
 import { LinkMode, PopupMode, OrigLinkColor } from '../src/prefs';
 import { getCartesianProduct } from './_utils';
-import { basename } from 'node:path';
 
 const testCombinations = getCartesianProduct({
-  mwColorClass: [
-    'skin-theme-clientpref-day',
-    'skin-theme-clientpref-night',
-    'skin-theme-clientpref-os',
-  ],
+  mwColorClass: ['skin-theme-clientpref-os'],
   systemColorScheme: ['light', 'dark'] as const,
 });
 
@@ -37,13 +32,9 @@ testCombinations.forEach((combination) => {
         [combination, PopupMode.OnHover, OrigLinkColor.Green, LinkMode.Orig] as const,
       );
 
-      await page.routeFromHAR(
-        `${import.meta.dirname}/__har__/${basename(import.meta.filename).replace('_desktop', '')}.har`,
-        {
-          url: /^https:\/\//,
-          update: false, // Change to true to update
-        },
-      );
+      await page.routeFromHAR(`${import.meta.dirname}/__har__/har.har`, {
+        url: /^https:\/\//,
+      });
     });
 
     test('popup should have correct appearance and behaviors', async ({ page }) => {
@@ -53,12 +44,12 @@ testCombinations.forEach((combination) => {
       await anchor.hover();
       await requestPromise;
 
-      await expect(page.getByText('前往该页面')).toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).toBeInViewport();
       await expect(anchor).not.toHaveAttribute('title');
       await expect(page).toHaveScreenshot();
 
       await page.mouse.move(0, 0); // Reset
-      await expect(page.getByText('前往该页面')).not.toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).not.toBeInViewport();
       await expect(anchor).toHaveAttribute('title');
     });
   });

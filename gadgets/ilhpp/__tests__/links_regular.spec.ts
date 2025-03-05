@@ -1,5 +1,5 @@
 import { LinkMode, PopupMode, OrigLinkColor } from '../src/prefs';
-import { expect, test } from './_setup';
+import { expect, test } from './_links_setup';
 import { getCartesianProduct } from './_utils';
 
 const testCombinations = getCartesianProduct({

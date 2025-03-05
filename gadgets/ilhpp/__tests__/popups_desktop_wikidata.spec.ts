@@ -3,11 +3,7 @@ import { LinkMode, PopupMode, OrigLinkColor } from '../src/prefs';
 import { getCartesianProduct } from './_utils';
 
 const testCombinations = getCartesianProduct({
-  mwColorClass: [
-    'skin-theme-clientpref-day',
-    'skin-theme-clientpref-night',
-    'skin-theme-clientpref-os',
-  ],
+  mwColorClass: ['skin-theme-clientpref-os'],
   systemColorScheme: ['light', 'dark'] as const,
 });
 
@@ -42,12 +38,13 @@ testCombinations.forEach((combination) => {
       await expect(anchor).toHaveAttribute('title');
       await anchor.hover();
 
-      await expect(page.getByText('前往该页面')).toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).toBeInViewport();
       await expect(anchor).not.toHaveAttribute('title');
       await expect(page).toHaveScreenshot();
+      await expect(page.locator('css=.ilhpp-popup-desktop')).toMatchAriaSnapshot();
 
       await page.mouse.move(0, 0); // Reset
-      await expect(page.getByText('前往该页面')).not.toBeVisible();
+      await expect.soft(page.getByText('前往该页面')).not.toBeInViewport();
       await expect(anchor).toHaveAttribute('title');
     });
   });

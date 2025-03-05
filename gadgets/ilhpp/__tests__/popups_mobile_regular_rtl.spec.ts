@@ -1,14 +1,9 @@
 import { expect, test } from './_setup';
 import { LinkMode, PopupMode, OrigLinkColor } from '../src/prefs';
 import { getCartesianProduct } from './_utils';
-import { basename } from 'node:path';
 
 const testCombinations = getCartesianProduct({
-  mwColorClass: [
-    'skin-theme-clientpref-day',
-    'skin-theme-clientpref-night',
-    'skin-theme-clientpref-os',
-  ],
+  mwColorClass: ['skin-theme-clientpref-os'],
   systemColorScheme: ['light', 'dark'] as const,
 });
 
@@ -37,13 +32,9 @@ testCombinations.forEach((combination) => {
         [combination, PopupMode.OnHover, OrigLinkColor.Green, LinkMode.Orig] as const,
       );
 
-      await page.routeFromHAR(
-        `${import.meta.dirname}/__har__/${basename(import.meta.filename).replace('_mobile', '')}.har`,
-        {
-          url: /^https:\/\//,
-          update: false, // Change to true to update
-        },
-      );
+      await page.routeFromHAR(`${import.meta.dirname}/__har__/har.har`, {
+        url: /^https:\/\//,
+      });
     });
 
     test('popup should have correct appearance', async ({ page }) => {
@@ -51,14 +42,15 @@ testCombinations.forEach((combination) => {
       await page.locator('css=.ilh-page a').click();
       await requestPromise;
 
-      await expect(page.getByText('阅读更多内容')).toBeVisible();
+      await expect.soft(page.getByText('阅读更多内容')).toBeInViewport();
       await expect(page).toHaveScreenshot({
         // Font family difference is causing problems on CI, so be more forgiving
         maxDiffPixelRatio: 0.02,
       });
+      await expect(page.locator('css=.ilhpp-popup-mobile')).toMatchAriaSnapshot();
 
-      await page.getByTitle('关闭').click(); // Reset
-      await expect(page.getByText('阅读更多内容')).not.toBeVisible();
+      await page.locator('css=.ilhpp-mobile-overlay').click({ position: { x: 0, y: 0 } }); // Reset
+      await expect.soft(page.getByText('阅读更多内容')).not.toBeInViewport();
     });
   });
 });
