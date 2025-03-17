@@ -34,7 +34,10 @@ if (mw.config.get('wgMFMode')) {
 
     const observer = new MutationObserver(() => {
       const veOverlay = overlayContainer.querySelector('.editor-overlay.editor-overlay-ve');
-      document.documentElement.classList.toggle('ilhpp-inactive', !!veOverlay);
+      document.documentElement.classList.toggle(
+        'ilhpp-inactive',
+        !!veOverlay && window.getComputedStyle(veOverlay).display !== 'none',
+      );
     });
     observer.observe(overlayContainer, {
       childList: true,
