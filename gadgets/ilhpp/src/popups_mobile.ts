@@ -10,7 +10,7 @@ interface Popup extends PopupBase {
   abortController: AbortController;
 }
 
-function buildPopup(popup: Popup) {
+function buildAndAttachPopup(popup: Popup) {
   const dir = getDirection(popup.langCode);
 
   const root = popup.elem;
@@ -159,6 +159,8 @@ function buildPopup(popup: Popup) {
   });
 
   root.append(header, subheader, closeButton, extract, moreButton, cta, settingsButton);
+  document.body.append(popup.elem);
+  moreButton.focus();
 
   void getPagePreview(popup.wikiId, popup.foreignTitle, popup.abortController.signal).then(
     (preview) => {
@@ -173,7 +175,6 @@ function buildPopup(popup: Popup) {
         // don't fire the corresponding touchend event, causing visual glitch
         // See: https://github.com/angular/angular/issues/8035#issuecomment-239712784
         extract.insertAdjacentText('beforeend', mw.msg('ilhpp-disam'));
-        //extract.innerText = mw.msg('ilhpp-disam');
         moreButton.innerText = mw.msg('ilhpp-disam-more');
       } else {
         root.classList.add(`${ROOT_CLASS_MOBILE}--standard`);
@@ -181,7 +182,6 @@ function buildPopup(popup: Popup) {
         // Do not replace the entire content, this will cause skeletons where touch events originate
         // don't fire the corresponding touchend event, causing visual glitch
         extract.insertAdjacentHTML('beforeend', preview.mainHtml); // Trust gateway's result as safely escaped
-        //extract.innerHTML = preview.mainHtml;
       }
     },
     (err) => {
@@ -250,18 +250,17 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   };
 
   togglePageScroll(true);
-  buildPopup(popup);
+  buildAndAttachPopup(popup);
 
   popup.overlay.className = OVERLAY_CLASS_MOBILE;
   popup.overlay.setAttribute('aria-hidden', 'true');
   popup.overlay.addEventListener('click', () => {
     void detachPopup(popup);
   });
+  document.body.append(popup.overlay);
 
   popup.anchor.setAttribute('aria-haspopup', 'dialog');
   popup.anchor.setAttribute('aria-controls', popup.elem.id);
-
-  document.body.append(popup.overlay, popup.elem);
 
   return popup;
 }
