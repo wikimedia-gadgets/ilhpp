@@ -91,7 +91,7 @@ function buildAndAttachPopup(popup: Popup) {
   header.href = popup.foreignHref;
   header.className = `${ROOT_CLASS_MOBILE}__header ilhpp-text-like ilhpp-auto-hyphen`;
   header.lang = popup.langCode;
-  header.dir = 'auto';
+  header.dir = dir;
   header.innerText = popup.foreignTitle;
 
   root.setAttribute('aria-labelledby', header.id);
@@ -120,7 +120,7 @@ function buildAndAttachPopup(popup: Popup) {
 
   const extract = document.createElement('div');
   extract.lang = popup.langCode;
-  extract.dir = 'auto';
+  extract.dir = dir;
   extract.className = `${ROOT_CLASS_MOBILE}__extract ilhpp-auto-hyphen ilhpp-extract`;
 
   const skeletonContainer = document.createElement('div');

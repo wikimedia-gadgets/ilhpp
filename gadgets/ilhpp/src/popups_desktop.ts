@@ -142,9 +142,11 @@ function getLayout(layoutParam: LayoutParam): Layout {
 }
 
 function buildPopup(popup: Popup) {
+  const dir = getDirection(popup.langCode);
+
   const root = popup.elem;
   root.id = getUniqueId();
-  root.className = `${ROOT_CLASS_DESKTOP} ${ROOT_CLASS_DESKTOP}--foreign-${getDirection(popup.langCode)} ${ROOT_CLASS_DESKTOP}--loading`;
+  root.className = `${ROOT_CLASS_DESKTOP} ${ROOT_CLASS_DESKTOP}--foreign-${dir} ${ROOT_CLASS_DESKTOP}--loading`;
   root.setAttribute('role', 'dialog');
 
   const header = document.createElement('a');
@@ -152,7 +154,7 @@ function buildPopup(popup: Popup) {
   header.href = popup.foreignHref;
   header.className = `${ROOT_CLASS_DESKTOP}__header ilhpp-text-like ilhpp-auto-hyphen`;
   header.lang = popup.langCode;
-  header.dir = 'auto';
+  header.dir = dir;
   header.innerText = popup.foreignTitle;
 
   root.setAttribute('aria-labelledby', header.id);
@@ -173,7 +175,7 @@ function buildPopup(popup: Popup) {
   extract.href = popup.foreignHref;
   extract.lang = popup.langCode;
   extract.className = `${ROOT_CLASS_DESKTOP}__main__extract ilhpp-text-like ilhpp-auto-hyphen ilhpp-extract`;
-  extract.dir = 'auto';
+  extract.dir = dir;
 
   const more = document.createElement('a');
   more.href = popup.foreignHref;
