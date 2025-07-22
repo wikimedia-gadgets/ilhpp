@@ -1,7 +1,7 @@
 // import { API_USER_AGENT } from './consts';
 
-const hostRest = location.hostname.endsWith('wmflabs.org')
-  ? '.wikipedia.beta.wmflabs.org'
+const hostRest = location.hostname.endsWith('wmcloud.org')
+  ? '.wikipedia.beta.wmcloud.org'
   : '.wikipedia.org';
 
 async function getPagePreview(
