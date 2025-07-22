@@ -242,6 +242,7 @@ function buildPopup(popup: Popup) {
 
       if (preview.isDisambiguation) {
         root.classList.add(`${ROOT_CLASS_DESKTOP}--disam`);
+        extract.dir = 'auto';
         extract.removeAttribute('lang'); // This is Chinese now
 
         extract.innerText = mw.msg('ilhpp-disam');
@@ -261,6 +262,7 @@ function buildPopup(popup: Popup) {
         case 'NotSupportedError':
           root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
           root.classList.add(`${ROOT_CLASS_DESKTOP}--no-preview`);
+          extract.dir = 'auto';
           extract.removeAttribute('lang'); // This is Chinese now
 
           extract.innerText = mw.msg('ilhpp-no-preview');
@@ -270,6 +272,7 @@ function buildPopup(popup: Popup) {
         case 'NotFoundError':
           root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
           root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
+          extract.dir = 'auto';
           extract.removeAttribute('lang'); // This is Chinese now
 
           // messages.json is trusted
@@ -283,6 +286,7 @@ function buildPopup(popup: Popup) {
         default:
           root.classList.remove(`${ROOT_CLASS_DESKTOP}--loading`);
           root.classList.add(`${ROOT_CLASS_DESKTOP}--error`);
+          extract.dir = 'auto';
           extract.removeAttribute('lang'); // This is Chinese now
 
           extract.innerText = mw.msg('ilhpp-error');

@@ -193,6 +193,7 @@ function buildAndAttachPopup(popup: Popup) {
         case 'NotSupportedError':
           root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
           root.classList.add(`${ROOT_CLASS_MOBILE}--no-preview`);
+          extract.dir = 'auto';
           extract.removeAttribute('lang'); // This is Chinese now
 
           // Do not replace the entire content, this will cause skeletons where touch events originate
@@ -205,6 +206,7 @@ function buildAndAttachPopup(popup: Popup) {
         case 'NotFoundError':
           root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
           root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
+          extract.dir = 'auto';
           extract.removeAttribute('lang'); // This is Chinese now
 
           // Do not replace the entire content, this will cause skeletons where touch events originate
@@ -219,6 +221,7 @@ function buildAndAttachPopup(popup: Popup) {
         default:
           root.classList.remove(`${ROOT_CLASS_MOBILE}--loading`);
           root.classList.add(`${ROOT_CLASS_MOBILE}--error`);
+          extract.dir = 'auto';
           extract.removeAttribute('lang'); // This is Chinese now
 
           // Do not replace the entire content, this will cause skeletons where touch events originate
