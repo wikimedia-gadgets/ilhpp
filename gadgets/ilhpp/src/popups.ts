@@ -1,4 +1,4 @@
-import { DATA_ELEM_SELECTOR, FOREIGN_A_SELECTOR } from './consts';
+import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, FOREIGN_A_SELECTOR } from './consts';
 import { normalizeLang, normalizeTitle, normalizeWikiId } from './utils';
 
 interface PopupBase {
@@ -25,7 +25,8 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
   const origTitle = dataElement.dataset.origTitle;
   const wikiId = dataElement.dataset.langCode;
   const langCode = wikiId;
-  const langName = dataElement.dataset.langName;
+  // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
+  const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
   const foreignTitle = dataElement.dataset.foreignTitle;
 
   if (!origTitle || !wikiId || !langCode || !langName || !foreignTitle) {
