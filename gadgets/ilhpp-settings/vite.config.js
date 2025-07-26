@@ -48,7 +48,7 @@ export default defineConfig(({ command }) => {
         formats: ['cjs'],
       },
       minify: false, // Let MediaWiki do its job
-      target: ['es2016'], // MediaWiki >= 1.42.0-wmf.13 supports up to ES2016
+      target: ['es2017'], // See https://www.mediawiki.org/wiki/Project:Tech_News#Tech_News:_2025-23, since 1.45.0-wmf.6
       cssTarget: browserslistToEsbuild(), // Tell esbuild not to use too modern CSS features
       rollupOptions: {
         output: {
