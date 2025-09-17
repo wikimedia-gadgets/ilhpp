@@ -1,6 +1,10 @@
 import { LANG_WIKI_MAP, RTL_LANGS } from './consts';
 import { Dir } from './network';
 
+function buildWikiUrl(wikiId: string, path: string): string {
+  return new URL(path, `https://${wikiId}.wikipedia.org/`).toString();
+}
+
 function isMobileDevice(): boolean {
   // Design decision: never be mobile on desktop sites
   // Browser support:
@@ -103,6 +107,7 @@ function getUniqueId(): string {
 }
 
 export {
+  buildWikiUrl,
   isMobileDevice,
   wait,
   deepClone,

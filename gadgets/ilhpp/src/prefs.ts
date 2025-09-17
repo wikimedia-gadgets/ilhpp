@@ -6,6 +6,7 @@ import {
   PREF_KEY_LS,
   PREF_KEY_MW,
 } from './consts';
+import { extractLinkData } from './extract';
 import { deepClone, haveConflicts } from './utils';
 
 enum LinkMode {
@@ -68,10 +69,10 @@ function reflectChanges(prefs: Preferences) {
   document.documentElement.classList.add(...toCSSClassNames(prefs));
 
   document.querySelectorAll(DATA_ELEM_SELECTOR).forEach((root) => {
+    const linkData = extractLinkData(root as HTMLAnchorElement);
     const origAnchor = root.querySelector<HTMLAnchorElement>(ORIG_A_SELECTOR);
-    const foreignAnchor = root.querySelector<HTMLAnchorElement>(FOREIGN_A_SELECTOR);
 
-    if (!origAnchor || !foreignAnchor) {
+    if (!linkData || !origAnchor) {
       return;
     }
 
@@ -84,7 +85,7 @@ function reflectChanges(prefs: Preferences) {
 
     if ([LinkMode.ForeignAndLangCode, LinkMode.Foreign].includes(prefs.link)) {
       origAnchor.dataset.oldHref = origAnchor.href;
-      origAnchor.href = foreignAnchor.href;
+      origAnchor.href = linkData.foreignHref;
       origAnchor.className = 'extiw'; // External interwiki class
     }
   });
