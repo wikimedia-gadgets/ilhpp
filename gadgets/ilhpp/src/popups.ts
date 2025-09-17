@@ -1,5 +1,5 @@
 import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, FOREIGN_A_SELECTOR } from './consts';
-import { normalizeLang, normalizeTitle, normalizeWikiId } from './utils';
+import { buildWikiUrl, normalizeLang, normalizeTitle, normalizeWikiId } from './utils';
 
 interface PopupBase {
   origTitle: string;
@@ -16,29 +16,34 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
     return null;
   }
 
-  const foreignAnchor = dataElement.querySelector<HTMLAnchorElement>(FOREIGN_A_SELECTOR);
-  if (!foreignAnchor) {
-    return null;
-  }
-  const foreignHref = foreignAnchor.href;
-
   const origTitle = dataElement.dataset.origTitle;
-  const wikiId = dataElement.dataset.langCode;
-  const langCode = wikiId;
+
+  const dataElemLangCode = dataElement.dataset.langCode;
+  const wikiId = dataElemLangCode === undefined ? undefined : normalizeWikiId(dataElemLangCode);
+  const langCode = dataElemLangCode === undefined ? undefined : normalizeLang(dataElemLangCode);
   // `data-lang-name` has incomplete variant conversion, so query from sub-element instead
   const langName = dataElement.querySelector<HTMLElement>(ILH_LANG_SELECTOR)?.innerText;
-  const foreignTitle = dataElement.dataset.foreignTitle;
+
+  const dataElemForeignTitle = dataElement.dataset.foreignTitle;
+  const foreignTitle =
+    dataElemForeignTitle === undefined
+      ? dataElemForeignTitle
+      : normalizeTitle(dataElemForeignTitle);
 
   if (!origTitle || !wikiId || !langCode || !langName || !foreignTitle) {
     return null;
   }
 
+  const foreignAnchor = dataElement.querySelector<HTMLAnchorElement>(FOREIGN_A_SELECTOR);
+  // Extract always-correct URL from DOM if possible, falling back to crafted URLs
+  const foreignHref = foreignAnchor?.href ?? `${buildWikiUrl(wikiId)}/wiki/${foreignTitle}`;
+
   return {
     origTitle,
-    wikiId: normalizeWikiId(wikiId),
-    langCode: normalizeLang(langCode),
+    wikiId,
+    langCode,
     langName,
-    foreignTitle: normalizeTitle(foreignTitle),
+    foreignTitle,
     foreignHref,
   };
 }

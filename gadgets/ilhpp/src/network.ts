@@ -1,8 +1,5 @@
 // import { API_USER_AGENT } from './consts';
-
-const hostRest = location.hostname.endsWith('wmcloud.org')
-  ? '.wikipedia.beta.wmcloud.org'
-  : '.wikipedia.org';
+import { buildWikiUrl } from './utils';
 
 async function getPagePreview(
   wikiId: string,
@@ -15,7 +12,7 @@ async function getPagePreview(
   }
 
   const resp = await fetch(
-    `https://${wikiId}${hostRest}/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
+    `${buildWikiUrl(wikiId)}/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
     {
       signal,
       // Design decision: we want to minimize loading time as much as possible as it introduces
