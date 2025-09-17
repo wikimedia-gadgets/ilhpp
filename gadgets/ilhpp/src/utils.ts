@@ -1,8 +1,8 @@
 import { LANG_WIKI_MAP, RTL_LANGS } from './consts';
 import { Dir } from './network';
 
-function buildWikiUrl(wikiId: string) {
-  return `https://${wikiId}.wikipedia.org/`;
+function buildWikiUrl(wikiId: string, path: string): string {
+  return new URL(path, `https://${wikiId}.wikipedia.org/`).toString();
 }
 
 function isMobileDevice(): boolean {

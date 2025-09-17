@@ -12,7 +12,7 @@ async function getPagePreview(
   }
 
   const resp = await fetch(
-    `${buildWikiUrl(wikiId)}/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
+    buildWikiUrl(wikiId, `/api/rest_v1/page/summary/${encodeURIComponent(title)}`),
     {
       signal,
       // Design decision: we want to minimize loading time as much as possible as it introduces

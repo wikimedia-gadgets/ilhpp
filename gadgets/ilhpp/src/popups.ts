@@ -30,13 +30,20 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
       ? dataElemForeignTitle
       : normalizeTitle(dataElemForeignTitle);
 
-  if (!origTitle || !wikiId || !langCode || !langName || !foreignTitle) {
+  if (
+    !origTitle ||
+    !wikiId ||
+    !/^[\w.-]+$/.test(wikiId) ||
+    !langCode ||
+    !langName ||
+    !foreignTitle
+  ) {
     return null;
   }
 
   const foreignAnchor = dataElement.querySelector<HTMLAnchorElement>(FOREIGN_A_SELECTOR);
   // Extract always-correct URL from DOM if possible, falling back to crafted URLs
-  const foreignHref = foreignAnchor?.href ?? `${buildWikiUrl(wikiId)}/wiki/${foreignTitle}`;
+  const foreignHref = foreignAnchor?.href ?? buildWikiUrl(wikiId, `/wiki/${foreignTitle}`);
 
   return {
     origTitle,
