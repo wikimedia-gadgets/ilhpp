@@ -1,7 +1,7 @@
 import { DATA_ELEM_SELECTOR, ILH_LANG_SELECTOR, FOREIGN_A_SELECTOR } from './consts';
 import { buildWikiUrl, normalizeLang, normalizeTitle, normalizeWikiId } from './utils';
 
-interface PopupBase {
+interface LinkData {
   origTitle: string;
   wikiId: string;
   langCode: string;
@@ -10,7 +10,7 @@ interface PopupBase {
   foreignHref: string;
 }
 
-function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
+function extractLinkData(anchor: HTMLAnchorElement): LinkData | null {
   const dataElement = anchor.closest<HTMLElement>(DATA_ELEM_SELECTOR);
   if (!dataElement) {
     return null;
@@ -55,4 +55,4 @@ function createPopupBase(anchor: HTMLAnchorElement): PopupBase | null {
   };
 }
 
-export { type PopupBase, createPopupBase };
+export { type LinkData, extractLinkData };

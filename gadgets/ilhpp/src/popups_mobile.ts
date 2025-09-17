@@ -1,9 +1,9 @@
 import { MB_SKELETON_STRIPE_COUNT, OVERLAY_CLASS_MOBILE, ROOT_CLASS_MOBILE } from './consts';
 import { getPagePreview } from './network';
-import { createPopupBase, PopupBase } from './popups';
+import { extractLinkData, LinkData } from './extract';
 import { getDirection, getUniqueId, isWikipedia, togglePageScroll } from './utils';
 
-interface Popup extends PopupBase {
+interface Popup extends LinkData {
   overlay: HTMLElement;
   elem: HTMLElement;
   anchor: HTMLAnchorElement;
@@ -235,8 +235,8 @@ function buildAndAttachPopup(popup: Popup) {
 }
 
 function attachPopup(anchor: HTMLAnchorElement): Popup | null {
-  const popupBase = createPopupBase(anchor);
-  if (!popupBase) {
+  const linkData = extractLinkData(anchor);
+  if (!linkData) {
     return null;
   }
 
@@ -245,7 +245,7 @@ function attachPopup(anchor: HTMLAnchorElement): Popup | null {
   const abortController = new AbortController();
 
   const popup: Popup = {
-    ...popupBase,
+    ...linkData,
     overlay: document.createElement('div'),
     elem: document.createElement('div'),
     anchor,

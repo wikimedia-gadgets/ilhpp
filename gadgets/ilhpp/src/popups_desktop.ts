@@ -5,7 +5,7 @@ import {
   DT_DETACH_DELAY_MS,
 } from './consts';
 import { getPagePreview } from './network';
-import { createPopupBase, PopupBase } from './popups';
+import { extractLinkData, LinkData } from './extract';
 import { getPreferences, PopupMode } from './prefs';
 import { getDirection, getUniqueId, isWikipedia } from './utils';
 
@@ -30,7 +30,7 @@ interface Layout {
 
 type State = 'attached' | 'detached';
 
-interface Popup extends PopupBase {
+interface Popup extends LinkData {
   state: State;
 
   elem: HTMLElement;
@@ -310,15 +310,15 @@ function attachPopup(
   oldTooltip: string | null,
   cursor?: CursorParam,
 ): Popup | null {
-  const popupBase = createPopupBase(anchor);
-  if (!popupBase) {
+  const linkData = extractLinkData(anchor);
+  if (!linkData) {
     return null;
   }
 
   let timeoutId: ReturnType<typeof setTimeout>;
 
   const popup: Popup = {
-    ...popupBase,
+    ...linkData,
     state: 'attached',
     elem: document.createElement('div'),
     anchor,
