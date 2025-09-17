@@ -6,7 +6,7 @@ async function getPagePreview(
   title: string,
   signal?: AbortSignal,
 ): Promise<PagePreview> {
-  if (wikiId === 'd') {
+  if (wikiId === 'd' || !/^[\w.-]+$/.test(wikiId)) {
     // No preview
     throw new DOMException('No preview for this wiki', 'NotSupportedError');
   }

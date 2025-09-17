@@ -30,14 +30,7 @@ function extractLinkData(anchor: HTMLAnchorElement): LinkData | null {
       ? dataElemForeignTitle
       : normalizeTitle(dataElemForeignTitle);
 
-  if (
-    !origTitle ||
-    !wikiId ||
-    !/^[\w.-]+$/.test(wikiId) ||
-    !langCode ||
-    !langName ||
-    !foreignTitle
-  ) {
+  if (!origTitle || !wikiId || !langCode || !langName || !foreignTitle) {
     return null;
   }
 
