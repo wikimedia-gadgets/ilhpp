@@ -60,14 +60,14 @@ function toCSSClassNames(prefs: Preferences): string[] {
   return result;
 }
 
-function reflectChanges(prefs: Preferences) {
+function reflectChanges(prefs: Preferences, node: ParentNode = document) {
   document.documentElement.className = document.documentElement.className.replace(
     /\bilhpp-pref[\w-]+\b/g,
     '',
   );
   document.documentElement.classList.add(...toCSSClassNames(prefs));
 
-  document.querySelectorAll(DATA_ELEM_SELECTOR).forEach((root) => {
+  node.querySelectorAll(DATA_ELEM_SELECTOR).forEach((root) => {
     const linkData = extractLinkData(root as HTMLAnchorElement);
     const origAnchor = root.querySelector<HTMLAnchorElement>(ORIG_A_SELECTOR);
 
@@ -115,6 +115,7 @@ function getPreferences(): Preferences {
     return deepClone(currentPrefs);
   }
 
+  // Initialize (should only be run once)
   let result = deepClone(DEFAULT_PREFS);
 
   try {
@@ -175,7 +176,18 @@ function getPreferences(): Preferences {
   } catch {}
 
   currentPrefs = result;
+  mw.hook('wikipage.content').add(($content) => {
+    $content.each((_, root) => {
+      reflectChanges(
+        currentPrefs!, // Guaranteed to be non-null after initialization
+        root,
+      );
+    });
+  });
+  // Still required as some part of the page may not be passed to 'wikipage.content' hook
+  // e.g. Drawer contents
   reflectChanges(result);
+
   return result;
 }
 

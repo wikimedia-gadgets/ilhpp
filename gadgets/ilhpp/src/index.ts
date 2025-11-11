@@ -23,6 +23,7 @@ mw.messages.set(batchConv(messages, mw.config.get('wgUserVariant')!));
 const _ = getPreferences();
 
 // Deactivate if MF Visual editor is active, activate otherwise
+// Note that this section runs whenever MF is active, even on a desktop device
 if (mw.config.get('wgMFMode')) {
   void import('mobile.startup').then(({ getOverlayManager }) => {
     getOverlayManager(); // Forcibly make .mw-overlays-container to be available
