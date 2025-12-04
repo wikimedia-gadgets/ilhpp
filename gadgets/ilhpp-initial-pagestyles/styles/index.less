@@ -1,0 +1,8 @@
+@import (reference) '../../ilhpp/styles/base.less';
+
+// Reduce layout shift by mimicking default config's layout
+html.client-js:not(.ilhpp-initialized) {
+  .ilh-comment {
+    display: none;
+  }
+}

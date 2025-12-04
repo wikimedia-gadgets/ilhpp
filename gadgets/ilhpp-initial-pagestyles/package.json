@@ -1,0 +1,12 @@
+{
+  "name": "ilhpp-initial-pagestyles",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "lessc styles/index.less ../../dist/Gadget-ilhpp-initial-pagestyles.css"
+  },
+  "devDependencies": {
+    "less": "^4.2.0"
+  }
+}

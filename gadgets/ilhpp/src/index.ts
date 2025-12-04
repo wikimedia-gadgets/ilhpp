@@ -54,6 +54,8 @@ if (isMobileDevice()) {
   runDesktop();
 }
 
+document.documentElement.classList.add('ilhpp-initialized');
+
 export {
   type Preferences,
   LinkMode,
